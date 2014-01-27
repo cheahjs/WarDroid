@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip"
+    android:id="@+id/list_item_alert">
+    <!-- Alert Title -->
+    <TextView
+        android:id="@+id/alert_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Terminus (Mercury)"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <!-- Alert Description -->
+    <TextView
+        android:id="@+id/alert_desc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alert_title"
+        android:textColor="#343434"
+        android:textSize="12sp"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Nightmare Mod Found" />
+
+    <!-- Rightend Duration -->
+    <TextView
+        android:id="@+id/alert_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/alert_title"
+        android:gravity="right"
+        android:text="5:45"
+        android:layout_marginRight="5dip"
+        android:textSize="11sp"
+        android:textColor="#10bcc9"
+        android:textStyle="bold"/>
+
+    <!-- Rewards -->
+    <TextView
+        android:id="@+id/alert_rewards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/alert_desc"
+        android:gravity="right"
+        android:text="Something - 5000cr"
+        android:layout_marginRight="5dip"
+        android:textSize="12sp"
+        android:textColor="#040404"
+        android:textStyle="bold"/>
+</RelativeLayout>

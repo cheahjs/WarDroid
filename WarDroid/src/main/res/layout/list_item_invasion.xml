@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip"
+    android:id="@+id/list_item_invasions">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/invasion_bar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:layout_below="@id/invasion_bar"
+        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Martialis (Europa)"
+        android:id="@+id/invasion_node"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Corpus Siege"
+        android:id="@+id/invasion_desc"
+        android:layout_below="@+id/invasion_node"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="50.00%"
+        android:id="@+id/invasion_percent"
+        android:layout_below="@+id/invasion_desc"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_below="@id/invasion_bar"
+        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_toLeftOf="@id/invasion_node"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Corpus"
+        android:id="@+id/invasion_invading_faction"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_below="@id/invasion_invading_faction"
+        android:layout_alignParentEnd="@id/invasion_invading_faction"
+        android:layout_toLeftOf="@id/invasion_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Extermination"
+        android:id="@+id/invasion_invading_type"
+        android:layout_alignParentLeft="true"
+        android:gravity="left" />
+
+    <TextView
+        android:layout_below="@id/invasion_invading_type"
+        android:layout_alignParentEnd="@id/invasion_invading_type"
+        android:layout_toLeftOf="@id/invasion_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Orokin Catalyst Blueprint"
+        android:id="@+id/invasion_invading_reward"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_below="@id/invasion_bar"
+        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_toRightOf="@id/invasion_node"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Grineer"
+        android:id="@+id/invasion_defending_faction"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:textAlignment="gravity"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_below="@id/invasion_defending_faction"
+        android:layout_alignParentEnd="@id/invasion_defending_faction"
+        android:layout_toRightOf="@id/invasion_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Extermination"
+        android:id="@+id/invasion_defending_type"
+        android:layout_alignParentRight="true"
+        android:gravity="right" />
+
+    <TextView
+        android:layout_below="@id/invasion_defending_type"
+        android:layout_alignParentEnd="@id/invasion_defending_type"
+        android:layout_toRightOf="@id/invasion_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Orokin Catalyst Blueprint"
+        android:id="@+id/invasion_defending_reward"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:textStyle="bold" />
+</RelativeLayout>
