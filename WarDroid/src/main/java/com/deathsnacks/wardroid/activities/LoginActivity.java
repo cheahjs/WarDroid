@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -33,7 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 
-public class LoginActivity extends SherlockActivity {
+public class LoginActivity extends SherlockFragment {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -55,19 +58,20 @@ public class LoginActivity extends SherlockActivity {
     private TextView mLoginStatusMessageView;
     private CheckBox mSavePasswordView;
 
+    private SherlockFragment mFinishFragment;
+
+    public LoginActivity(SherlockFragment frag) {
+        mFinishFragment = frag;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_login);
-
-        mActionBar = getSupportActionBar();
-        mActionBar.setHomeButtonEnabled(false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.activity_login, container, false);
 
         // Set up the login form.
-        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView = (EditText) rootView.findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) rootView.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -79,18 +83,18 @@ public class LoginActivity extends SherlockActivity {
             }
         });
 
-        mSavePasswordView = (CheckBox) findViewById(R.id.savePwd);
+        mSavePasswordView = (CheckBox) rootView.findViewById(R.id.savePwd);
 
-        File loginFile = new File(getFilesDir().getAbsolutePath() + "/login.json");
+        File loginFile = new File(getActivity().getFilesDir().getAbsolutePath() + "/login.json");
         if (loginFile.exists()) {
             Gson gson = new GsonBuilder().create();
             try {
-                FileInputStream stream = openFileInput("login.json");
+                FileInputStream stream = getActivity().openFileInput("login.json");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                 SaveLogin loginData = gson.fromJson(reader, SaveLogin.class);
                 mEmailView.setText(loginData.getEmail());
                 mSavedEmail = loginData.getEmail();
-                mPasswordView.setText("PASSWORDHASHED");
+                mPasswordView.setText("********");
                 mHash = loginData.getPasswordhash();
                 mSavePasswordView.setChecked(true);
                 reader.close();
@@ -100,16 +104,17 @@ public class LoginActivity extends SherlockActivity {
             }
         }
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mLoginStatusView = findViewById(R.id.login_status);
-        mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+        mLoginFormView = rootView.findViewById(R.id.login_form);
+        mLoginStatusView = rootView.findViewById(R.id.login_status);
+        mLoginStatusMessageView = (TextView) rootView.findViewById(R.id.login_status_message);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+        return rootView;
     }
 
     /**
@@ -164,16 +169,16 @@ public class LoginActivity extends SherlockActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            InputMethodManager imm = ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE));
+            InputMethodManager imm = ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
             try {
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
-            mAuthTask = new UserLoginTask(this);
+            mAuthTask = new UserLoginTask(getActivity());
             mAuthTask.execute((Void) null);
         }
     }
@@ -256,21 +261,21 @@ public class LoginActivity extends SherlockActivity {
                             SaveLogin login = new SaveLogin(mEmail, mHash == null ? Login.getPasswordHash(mPassword) : mHash);
                             String json = gson.toJson(login);
                             try {
-                                FileOutputStream stream = openFileOutput("login.json", Context.MODE_PRIVATE);
+                                FileOutputStream stream = getActivity().openFileOutput("login.json", Context.MODE_PRIVATE);
                                 stream.write(json.getBytes());
                                 stream.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         } else {
-                            File loginFile = new File(getFilesDir().getAbsolutePath() + "/login.json");
+                            File loginFile = new File(getActivity().getFilesDir().getAbsolutePath() + "/login.json");
                             if (loginFile.exists())
                                 loginFile.delete();
                         }
                         Toast.makeText(activity.getApplicationContext(), getString(R.string.notification_welcome) +
-                                " " + ((GlobalApplication)getApplication()).getDisplayName(), Toast.LENGTH_LONG).show();
-                        activity.startActivity(new Intent(activity, MainActivity.class));
-                        finish();
+                                " " + ((GlobalApplication)getActivity().getApplication()).getDisplayName(), Toast.LENGTH_LONG).show();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, mFinishFragment).commit();
                         break;
                     case ERROR:
                         Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();

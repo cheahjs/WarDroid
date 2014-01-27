@@ -4,10 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +17,12 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.*;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
-import com.deathsnacks.wardroid.utils.GlobalApplication;
+import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -31,19 +32,52 @@ public class AlertsFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mAlertView;
     private AlertsRefresh mTask;
+    private AlertsListViewAdapter mAdapter;
+    private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
-        showProgress(true);
+        mHandler = new Handler();
+        refresh(true);
+        return rootView;
+    }
+
+    private void refresh(Boolean show) {
+        showProgress(show);
         if (mTask == null) {
             mTask = new AlertsRefresh(getActivity());
             mTask.execute();
         }
-        return rootView;
     }
+
+    private final Runnable mTimer = new Runnable() {
+        @Override
+        public void run() {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+            mHandler.postDelayed(this, 1000);
+        }
+    };
+
+    private final Runnable mRefreshTimer = new Runnable() {
+        @Override
+        public void run() {
+            refresh(false);
+            mHandler.postDelayed(this, 60 * 1000);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeCallbacksAndMessages(mTimer);
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onDestroy();
+    }
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
@@ -80,7 +114,7 @@ public class AlertsFragment extends SherlockFragment {
 
     public class AlertsRefresh extends AsyncTask<Void, Void, Boolean> {
         private Activity activity;
-        private List<String> data;
+        private List<Alert> data;
 
         public AlertsRefresh(Activity activity) {
             this.activity = activity;
@@ -89,10 +123,9 @@ public class AlertsFragment extends SherlockFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                String response = Http.get(activity, "http://deathsnacks.com/wf/data/alerts_raw.txt");
-                data = Arrays.asList(response.split("\\n"));
-                if (response.length() < 2)
-                    data = new ArrayList<String>();
+                String response = Http.get(activity, "http://deathsnacks.com/wf/data/last15alerts.json");
+                Type collectionType = new TypeToken<List<Alert>>(){}.getType();
+                data = (new GsonBuilder().create()).fromJson(response, collectionType);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -104,9 +137,11 @@ public class AlertsFragment extends SherlockFragment {
         protected void onPostExecute(Boolean success) {
             mTask = null;
             showProgress(false);
+            mAdapter = new AlertsListViewAdapter(activity, data);
             if (success){
                 try {
-                    mAlertView.setAdapter(new AlertsListViewAdapter(activity, data));
+                    mAlertView.setAdapter(mAdapter);
+                    mTimer.run();
                 }
                 catch (Exception e) {
                     e.printStackTrace();

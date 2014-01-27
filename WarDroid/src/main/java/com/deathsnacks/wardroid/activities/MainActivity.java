@@ -21,6 +21,8 @@ import com.deathsnacks.wardroid.fragments.DronesFragment;
 import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
+import com.deathsnacks.wardroid.utils.GlobalApplication;
+import com.deathsnacks.wardroid.utils.Names;
 
 /**
  * Created by Admin on 23/01/14.
@@ -68,7 +70,10 @@ public class MainActivity extends SherlockFragmentActivity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
+        //preload string data
+        Names.getName(this, "a");
+        Names.getNode(this, "a");
+        Names.getString(this, "a");
         if (savedInstanceState == null) {
             selectItem(0);
         }
@@ -96,10 +101,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 fragment = new InvasionFragment();
                 break;
             case 3: //foundry
-                fragment = new FoundryFragment();
+                if (((GlobalApplication)getApplication()).getDisplayName() == null)
+                    fragment = new LoginActivity(new FoundryFragment());
+                else
+                    fragment = new FoundryFragment();
                 break;
             case 4: //drones
-                fragment = new DronesFragment();
+                if (((GlobalApplication)getApplication()).getDisplayName() == null)
+                    fragment = new LoginActivity(new DronesFragment());
+                else
+                    fragment = new DronesFragment();
                 break;
         }
 

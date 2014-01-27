@@ -2,7 +2,7 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.gson.Alert;
+import com.deathsnacks.wardroid.utils.Names;
 
 import java.util.List;
 
@@ -18,17 +20,17 @@ import java.util.List;
  */
 public class AlertsListViewAdapter extends BaseAdapter {
     private Activity mActivity;
-    private List<String> mLines;
+    private List<Alert> mAlerts;
     private LayoutInflater mInflater;
 
-    public AlertsListViewAdapter(Activity act, List<String> data) {
+    public AlertsListViewAdapter(Activity act, List<Alert> data) {
         mActivity = act;
-        mLines = data;
+        mAlerts = data;
         mInflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
-        return mLines.size();
+        return mAlerts.size();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -40,17 +42,27 @@ public class AlertsListViewAdapter extends BaseAdapter {
         TextView duration = (TextView)view.findViewById(R.id.alert_duration);
         TextView rewards = (TextView)view.findViewById(R.id.alert_rewards);
 
-        String line = mLines.get(position);
-        String[] parts = line.split("\\|");
-        node.setText(String.format("%s (%s)", parts[1], parts[2]));
-        desc.setText(String.format("%s | %s (%s)", parts[10], parts[3], parts[4]));
-        rewards.setText(parts[9]);
-        int activation = Integer.parseInt(parts[7]);
-        int expiry = Integer.parseInt(parts[8]);
+        Alert alert = mAlerts.get(position);
+        node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
+                Names.getRegion(mActivity, alert.getMissionInfo().getLocation())));
+        desc.setText(Names.getString(mActivity, alert.getMissionInfo().getDescText()));
+        rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
         long now = (long)(System.currentTimeMillis()/1000);
-        long diff = expiry - now;
-        //TODO: use an actual timer
-        duration.setText(String.format("%dh %dm %ds", (long)Math.floor(diff / 3600), (diff/60 % 60), diff % 60));
+        long expiry = alert.getExpiry().getSec();
+        long activation = alert.getActivation().getSec();
+        String format = "Starting: %dh %dm %ds";
+        duration.setTextColor(Color.parseColor("#343434"));
+        long diff = activation - now;
+        if (diff < 0) {
+            diff = expiry - now;
+            format = "%dh %dm %ds";
+            duration.setTextColor(Color.parseColor("#10bcc9"));
+            if (diff < 0) {
+                format = "EXPIRED";
+                duration.setTextColor(Color.parseColor("#d9534f"));
+            }
+        }
+        duration.setText(String.format(format, (long)Math.floor(diff / 3600), (diff/60 % 60), diff % 60));
         return view;
     }
 

@@ -50,6 +50,8 @@ public class FoundryListViewAdapter extends BaseAdapter {
             //TODO: Get a proper timer
             duration.setText(String.format("%dd%dh%dm", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60)));
         }
+
+        view.setTag(recipe);
         return view;
     }
 

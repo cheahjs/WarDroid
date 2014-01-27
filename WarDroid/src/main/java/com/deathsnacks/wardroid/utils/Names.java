@@ -20,6 +20,7 @@ import java.util.HashMap;
 public class Names {
     private static HashMap<String, String> Strings = null;
     private static HashMap<String, String> Names  = null;
+    private static HashMap<String, String> PlanetNames  = null;
 
     public static String getName(Activity act, String raw) {
         if (Names == null) {
@@ -57,9 +58,45 @@ public class Names {
         return Strings.containsKey(raw) ? Strings.get(raw) : raw;
     }
 
+    public static String getNode(Activity act, String node) {
+        if (PlanetNames == null) {
+            Gson gson = (new GsonBuilder().create());
+            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
+            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            PlanetNames = gson.fromJson(reader, token);
+            try {
+                reader.close();
+                rawResource.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return PlanetNames.containsKey(node) ? PlanetNames.get(node).split("\\|")[1] : node;
+    }
+
+    public static String getRegion(Activity act, String node) {
+        if (PlanetNames == null) {
+            Gson gson = (new GsonBuilder().create());
+            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
+            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            PlanetNames = gson.fromJson(reader, token);
+            try {
+                reader.close();
+                rawResource.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return PlanetNames.containsKey(node) ? PlanetNames.get(node).split("\\|")[0] : "?";
+    }
+
     public static String getRegion(int id)
     {
-        switch (id)
+        switch (id-1)
         {
             case 0:
                 return "Mercury";

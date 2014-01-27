@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.utils;
 
 import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.deathsnacks.wardroid.R;
 import com.squareup.okhttp.*;
 
 /**
@@ -37,10 +39,18 @@ public class Http {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
+            String responseStr = new String(response, "UTF-8");
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.e("deathsnacks", "error with api: " + new String(response, "UTF-8"));
+                Log.e("deathsnacks", "error with api: " + responseStr);
             }
-            return new String(response, "UTF-8");
+            if (responseStr.contains("Authentication failed")) {
+                Toast.makeText(act.getApplicationContext(), "Authentication failed, someone signed in on the account elsewhere.", Toast.LENGTH_LONG).show();
+                app.setAccountId(null);
+                app.setDisplayName(null);
+                app.setNonce(0);
+                throw new IOException("Authentication failed, someone signed in on the account elsewhere.");
+            }
+            return responseStr;
         }
         finally {
             if (in != null) in.close();
@@ -64,7 +74,18 @@ public class Http {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
-            return new String(response, "UTF-8");
+            String responseStr = new String(response, "UTF-8");
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e("deathsnacks", "error with stats api: " + responseStr);
+            }
+            if (responseStr.contains("Authentication failed")) {
+                Toast.makeText(act.getApplicationContext(), "Authentication failed, someone signed in on the account elsewhere.", Toast.LENGTH_LONG).show();
+                app.setAccountId(null);
+                app.setDisplayName(null);
+                app.setNonce(0);
+                throw new IOException("Authentication failed, someone signed in on the account elsewhere.");
+            }
+            return responseStr;
         }
         finally {
             if (in != null) in.close();
@@ -101,48 +122,4 @@ public class Http {
         }
         return out.toByteArray();
     }
-    /*public static String requestGetApi(String endpoint, String args)
-    {
-        AndroidHttpClient client = AndroidHttpClient.newInstance("");
-        HttpGet request = new HttpGet("https://api.warframe.com/api/" + endpoint +
-        "?accountId=" + LoginJson.Id + "&nonce=" + LoginJson.Nonce + "&platform=PC" + args);
-        AndroidHttpClient.modifyRequestToAcceptGzipResponse(request);
-        String result = "";
-        try {
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            InputStream inputStream = AndroidHttpClient.getUngzippedContent(entity);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream), 8);
-            String line = "";
-            while ((line = reader.readLine()) != null)
-                result += line + "\n";
-            return result;
-        }
-        catch (Exception e) {
-
-        }
-        return "";
-    }
-
-    public static String requestLogin(String email, String password)
-    {
-        AndroidHttpClient client = AndroidHttpClient.newInstance("");
-        HttpGet request = new HttpGet("https://api.warframe.com/api/login.php");
-        AndroidHttpClient.modifyRequestToAcceptGzipResponse(request);
-        String result = "";
-        try {
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            InputStream inputStream = AndroidHttpClient.getUngzippedContent(entity);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream), 8);
-            String line = "";
-            while ((line = reader.readLine()) != null)
-                result += line + "\n";
-            return result;
-        }
-        catch (Exception e) {
-
-        }
-        return "";
-    }*/
 }

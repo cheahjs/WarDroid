@@ -36,6 +36,6 @@
         android:gravity="right|center_vertical"
         android:text="4 Orokin Cells"
         android:layout_marginRight="5dip"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#10bcc9"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#040404"/>
 </RelativeLayout>

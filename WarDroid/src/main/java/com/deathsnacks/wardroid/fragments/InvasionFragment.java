@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +30,39 @@ public class InvasionFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mInvasionView;
     private InvasionRefresh mTask;
+    private InvasionListViewAdapter mAdapter;
+    private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
-        showProgress(true);
+        mHandler = new Handler();
+        refresh(true);
+        return rootView;
+    }
+
+    private void refresh(Boolean show) {
+        showProgress(show);
         if (mTask == null) {
             mTask = new InvasionRefresh(getActivity());
             mTask.execute();
         }
-        return rootView;
+    }
+
+    private final Runnable mRefreshTimer = new Runnable() {
+        @Override
+        public void run() {
+            refresh(false);
+            mHandler.postDelayed(this, 60 * 1000);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onDestroy();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -100,9 +122,10 @@ public class InvasionFragment extends SherlockFragment {
         protected void onPostExecute(Boolean success) {
             mTask = null;
             showProgress(false);
+            mAdapter = new InvasionListViewAdapter(activity, data);
             if (success){
                 try {
-                    mInvasionView.setAdapter(new InvasionListViewAdapter(activity, data));
+                    mInvasionView.setAdapter(mAdapter);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

@@ -27,5 +27,5 @@
         android:text="5:45"
         android:layout_marginRight="5dip"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#10bcc9"/>
+        android:textColor="#343434"/>
 </RelativeLayout>

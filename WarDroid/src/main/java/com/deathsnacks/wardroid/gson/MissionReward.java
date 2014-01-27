@@ -1,9 +1,11 @@
 
 package com.deathsnacks.wardroid.gson;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deathsnacks.wardroid.utils.Names;
 import com.google.gson.annotations.Expose;
 
 
@@ -14,9 +16,9 @@ public class MissionReward {
     @Expose
     private int xp;
     @Expose
-    private List<Object> items = new ArrayList<Object>();
+    private List<String> items = new ArrayList<String>();
     @Expose
-    private List<Object> countedItems = new ArrayList<Object>();
+    private List<CountedItem> countedItems = new ArrayList<CountedItem>();
 
     public int getCredits() {
         return credits;
@@ -34,20 +36,42 @@ public class MissionReward {
         this.xp = xp;
     }
 
-    public List<Object> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<Object> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 
-    public List<Object> getCountedItems() {
+    public List<CountedItem> getCountedItems() {
         return countedItems;
     }
 
-    public void setCountedItems(List<Object> countedItems) {
+    public void setCountedItems(List<CountedItem> countedItems) {
         this.countedItems = countedItems;
     }
 
+    public String getRewardString() {
+        String rtn = "";
+        if (credits > 0)
+            rtn += NumberFormat.getIntegerInstance().format(credits) + "cr";
+        if (countedItems.size() > 0) {
+            String rawtxt = "";
+            CountedItem item = countedItems.get(0);
+            if (item.getItemCount() == 1) {
+                rawtxt = Names.getName(null, item.getItemType());
+            } else {
+                rawtxt = item.getItemCount() + " " + Names.getName(null, item.getItemType());
+            }
+            rtn += " - " + rawtxt;
+        }
+        if (items.size() > 0) {
+            String rawtxt = "";
+            String item = items.get(0);
+            rawtxt = Names.getName(null, item);
+            rtn += " - " + rawtxt;
+        }
+        return rtn;
+    }
 }

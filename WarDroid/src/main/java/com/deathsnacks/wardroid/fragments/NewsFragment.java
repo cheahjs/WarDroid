@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +34,15 @@ public class NewsFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mNewsView;
     private NewsRefresh mTask;
+    private NewsListViewAdapter mAdapter;
+    private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         mRefreshView = rootView.findViewById(R.id.news_refresh);
         mNewsView = (ListView) rootView.findViewById(R.id.list_news);
+        mHandler = new Handler();
         mNewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -47,44 +51,66 @@ public class NewsFragment extends SherlockFragment {
                 getActivity().startActivity(intent);
             }
         });
-        showProgress(true);
+        refresh(true);
+        return rootView;
+    }
+
+    private void refresh(Boolean show) {
+        showProgress(show);
         if (mTask == null) {
             mTask = new NewsRefresh(getActivity());
             mTask.execute();
         }
-        return rootView;
+    }
+
+    private final Runnable mRefreshTimer = new Runnable() {
+        @Override
+        public void run() {
+            if (mAdapter != null) {
+                refresh(false);
+                mHandler.postDelayed(this, 60 * 1000);
+            }
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onDestroy();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mRefreshView.setVisibility(View.VISIBLE);
-            mRefreshView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                        }
-                    });
+        if (isAdded()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                mRefreshView.setVisibility(View.VISIBLE);
+                mRefreshView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 1 : 0)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                            }
+                        });
 
-            mNewsView.setVisibility(View.VISIBLE);
-            mNewsView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
-                        }
-                    });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mNewsView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRefreshView.setVisibility(show ? View.GONE : View.VISIBLE);
+                mNewsView.setVisibility(View.VISIBLE);
+                mNewsView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 0 : 1)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
+                            }
+                        });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                mNewsView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mRefreshView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
         }
     }
 
@@ -114,9 +140,10 @@ public class NewsFragment extends SherlockFragment {
         protected void onPostExecute(Boolean success) {
             mTask = null;
             showProgress(false);
+            mAdapter = new NewsListViewAdapter(activity, data);
             if (success){
                 try {
-                    mNewsView.setAdapter(new NewsListViewAdapter(activity, data));
+                    mNewsView.setAdapter(mAdapter);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
