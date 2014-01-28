@@ -90,4 +90,17 @@ public class ActiveDrone {
         this.ItemId = ItemId;
     }
 
+    public int getActualHP() {
+        long now = java.lang.System.currentTimeMillis()/1000;
+        long relative = DamageTime.getSec() - now;
+        if (relative < 0) {
+            if (CurrentHP - PendingDamage < 0)
+                return 0;
+            else
+                return CurrentHP - PendingDamage;
+        }
+        else {
+            return CurrentHP;
+        }
+    }
 }

@@ -27,11 +27,21 @@
         android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginLeft="5dip"
+        android:text="(100%)"
+        android:id="@+id/drone_hp"
+        android:layout_alignBaseline="@+id/drone_system"
+        android:layout_toRightOf="@+id/drone_name" />
+
+    <TextView
         android:id="@+id/drone_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/drone_system"
-        android:layout_toRightOf="@id/drone_name"
+        android:layout_toRightOf="@id/drone_hp"
         android:layout_alignParentRight="true"
         android:gravity="right|center_vertical"
         android:text="4 Orokin Cells"

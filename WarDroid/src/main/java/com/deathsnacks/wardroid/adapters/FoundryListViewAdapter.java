@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +46,11 @@ public class FoundryListViewAdapter extends BaseAdapter {
         long diff = recipe.getCompletionDate().getSec() - now;
         if (diff < 0) {
             duration.setText("COMPLETED");
+            duration.setTextColor(Color.parseColor("#5cb85c"));
         }
         else {
-            //TODO: Get a proper timer
-            duration.setText(String.format("%dd%dh%dm", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60)));
+            duration.setText(String.format("%dd %dh %dm", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60)));
+            duration.setTextColor(Color.parseColor("#10bcc9"));
         }
 
         view.setTag(recipe);

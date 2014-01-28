@@ -45,7 +45,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
         Alert alert = mAlerts.get(position);
         node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
                 Names.getRegion(mActivity, alert.getMissionInfo().getLocation())));
-        desc.setText(Names.getString(mActivity, alert.getMissionInfo().getDescText()));
+        String descTxt = String.format("%s | %s (%s)", Names.getString(mActivity, alert.getMissionInfo().getDescText()),
+                Names.getFaction(alert.getMissionInfo().getFaction()),
+                Names.getMissionType(alert.getMissionInfo().getMissionType()));
+        desc.setText(Names.getString(mActivity, descTxt));
         rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
         long now = (long)(System.currentTimeMillis()/1000);
         long expiry = alert.getExpiry().getSec();

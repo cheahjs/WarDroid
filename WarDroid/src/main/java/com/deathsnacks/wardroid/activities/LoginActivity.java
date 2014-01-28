@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.*;
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.gson.SaveLogin;
 import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Login;
@@ -60,14 +62,20 @@ public class LoginActivity extends SherlockFragment {
 
     private SherlockFragment mFinishFragment;
 
+    private GlobalApplication mApplication;
+
     public LoginActivity(SherlockFragment frag) {
         mFinishFragment = frag;
+    }
+
+    public LoginActivity() {
+        mFinishFragment = new FoundryFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_login, container, false);
-
+        mApplication = (GlobalApplication)getActivity().getApplication();
         // Set up the login form.
         mEmailView = (EditText) rootView.findViewById(R.id.email);
 
@@ -85,23 +93,12 @@ public class LoginActivity extends SherlockFragment {
 
         mSavePasswordView = (CheckBox) rootView.findViewById(R.id.savePwd);
 
-        File loginFile = new File(getActivity().getFilesDir().getAbsolutePath() + "/login.json");
-        if (loginFile.exists()) {
-            Gson gson = new GsonBuilder().create();
-            try {
-                FileInputStream stream = getActivity().openFileInput("login.json");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                SaveLogin loginData = gson.fromJson(reader, SaveLogin.class);
-                mEmailView.setText(loginData.getEmail());
-                mSavedEmail = loginData.getEmail();
-                mPasswordView.setText("********");
-                mHash = loginData.getPasswordhash();
-                mSavePasswordView.setChecked(true);
-                reader.close();
-                stream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (mApplication.getEmail() != null) {
+            mEmailView.setText(mApplication.getEmail());
+            mPasswordView.setText("123456789");
+            mHash = mApplication.getHashedPassword();
+            mSavePasswordView.setChecked(true);
+            mSavedEmail = mApplication.getEmail();
         }
 
         mLoginFormView = rootView.findViewById(R.id.login_form);
@@ -133,9 +130,16 @@ public class LoginActivity extends SherlockFragment {
 
         // Store values at the time of the login attempt.
         mEmail = mEmailView.getText().toString();
-        if (mSavedEmail != mEmail)
-            mHash = null;
         mPassword = mPasswordView.getText().toString();
+        //invalidate hash if a) email does not match or b) password has changed
+        if (!mSavedEmail.equals(mEmail)) {
+            mHash = null;
+            Log.d("deathsnacks", "password hash has been invalidated because email doesn't match saved.");
+        }
+        if (!mPassword.equals("123456789")) {
+            mHash = null;
+            Log.d("deathsnacks", "password hash has been invalidated because password has been modified.");
+        }
 
         boolean cancel = false;
         View focusView = null;
@@ -254,23 +258,16 @@ public class LoginActivity extends SherlockFragment {
                     case FAILED:
                         mPasswordView.setError(getString(R.string.error_incorrect_credentials));
                         mPasswordView.requestFocus();
+                        mApplication.setEmail(null);
+                        mApplication.setHashedPassword(null);
                         break;
                     case SUCCESS:
                         if (mSavePasswordView.isChecked()) {
-                            Gson gson = new GsonBuilder().create();
-                            SaveLogin login = new SaveLogin(mEmail, mHash == null ? Login.getPasswordHash(mPassword) : mHash);
-                            String json = gson.toJson(login);
-                            try {
-                                FileOutputStream stream = getActivity().openFileOutput("login.json", Context.MODE_PRIVATE);
-                                stream.write(json.getBytes());
-                                stream.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            mApplication.setEmail(mEmail);
+                            mApplication.setHashedPassword(mHash == null ? Login.getPasswordHash(mPassword) : mHash);
                         } else {
-                            File loginFile = new File(getActivity().getFilesDir().getAbsolutePath() + "/login.json");
-                            if (loginFile.exists())
-                                loginFile.delete();
+                            mApplication.setEmail(null);
+                            mApplication.setHashedPassword(null);
                         }
                         Toast.makeText(activity.getApplicationContext(), getString(R.string.notification_welcome) +
                                 " " + ((GlobalApplication)getActivity().getApplication()).getDisplayName(), Toast.LENGTH_LONG).show();
@@ -283,6 +280,8 @@ public class LoginActivity extends SherlockFragment {
                     case UNKNOWNUSER:
                         mEmailView.setError(getString(R.string.error_user_does_not_exist));
                         mEmailView.requestFocus();
+                        mApplication.setEmail(null);
+                        mApplication.setHashedPassword(null);
                         break;
                     case DESYNC:
                         Toast.makeText(activity.getApplicationContext(), R.string.error_time_desync, Toast.LENGTH_LONG).show();

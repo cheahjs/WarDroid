@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.*;
 import com.actionbarsherlock.view.MenuItem;
@@ -32,7 +33,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[] {"News", "Alerts", "Invasions", "Foundry", "Extractors"};
+    private String[] mDrawerTitles = new String[] {"News", "Alerts", "Invasions", "Foundry", "Extractors", "Log Out"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
 
@@ -112,6 +113,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 else
                     fragment = new DronesFragment();
                 break;
+            case 5: //logout
+                GlobalApplication app = (GlobalApplication)getApplication();
+                if (app.getDisplayName() != null) {
+                    app.setNonce(0);
+                    app.setDisplayName(null);
+                    app.setAccountId(null);
+                    Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
+                }
+                mDrawerLayout.closeDrawer(mDrawerList);
+                return;
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();

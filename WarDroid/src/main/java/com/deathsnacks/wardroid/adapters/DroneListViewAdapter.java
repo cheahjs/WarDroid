@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.deathsnacks.wardroid.gson.ActiveDrones;
 import com.deathsnacks.wardroid.gson.PendingRecipe;
 import com.deathsnacks.wardroid.gson.PendingRecipes;
 import com.deathsnacks.wardroid.utils.Names;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Admin on 25/01/14.
@@ -40,6 +43,7 @@ public class DroneListViewAdapter extends BaseAdapter {
         TextView duration = (TextView)view.findViewById(R.id.drone_duration);
         TextView system = (TextView)view.findViewById(R.id.drone_system);
         TextView name = (TextView)view.findViewById(R.id.drone_name);
+        TextView health = (TextView)view.findViewById(R.id.drone_hp);
 
         ActiveDrone drone = activeDrones.getActiveDrones().get(position);
 
@@ -55,8 +59,18 @@ public class DroneListViewAdapter extends BaseAdapter {
         }
         else {
             long durationleft = 14400 - diff;
-            duration.setText(String.format("%dh%dm%ds", (long)Math.floor(durationleft / 3600) % 24, (durationleft/60 % 60), durationleft % 60));
+            duration.setText(String.format("%dh %dm %ds", (long)Math.floor(durationleft / 3600) % 24, (durationleft/60 % 60), durationleft % 60));
+            duration.setTextColor(Color.parseColor("#10bcc9"));
         }
+        int hp = drone.getActualHP();
+        if (hp > 0) {
+            health.setText(String.format("(%d%%)", hp));
+        } else {
+            health.setText("(0%)");
+            duration.setText("DESTROYED");
+            duration.setTextColor(Color.parseColor("#d9534f"));
+        }
+        view.setTag(drone);
         return view;
     }
 
