@@ -2,9 +2,6 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +23,7 @@ public class NewsListViewAdapter extends BaseAdapter {
     public NewsListViewAdapter(Activity act, List<String> data) {
         mActivity = act;
         mLines = data;
-        mInflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
@@ -37,9 +34,9 @@ public class NewsListViewAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_news, null);
-        TextView text = (TextView)view.findViewById(R.id.news_text);
-        TextView duration = (TextView)view.findViewById(R.id.news_duration);
-        TextView url = (TextView)view.findViewById(R.id.news_url);
+        TextView text = (TextView) view.findViewById(R.id.news_text);
+        TextView duration = (TextView) view.findViewById(R.id.news_duration);
+        TextView url = (TextView) view.findViewById(R.id.news_url);
 
         String line = mLines.get(position);
         String[] parts = line.split("\\|");
@@ -47,11 +44,11 @@ public class NewsListViewAdapter extends BaseAdapter {
             return null;
         text.setText(parts[3]);
         int activation = Integer.parseInt(parts[2]);
-        long now = (long)(System.currentTimeMillis()/1000);
+        long now = (long) (System.currentTimeMillis() / 1000);
         long diff = now - activation;
-        long days = (long)Math.floor(diff / 86400);
-        long hours = (long)Math.floor(diff / 3600) % 24;
-        long minutes = (diff/60 % 60);
+        long days = (long) Math.floor(diff / 86400);
+        long hours = (long) Math.floor(diff / 3600) % 24;
+        long minutes = (diff / 60 % 60);
         long used = minutes;
         String usedstr = "m";
         if (hours >= 1) {

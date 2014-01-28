@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.*;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
@@ -126,7 +126,8 @@ public class AlertsFragment extends SherlockFragment {
         protected Boolean doInBackground(Void... params) {
             try {
                 String response = Http.get(activity, "http://deathsnacks.com/wf/data/last15alerts.json");
-                Type collectionType = new TypeToken<List<Alert>>(){}.getType();
+                Type collectionType = new TypeToken<List<Alert>>() {
+                }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);
                 return true;
             } catch (Exception e) {
@@ -140,16 +141,14 @@ public class AlertsFragment extends SherlockFragment {
             mTask = null;
             showProgress(false);
             mAdapter = new AlertsListViewAdapter(activity, data);
-            if (success){
+            if (success) {
                 try {
                     mAlertView.setAdapter(mAdapter);
                     mTimer.run();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
             }
         }

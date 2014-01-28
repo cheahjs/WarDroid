@@ -19,7 +19,6 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -125,15 +124,13 @@ public class InvasionFragment extends SherlockFragment {
             mTask = null;
             showProgress(false);
             mAdapter = new InvasionListViewAdapter(activity, data);
-            if (success){
+            if (success) {
                 try {
                     mInvasionView.setAdapter(mAdapter);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
             }
         }

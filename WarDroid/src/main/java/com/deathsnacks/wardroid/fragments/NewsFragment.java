@@ -46,7 +46,7 @@ public class NewsFragment extends SherlockFragment {
         mNewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String url = ((TextView)view.findViewById(R.id.news_url)).getText().toString();
+                String url = ((TextView) view.findViewById(R.id.news_url)).getText().toString();
                 final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 getActivity().startActivity(intent);
             }
@@ -141,15 +141,13 @@ public class NewsFragment extends SherlockFragment {
             mTask = null;
             showProgress(false);
             mAdapter = new NewsListViewAdapter(activity, data);
-            if (success){
+            if (success) {
                 try {
                     mNewsView.setAdapter(mAdapter);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
             }
         }

@@ -3,7 +3,6 @@ package com.deathsnacks.wardroid.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
     public InvasionListViewAdapter(Activity act, List<String> data) {
         mActivity = act;
         mLines = data;
-        mInflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
@@ -37,29 +36,29 @@ public class InvasionListViewAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_invasion, null);
-        TextView node = (TextView)view.findViewById(R.id.invasion_node);
-        TextView desc = (TextView)view.findViewById(R.id.invasion_desc);
-        TextView percent = (TextView)view.findViewById(R.id.invasion_percent);
-        TextView invadingfaction = (TextView)view.findViewById(R.id.invasion_invading_faction);
-        TextView invadingtype = (TextView)view.findViewById(R.id.invasion_invading_type);
-        TextView invadingrewards = (TextView)view.findViewById(R.id.invasion_invading_reward);
-        TextView defendingfaction = (TextView)view.findViewById(R.id.invasion_defending_faction);
-        TextView defendingtype = (TextView)view.findViewById(R.id.invasion_defending_type);
-        TextView defendingrewards = (TextView)view.findViewById(R.id.invasion_defending_reward);
-        ProgressBar bar = (ProgressBar)view.findViewById(R.id.invasion_bar);
+        TextView node = (TextView) view.findViewById(R.id.invasion_node);
+        TextView desc = (TextView) view.findViewById(R.id.invasion_desc);
+        TextView percent = (TextView) view.findViewById(R.id.invasion_percent);
+        TextView invadingfaction = (TextView) view.findViewById(R.id.invasion_invading_faction);
+        TextView invadingtype = (TextView) view.findViewById(R.id.invasion_invading_type);
+        TextView invadingrewards = (TextView) view.findViewById(R.id.invasion_invading_reward);
+        TextView defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
+        TextView defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
+        TextView defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
+        ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
 
         String line = mLines.get(position + 1);
         String[] parts = line.split("\\|");
         node.setText(String.format("%s (%s)", parts[1], parts[2]));
         invadingfaction.setText(parts[3]);
-        invadingtype.setText(parts[3].contains("Infestation")  ? "" : parts[4]);
+        invadingtype.setText(parts[3].contains("Infestation") ? "" : parts[4]);
         invadingrewards.setText(parts[3].contains("Infestation") ? "" : parts[5]);
         defendingfaction.setText(parts[8]);
         defendingtype.setText(parts[9]);
         defendingrewards.setText(parts[10]);
         percent.setText(parts[16] + "%");
         desc.setText(parts[18]);
-        int percentvalue = (int)Double.parseDouble(parts[16]);
+        int percentvalue = (int) Double.parseDouble(parts[16]);
         if (percentvalue > 100)
             percentvalue = 100;
         if (percentvalue < 0)

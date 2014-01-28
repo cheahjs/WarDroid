@@ -1,9 +1,8 @@
 package com.deathsnacks.wardroid.utils;
 
-import com.deathsnacks.wardroid.R;
-
 import android.app.Activity;
 
+import com.deathsnacks.wardroid.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -19,21 +18,21 @@ import java.util.HashMap;
  */
 public class Names {
     private static HashMap<String, String> Strings = null;
-    private static HashMap<String, String> Names  = null;
-    private static HashMap<String, String> PlanetNames  = null;
+    private static HashMap<String, String> Names = null;
+    private static HashMap<String, String> PlanetNames = null;
 
     public static String getName(Activity act, String raw) {
         if (Names == null) {
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.names_11);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
-            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            Type token = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             Names = gson.fromJson(reader, token);
             try {
                 reader.close();
                 rawResource.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -45,13 +44,13 @@ public class Names {
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.strings_11);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
-            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            Type token = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             Strings = gson.fromJson(reader, token);
             try {
                 reader.close();
                 rawResource.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -63,13 +62,13 @@ public class Names {
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
-            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            Type token = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             PlanetNames = gson.fromJson(reader, token);
             try {
                 reader.close();
                 rawResource.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -81,23 +80,21 @@ public class Names {
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
-            Type token = new TypeToken<HashMap<String, String>>(){}.getType();
+            Type token = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             PlanetNames = gson.fromJson(reader, token);
             try {
                 reader.close();
                 rawResource.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return PlanetNames.containsKey(node) ? PlanetNames.get(node).split("\\|")[0] : "?";
     }
 
-    public static String getRegion(int id)
-    {
-        switch (id-1)
-        {
+    public static String getRegion(int id) {
+        switch (id - 1) {
             case 0:
                 return "Mercury";
             case 1:
@@ -128,7 +125,7 @@ public class Names {
                 return "-";
         }
     }
-    
+
     public static String getFaction(String raw) {
         raw = raw.toLowerCase();
         if (raw.contains("grin"))
@@ -141,29 +138,29 @@ public class Names {
             return "Corrupted";
         return raw;
     }
-    
+
     public static String getMissionType(String raw) {
         raw = raw.toLowerCase();
         if (raw.contains("mt_defense"))
-                return "Defense";
-            if (raw.contains("mt_assassination"))
-                return "Assassination";
-            if (raw.contains("mt_extermination"))
-                return "Extermination";
-            if (raw.contains("mt_survival"))
-                return "Survival";
-            if (raw.contains("mt_intel"))
-                return "Spy";
-            if (raw.contains("mt_capture"))
-                return "Capture";
-            if (raw.contains("mt_sabotage"))
-                return "Sabotage";
-            if (raw.contains("mt_counter_intel"))
-                return "Deception";
-            if (raw.contains("mt_rescue"))
-                return "Rescue";
-            if (raw.contains("mt_mobile_defense"))
-                return "Mobile Defense";
+            return "Defense";
+        if (raw.contains("mt_assassination"))
+            return "Assassination";
+        if (raw.contains("mt_extermination"))
+            return "Extermination";
+        if (raw.contains("mt_survival"))
+            return "Survival";
+        if (raw.contains("mt_intel"))
+            return "Spy";
+        if (raw.contains("mt_capture"))
+            return "Capture";
+        if (raw.contains("mt_sabotage"))
+            return "Sabotage";
+        if (raw.contains("mt_counter_intel"))
+            return "Deception";
+        if (raw.contains("mt_rescue"))
+            return "Rescue";
+        if (raw.contains("mt_mobile_defense"))
+            return "Mobile Defense";
         return raw;
     }
 }

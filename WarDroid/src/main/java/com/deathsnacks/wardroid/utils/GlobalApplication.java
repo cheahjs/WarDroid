@@ -40,7 +40,7 @@ public class GlobalApplication extends Application {
     public void setNonce(int nonce) {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         editor = settings.edit();
-        editor.putString("Nonce", nonce+"");
+        editor.putString("Nonce", nonce + "");
         editor.commit();
     }
 

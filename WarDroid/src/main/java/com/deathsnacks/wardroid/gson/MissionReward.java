@@ -1,12 +1,12 @@
 
 package com.deathsnacks.wardroid.gson;
 
+import com.deathsnacks.wardroid.utils.Names;
+import com.google.gson.annotations.Expose;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.deathsnacks.wardroid.utils.Names;
-import com.google.gson.annotations.Expose;
 
 
 public class MissionReward {

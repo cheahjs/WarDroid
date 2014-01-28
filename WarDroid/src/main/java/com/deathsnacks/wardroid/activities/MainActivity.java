@@ -3,9 +3,9 @@ package com.deathsnacks.wardroid.activities;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -14,13 +14,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.*;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.DronesFragment;
 import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
+import com.deathsnacks.wardroid.fragments.LoginFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Names;
@@ -33,7 +36,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[] {"News", "Alerts", "Invasions", "Foundry", "Extractors", "Log Out"};
+    private String[] mDrawerTitles = new String[]{"News", "Alerts", "Invasions", "Foundry", "Extractors", "Clan", "Log Out"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
 
@@ -41,7 +44,7 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InputMethodManager imm = ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE));
+        InputMethodManager imm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -102,19 +105,25 @@ public class MainActivity extends SherlockFragmentActivity {
                 fragment = new InvasionFragment();
                 break;
             case 3: //foundry
-                if (((GlobalApplication)getApplication()).getDisplayName() == null)
-                    fragment = new LoginActivity(new FoundryFragment());
+                if (((GlobalApplication) getApplication()).getDisplayName() == null)
+                    fragment = new LoginFragment(new FoundryFragment());
                 else
                     fragment = new FoundryFragment();
                 break;
             case 4: //drones
-                if (((GlobalApplication)getApplication()).getDisplayName() == null)
-                    fragment = new LoginActivity(new DronesFragment());
+                if (((GlobalApplication) getApplication()).getDisplayName() == null)
+                    fragment = new LoginFragment(new DronesFragment());
                 else
                     fragment = new DronesFragment();
                 break;
-            case 5: //logout
-                GlobalApplication app = (GlobalApplication)getApplication();
+            case 5: //clan
+                if (((GlobalApplication) getApplication()).getDisplayName() == null)
+                    fragment = new LoginFragment(new DronesFragment());
+                else
+                    fragment = new DronesFragment();
+                break;
+            case 6: //logout
+                GlobalApplication app = (GlobalApplication) getApplication();
                 if (app.getDisplayName() != null) {
                     app.setNonce(0);
                     app.setDisplayName(null);
