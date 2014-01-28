@@ -81,6 +81,8 @@ public class AlertsFragment extends SherlockFragment {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
+        if (!isAdded())
+            return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             mRefreshView.setVisibility(View.VISIBLE);
