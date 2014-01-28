@@ -10,8 +10,6 @@
         android:id="@+id/alert_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/thumbnail"
-        android:layout_toRightOf="@+id/thumbnail"
         android:text="Terminus (Mercury)"
         android:textColor="#040404"
         android:typeface="sans"
@@ -27,7 +25,6 @@
         android:textColor="#343434"
         android:textSize="12sp"
         android:layout_marginTop="1dip"
-        android:layout_toRightOf="@+id/thumbnail"
         android:text="Nightmare Mod Found" />
 
     <!-- Rightend Duration -->
