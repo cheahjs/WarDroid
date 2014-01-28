@@ -19,9 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Prime Titan Extractor"
-        android:layout_alignBaseline="@id/drone_system"
-        android:layout_toRightOf="@id/drone_system"
-        android:layout_marginLeft="7dp"
+        android:layout_below="@id/drone_system"
         android:textColor="#040404"
         android:typeface="sans"
         android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -31,9 +29,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_marginLeft="5dip"
+        android:layout_below="@id/drone_system"
         android:text="(100%)"
         android:id="@+id/drone_hp"
-        android:layout_alignBaseline="@+id/drone_system"
         android:layout_toRightOf="@+id/drone_name" />
 
     <TextView
