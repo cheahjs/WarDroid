@@ -20,11 +20,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_news"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:drawSelectorOnTop="true" />
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_news"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:drawSelectorOnTop="true" />
 </RelativeLayout>
