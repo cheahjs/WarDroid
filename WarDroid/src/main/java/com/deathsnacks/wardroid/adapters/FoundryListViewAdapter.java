@@ -25,7 +25,7 @@ public class FoundryListViewAdapter extends BaseAdapter {
     public FoundryListViewAdapter(Activity act, PendingRecipes data) {
         mActivity = act;
         pendingRecipes = data;
-        mInflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
@@ -36,22 +36,21 @@ public class FoundryListViewAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_foundry, null);
-        TextView item = (TextView)view.findViewById(R.id.foundry_item);
-        TextView duration = (TextView)view.findViewById(R.id.foundry_duration);
+        TextView item = (TextView) view.findViewById(R.id.foundry_item);
+        TextView duration = (TextView) view.findViewById(R.id.foundry_duration);
 
         PendingRecipe recipe = pendingRecipes.getPendingRecipes().get(position);
         String itemname = Names.getName(mActivity, recipe.getItemType()).replace(" Blueprint", "");
         item.setText(itemname);
-        long now = System.currentTimeMillis()/1000;
+        long now = System.currentTimeMillis() / 1000;
         long diff = recipe.getCompletionDate().getSec() - now;
         if (diff < 0) {
             duration.setText("COMPLETED");
             duration.setTextColor(Color.parseColor("#5cb85c"));
-        }
-        else {
-            long days = (long)Math.floor(diff / 86400);
+        } else {
+            long days = (long) Math.floor(diff / 86400);
             if (days > 0)
-                duration.setText(String.format("%dd %dh %dm %ds", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60), diff % 60));
+                duration.setText(String.format("%dd %dh %dm %ds", (long) Math.floor(diff / 86400), (long) Math.floor(diff / 3600) % 24, (diff / 60 % 60), diff % 60));
             else
                 duration.setText(String.format("%dh %dm %ds", (long) Math.floor(diff / 3600) % 24, (diff / 60 % 60), diff % 60));
             duration.setTextColor(Color.parseColor("#10bcc9"));

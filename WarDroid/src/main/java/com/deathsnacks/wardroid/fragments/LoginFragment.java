@@ -1,11 +1,10 @@
-package com.deathsnacks.wardroid.activities;
+package com.deathsnacks.wardroid.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,22 +22,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.*;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.fragments.FoundryFragment;
-import com.deathsnacks.wardroid.gson.SaveLogin;
 import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Login;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-
-public class LoginActivity extends SherlockFragment {
+public class LoginFragment extends SherlockFragment {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -64,18 +54,18 @@ public class LoginActivity extends SherlockFragment {
 
     private GlobalApplication mApplication;
 
-    public LoginActivity(SherlockFragment frag) {
+    public LoginFragment(SherlockFragment frag) {
         mFinishFragment = frag;
     }
 
-    public LoginActivity() {
+    public LoginFragment() {
         mFinishFragment = new FoundryFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_login, container, false);
-        mApplication = (GlobalApplication)getActivity().getApplication();
+        mApplication = (GlobalApplication) getActivity().getApplication();
         // Set up the login form.
         mEmailView = (EditText) rootView.findViewById(R.id.email);
 
@@ -173,11 +163,10 @@ public class LoginActivity extends SherlockFragment {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            InputMethodManager imm = ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
+            InputMethodManager imm = ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE));
             try {
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
@@ -272,7 +261,7 @@ public class LoginActivity extends SherlockFragment {
                             mApplication.setHashedPassword(null);
                         }
                         Toast.makeText(activity.getApplicationContext(), getString(R.string.notification_welcome) +
-                                " " + ((GlobalApplication)getActivity().getApplication()).getDisplayName(), Toast.LENGTH_LONG).show();
+                                " " + ((GlobalApplication) getActivity().getApplication()).getDisplayName(), Toast.LENGTH_LONG).show();
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, mFinishFragment).commit();
                         break;
@@ -297,8 +286,7 @@ public class LoginActivity extends SherlockFragment {
                         mEmailView.requestFocus();
                         break;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

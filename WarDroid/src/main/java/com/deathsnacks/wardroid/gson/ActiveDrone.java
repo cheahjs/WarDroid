@@ -1,10 +1,10 @@
 
 package com.deathsnacks.wardroid.gson;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.annotations.Expose;
 
 
 public class ActiveDrone {
@@ -91,15 +91,14 @@ public class ActiveDrone {
     }
 
     public int getActualHP() {
-        long now = java.lang.System.currentTimeMillis()/1000;
+        long now = java.lang.System.currentTimeMillis() / 1000;
         long relative = DamageTime.getSec() - now;
         if (relative < 0) {
             if (CurrentHP - PendingDamage < 0)
                 return 0;
             else
                 return CurrentHP - PendingDamage;
-        }
-        else {
+        } else {
             return CurrentHP;
         }
     }

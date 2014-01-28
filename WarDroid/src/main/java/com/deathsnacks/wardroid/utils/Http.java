@@ -2,20 +2,15 @@ package com.deathsnacks.wardroid.utils;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
+import com.squareup.okhttp.OkHttpClient;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-
-import com.deathsnacks.wardroid.R;
-import com.squareup.okhttp.*;
 
 /**
  * Created by Deathmax on 10/20/13.
@@ -25,7 +20,7 @@ public class Http {
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String getApi(Activity act, String endpoint, String args) throws IOException {
-        GlobalApplication app = ((GlobalApplication)act.getApplication());
+        GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://api.warframe.com/api/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
         HttpURLConnection connection = client.open(url);
@@ -35,8 +30,7 @@ public class Http {
         try {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 in = connection.getErrorStream();
-            }
-            else {
+            } else {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
@@ -54,15 +48,14 @@ public class Http {
                 app.setNonce(0);
             }
             return responseStr;
-        }
-        finally {
+        } finally {
             if (in != null) in.close();
         }
     }
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String postApi(Activity act, String endpoint, String args, byte[] data) throws IOException {
-        GlobalApplication app = ((GlobalApplication)act.getApplication());
+        GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://api.warframe.com/api/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
         HttpURLConnection connection = client.open(url);
@@ -77,8 +70,7 @@ public class Http {
             out.close();
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 in = connection.getErrorStream();
-            }
-            else {
+            } else {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
@@ -96,8 +88,7 @@ public class Http {
                 app.setNonce(0);
             }
             return responseStr;
-        }
-        finally {
+        } finally {
             if (in != null) in.close();
             if (out != null) out.close();
         }
@@ -105,7 +96,7 @@ public class Http {
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String getStats(Activity act, String endpoint, String args) throws IOException {
-        GlobalApplication app = ((GlobalApplication)act.getApplication());
+        GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://stats.warframe.com/stats/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
         HttpURLConnection connection = client.open(url);
@@ -115,8 +106,7 @@ public class Http {
         try {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 in = connection.getErrorStream();
-            }
-            else {
+            } else {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
@@ -134,14 +124,13 @@ public class Http {
                 app.setNonce(0);
             }
             return responseStr;
-        }
-        finally {
+        } finally {
             if (in != null) in.close();
         }
     }
 
     public static String get(Activity act, String Url) throws IOException {
-        GlobalApplication app = ((GlobalApplication)act.getApplication());
+        GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL(Url);
         HttpURLConnection connection = client.open(url);
         System.setProperty("http.agent", "");
@@ -150,14 +139,12 @@ public class Http {
         try {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 in = connection.getErrorStream();
-            }
-            else {
+            } else {
                 in = connection.getInputStream();
             }
             byte[] response = readAll(in);
             return new String(response, "UTF-8");
-        }
-        finally {
+        } finally {
             if (in != null) in.close();
         }
     }

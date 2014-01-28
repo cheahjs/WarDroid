@@ -26,7 +26,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
     public AlertsListViewAdapter(Activity act, List<Alert> data) {
         mActivity = act;
         mAlerts = data;
-        mInflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
@@ -37,10 +37,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_alert, null);
-        TextView node = (TextView)view.findViewById(R.id.alert_title);
-        TextView desc = (TextView)view.findViewById(R.id.alert_desc);
-        TextView duration = (TextView)view.findViewById(R.id.alert_duration);
-        TextView rewards = (TextView)view.findViewById(R.id.alert_rewards);
+        TextView node = (TextView) view.findViewById(R.id.alert_title);
+        TextView desc = (TextView) view.findViewById(R.id.alert_desc);
+        TextView duration = (TextView) view.findViewById(R.id.alert_duration);
+        TextView rewards = (TextView) view.findViewById(R.id.alert_rewards);
 
         Alert alert = mAlerts.get(position);
         node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
@@ -50,7 +50,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 Names.getMissionType(alert.getMissionInfo().getMissionType()));
         desc.setText(Names.getString(mActivity, descTxt));
         rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
-        long now = (long)(System.currentTimeMillis()/1000);
+        long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
         long activation = alert.getActivation().getSec();
         String format = "Starting: %dh %dm %ds";
@@ -66,7 +66,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 duration.setTextColor(Color.parseColor("#d9534f"));
             }
         }
-        duration.setText(String.format(format, (long)Math.floor(diff / 3600), (diff/60 % 60), diff % 60));
+        duration.setText(String.format(format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
         return view;
     }
 
