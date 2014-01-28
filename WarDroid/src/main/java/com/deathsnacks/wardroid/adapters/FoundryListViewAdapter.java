@@ -49,7 +49,11 @@ public class FoundryListViewAdapter extends BaseAdapter {
             duration.setTextColor(Color.parseColor("#5cb85c"));
         }
         else {
-            duration.setText(String.format("%dd %dh %dm", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60)));
+            long days = (long)Math.floor(diff / 86400);
+            if (days > 0)
+                duration.setText(String.format("%dd %dh %dm %ds", (long)Math.floor(diff / 86400), (long)Math.floor(diff / 3600) % 24, (diff/60 % 60), diff % 60));
+            else
+                duration.setText(String.format("%dh %dm %ds", (long) Math.floor(diff / 3600) % 24, (diff / 60 % 60), diff % 60));
             duration.setTextColor(Color.parseColor("#10bcc9"));
         }
 

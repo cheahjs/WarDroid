@@ -61,7 +61,8 @@ public class AlertsListViewAdapter extends BaseAdapter {
             format = "%dh %dm %ds";
             duration.setTextColor(Color.parseColor("#10bcc9"));
             if (diff < 0) {
-                format = "EXPIRED";
+                diff = now - expiry;
+                format = "EXPIRED - %dh %dm %ds";
                 duration.setTextColor(Color.parseColor("#d9534f"));
             }
         }
