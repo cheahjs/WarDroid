@@ -125,8 +125,8 @@ public class NewsFragment extends SherlockFragment {
             } else {
                 // The ViewPropertyAnimator APIs are not available, so simply show
                 // and hide the relevant UI components.
-                mNewsView.setVisibility(show ? View.VISIBLE : View.GONE);
-                mRefreshView.setVisibility(show ? View.GONE : View.VISIBLE);
+                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         }
     }

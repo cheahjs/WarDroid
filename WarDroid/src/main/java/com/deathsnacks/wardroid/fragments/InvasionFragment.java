@@ -111,8 +111,8 @@ public class InvasionFragment extends SherlockFragment {
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mInvasionView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRefreshView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

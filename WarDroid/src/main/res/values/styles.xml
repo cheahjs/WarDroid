@@ -5,7 +5,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="@style/Theme.Sherlock.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -24,4 +24,7 @@
         <item name="android:padding">16dp</item>
     </style>
 
+    <style name="drawerActivated">
+        <item name="android:cacheColorHint">@null</item>
+    </style>
 </resources>

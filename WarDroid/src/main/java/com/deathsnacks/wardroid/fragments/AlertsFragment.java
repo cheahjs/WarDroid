@@ -128,8 +128,8 @@ public class AlertsFragment extends SherlockFragment {
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mAlertView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRefreshView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

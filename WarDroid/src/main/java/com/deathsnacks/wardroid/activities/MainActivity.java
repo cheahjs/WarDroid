@@ -1,6 +1,8 @@
 package com.deathsnacks.wardroid.activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -65,20 +67,17 @@ public class MainActivity extends SherlockFragmentActivity {
 
         ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                getSupportActionBar().setTitle(mTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                getSupportActionBar().setTitle(mDrawerTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        //preload string data
-        Names.getName(this, "a");
-        Names.getNode(this, "a");
-        Names.getString(this, "a");
+        (new PreloadData(this)).execute();
         if (savedInstanceState == null) {
             selectItem(0);
         }
@@ -171,5 +170,30 @@ public class MainActivity extends SherlockFragmentActivity {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+    }
+
+    public class PreloadData extends AsyncTask<Void, Void, Void> {
+        private Activity mActivity;
+
+        public PreloadData(Activity act) {
+            mActivity = act;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            //preload string data
+            Names.getName(mActivity, "a");
+            Names.getNode(mActivity, "a");
+            Names.getString(mActivity, "a");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void voi) {
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
     }
 }
