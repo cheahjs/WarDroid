@@ -20,6 +20,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
+import com.deathsnacks.wardroid.fragments.ClanFragment;
 import com.deathsnacks.wardroid.fragments.DronesFragment;
 import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
@@ -118,9 +119,9 @@ public class MainActivity extends SherlockFragmentActivity {
                 break;
             case 5: //clan
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
-                    fragment = new LoginFragment(new DronesFragment());
+                    fragment = new LoginFragment(new ClanFragment());
                 else
-                    fragment = new DronesFragment();
+                    fragment = new ClanFragment();
                 break;
             case 6: //logout
                 GlobalApplication app = (GlobalApplication) getApplication();

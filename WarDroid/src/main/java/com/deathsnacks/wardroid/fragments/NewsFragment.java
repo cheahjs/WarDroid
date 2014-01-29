@@ -51,7 +51,6 @@ public class NewsFragment extends SherlockFragment {
                 getActivity().startActivity(intent);
             }
         });
-        refresh(true);
         return rootView;
     }
 
@@ -77,6 +76,24 @@ public class NewsFragment extends SherlockFragment {
     public void onDestroy() {
         mHandler.removeCallbacksAndMessages(mRefreshTimer);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mHandler.postDelayed(mRefreshTimer, 60 * 1000);
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        refresh(true);
+        super.onStart();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -139,10 +156,12 @@ public class NewsFragment extends SherlockFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             mTask = null;
+            if (activity == null)
+                return;
             showProgress(false);
-            mAdapter = new NewsListViewAdapter(activity, data);
             if (success) {
                 try {
+                    mAdapter = new NewsListViewAdapter(activity, data);
                     mNewsView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();

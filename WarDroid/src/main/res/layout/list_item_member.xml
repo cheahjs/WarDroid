@@ -33,10 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/member_name"
+        android:layout_toRightOf="@id/member_name"
         android:gravity="right"
         android:text="5:45"
         android:layout_marginRight="5dip"
         android:textSize="11sp"
-        android:textColor="#10bcc9"
+        android:textColor="#343434"
         android:textStyle="bold"/>
 </RelativeLayout>

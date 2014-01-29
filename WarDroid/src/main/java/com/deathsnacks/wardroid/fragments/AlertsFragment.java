@@ -41,7 +41,6 @@ public class AlertsFragment extends SherlockFragment {
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mHandler = new Handler();
-        refresh(true);
         return rootView;
     }
 
@@ -66,7 +65,7 @@ public class AlertsFragment extends SherlockFragment {
     private final Runnable mRefreshTimer = new Runnable() {
         @Override
         public void run() {
-            refresh(false);
+            refresh(true);
             mHandler.postDelayed(this, 60 * 1000);
         }
     };
@@ -76,6 +75,26 @@ public class AlertsFragment extends SherlockFragment {
         mHandler.removeCallbacksAndMessages(mTimer);
         mHandler.removeCallbacksAndMessages(mRefreshTimer);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        mHandler.removeCallbacksAndMessages(mTimer);
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mHandler.postDelayed(mRefreshTimer, 60 * 1000);
+        mTimer.run();
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        refresh(true);
+        super.onStart();
     }
 
 
@@ -139,12 +158,13 @@ public class AlertsFragment extends SherlockFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             mTask = null;
+            if (activity == null)
+                return;
             showProgress(false);
-            mAdapter = new AlertsListViewAdapter(activity, data);
             if (success) {
                 try {
+                    mAdapter = new AlertsListViewAdapter(activity, data);
                     mAlertView.setAdapter(mAdapter);
-                    mTimer.run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -12,38 +12,44 @@
         android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true">
         <ProgressBar style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/clan_motd_layout">
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="MOTD TEXT HERE "
+            android:id="@+id/clan_motd"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"/>
+    </RelativeLayout>
+
     <ListView
+        android:fastScrollEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/list_members"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/clan_seperator" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="VERY LONG MOTD OVER HERE PLEASE WRAP THIS TEXT IF YOU SEE THIS TEXT SOMETHING BAD HAS HAPPENED"
-        android:id="@+id/clan_motd"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/clan_motd"
-        android:id="@+id/clan_seperator"
-        android:background="@android:color/darker_gray"/>
+        android:layout_above="@id/clan_motd_layout"/>
 </RelativeLayout>

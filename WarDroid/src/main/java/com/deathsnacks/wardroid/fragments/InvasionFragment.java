@@ -38,7 +38,6 @@ public class InvasionFragment extends SherlockFragment {
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
         mHandler = new Handler();
-        refresh(true);
         return rootView;
     }
 
@@ -53,7 +52,7 @@ public class InvasionFragment extends SherlockFragment {
     private final Runnable mRefreshTimer = new Runnable() {
         @Override
         public void run() {
-            refresh(false);
+            refresh(true);
             mHandler.postDelayed(this, 60 * 1000);
         }
     };
@@ -62,6 +61,24 @@ public class InvasionFragment extends SherlockFragment {
     public void onDestroy() {
         mHandler.removeCallbacksAndMessages(mRefreshTimer);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mHandler.postDelayed(mRefreshTimer, 60 * 1000);
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        refresh(true);
+        super.onStart();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -122,10 +139,12 @@ public class InvasionFragment extends SherlockFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             mTask = null;
+            if (activity == null)
+                return;
             showProgress(false);
-            mAdapter = new InvasionListViewAdapter(activity, data);
             if (success) {
                 try {
+                    mAdapter = new InvasionListViewAdapter(activity, data);
                     mInvasionView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();
