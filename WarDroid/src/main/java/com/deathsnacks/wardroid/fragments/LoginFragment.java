@@ -64,7 +64,7 @@ public class LoginFragment extends SherlockFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_login, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         mApplication = (GlobalApplication) getActivity().getApplication();
         // Set up the login form.
         mEmailView = (EditText) rootView.findViewById(R.id.email);
