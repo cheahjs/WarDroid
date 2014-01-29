@@ -60,7 +60,7 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new SeparatedListAdapter(this);
         mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
-        mDrawerAdapter.addSection("Account", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mAccountTitles));
+        //mDrawerAdapter.addSection("Account", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mAccountTitles));
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
