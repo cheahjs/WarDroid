@@ -37,7 +37,7 @@ public class MemberListViewAdapter extends BaseAdapter {
         Collections.sort(members, new Comparator<Member>() {
             @Override
             public int compare(Member member, Member member2) {
-                return member.getDisplayName().compareTo(member2.getDisplayName());
+                return member.getDisplayName().toLowerCase().compareTo(member2.getDisplayName().toLowerCase());
             }
         });
         mGuild.setMembers(members);
