@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.ClanFragment;
 import com.deathsnacks.wardroid.fragments.DronesFragment;
@@ -31,6 +32,10 @@ import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Names;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Admin on 23/01/14.
  */
@@ -39,9 +44,12 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[]{"News", "Alerts", "Invasions", "Foundry", "Extractors", "Clan", "Log Out"};
+    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "", "Foundry", "Extractors", "Clan", "Log Out"};
+    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions"};
+    private String[] mAccountTitles = new String[]{"Foundry", "Extractors", "Clan", "Log Out"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
+    private SeparatedListAdapter mDrawerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +58,12 @@ public class MainActivity extends SherlockFragmentActivity {
         InputMethodManager imm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item_drawer, mDrawerTitles));
+        mDrawerAdapter = new SeparatedListAdapter(this);
+        mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
+        mDrawerAdapter.addSection("Account", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mAccountTitles));
+        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
@@ -79,56 +90,61 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         (new PreloadData(this)).execute();
         if (savedInstanceState == null) {
-            selectItem(0);
+            selectItem(1);
         }
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            if (position != 0 && position != 4)
+                selectItem(position);
         }
     }
 
     private void selectItem(int position) {
+        //these are headers
+        if (position == 0 || position == 4)
+            return;
         // update the main content by replacing fragments
         SherlockFragment fragment = null;
-
         switch (position) {
-            case 0: //news
+            case 1: //news
                 fragment = new NewsFragment();
                 break;
-            case 1: //alerts
+            case 2: //alerts
                 fragment = new AlertsFragment();
                 break;
-            case 2: //invasions
+            case 3: //invasions
                 fragment = new InvasionFragment();
                 break;
-            case 3: //foundry
+            case 5: //foundry
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new FoundryFragment());
                 else
                     fragment = new FoundryFragment();
                 break;
-            case 4: //drones
+            case 6: //drones
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new DronesFragment());
                 else
                     fragment = new DronesFragment();
                 break;
-            case 5: //clan
+            case 7: //clan
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new ClanFragment());
                 else
                     fragment = new ClanFragment();
                 break;
-            case 6: //logout
+            case 8: //logout
                 GlobalApplication app = (GlobalApplication) getApplication();
                 if (app.getDisplayName() != null) {
                     app.setNonce(0);
                     app.setDisplayName(null);
                     app.setAccountId(null);
                     Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "You aren't logged in", Toast.LENGTH_LONG).show();
                 }
                 mDrawerLayout.closeDrawer(mDrawerList);
                 return;
