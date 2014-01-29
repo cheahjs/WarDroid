@@ -9,4 +9,5 @@
     android:paddingBottom="2dip"
     android:paddingLeft="5dip"
     style="?android:listSeparatorTextViewStyle"
-    android:textColor="@android:color/white"/>
+    android:textColor="@android:color/white"
+    android:background="@android:color/transparent"/>
