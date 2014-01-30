@@ -29,6 +29,7 @@ import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.LoginFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
+import com.deathsnacks.wardroid.fragments.NotificationsFragment;
 import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Names;
 
@@ -44,8 +45,8 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "", "Foundry", "Extractors", "Clan", "Log Out"};
-    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions"};
+    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "Notifications", "", "Foundry", "Extractors", "Clan", "Log Out"};
+    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions", "Notifications"};
     private String[] mAccountTitles = new String[]{"Foundry", "Extractors", "Clan", "Log Out"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
@@ -104,7 +105,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
     private void selectItem(int position) {
         //these are headers
-        if (position == 0 || position == 4)
+        if (position == 0 || position == 5)
             return;
         // update the main content by replacing fragments
         SherlockFragment fragment = null;
@@ -118,25 +119,28 @@ public class MainActivity extends SherlockFragmentActivity {
             case 3: //invasions
                 fragment = new InvasionFragment();
                 break;
-            case 5: //foundry
+            case 4: //notification
+                fragment = new NotificationsFragment();
+                break;
+            case 6: //foundry
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new FoundryFragment());
                 else
                     fragment = new FoundryFragment();
                 break;
-            case 6: //drones
+            case 7: //drones
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new DronesFragment());
                 else
                     fragment = new DronesFragment();
                 break;
-            case 7: //clan
+            case 8: //clan
                 if (((GlobalApplication) getApplication()).getDisplayName() == null)
                     fragment = new LoginFragment(new ClanFragment());
                 else
                     fragment = new ClanFragment();
                 break;
-            case 8: //logout
+            case 9: //logout
                 GlobalApplication app = (GlobalApplication) getApplication();
                 if (app.getDisplayName() != null) {
                     app.setNonce(0);
@@ -147,6 +151,8 @@ public class MainActivity extends SherlockFragmentActivity {
                     Toast.makeText(this, "You aren't logged in", Toast.LENGTH_LONG).show();
                 }
                 mDrawerLayout.closeDrawer(mDrawerList);
+                return;
+            default: //wat?
                 return;
         }
 

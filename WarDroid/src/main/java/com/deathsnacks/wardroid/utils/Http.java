@@ -20,6 +20,8 @@ public class Http {
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String getApi(Activity act, String endpoint, String args) throws IOException {
+        if (act == null)
+            throw new IOException("Activity is null.");
         GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://api.warframe.com/api/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
@@ -37,8 +39,8 @@ public class Http {
             String responseStr = new String(response, "UTF-8");
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.e("deathsnacks", "error with api: " + responseStr);
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    if (responseStr.length() < 1)
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST || endpoint.equals("checkPendingRecipes.php")) {
+                    if (responseStr.length() < 2)
                         responseStr = "Authentication failure";
                 }
             }
@@ -55,6 +57,8 @@ public class Http {
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String postApi(Activity act, String endpoint, String args, byte[] data) throws IOException {
+        if (act == null)
+            throw new IOException("Activity is null.");
         GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://api.warframe.com/api/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
@@ -78,7 +82,7 @@ public class Http {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.e("deathsnacks", "error with post api: " + responseStr);
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    if (responseStr.length() < 1)
+                    if (responseStr.length() < 2)
                         responseStr = "Authentication failure";
                 }
             }
@@ -96,6 +100,8 @@ public class Http {
 
     //endpoint = endpoint.php, args = &foo=bar
     public static String getStats(Activity act, String endpoint, String args) throws IOException {
+        if (act == null)
+            throw new IOException("Activity is null.");
         GlobalApplication app = ((GlobalApplication) act.getApplication());
         URL url = new URL("https://stats.warframe.com/stats/" + endpoint + "?accountId=" +
                 app.getAccountId() + "&nonce=" + app.getNonce() + "&platform=PC" + args);
@@ -114,7 +120,7 @@ public class Http {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.e("deathsnacks", "error with stats api: " + responseStr);
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    if (responseStr.length() < 1)
+                    if (responseStr.length() < 2)
                         responseStr = "Authentication failure";
                 }
             }
@@ -134,7 +140,7 @@ public class Http {
         URL url = new URL(Url);
         HttpURLConnection connection = client.open(url);
         System.setProperty("http.agent", "");
-        connection.setRequestProperty("User-Agent", "WarDroid/Android");
+        connection.setRequestProperty("User-Agent", "WarDroid/Android/");
         InputStream in = null;
         try {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {

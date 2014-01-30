@@ -52,7 +52,7 @@ public class InvasionFragment extends SherlockFragment {
     private final Runnable mRefreshTimer = new Runnable() {
         @Override
         public void run() {
-            refresh(true);
+            refresh(false);
             mHandler.postDelayed(this, 60 * 1000);
         }
     };
@@ -71,6 +71,7 @@ public class InvasionFragment extends SherlockFragment {
 
     @Override
     public void onResume() {
+        getSherlockActivity().getSupportActionBar().setTitle("Invasions");
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
         super.onResume();
     }

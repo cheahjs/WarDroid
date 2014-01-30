@@ -65,7 +65,7 @@ public class AlertsFragment extends SherlockFragment {
     private final Runnable mRefreshTimer = new Runnable() {
         @Override
         public void run() {
-            refresh(true);
+            refresh(false);
             mHandler.postDelayed(this, 60 * 1000);
         }
     };
@@ -88,6 +88,7 @@ public class AlertsFragment extends SherlockFragment {
     public void onResume() {
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
         mTimer.run();
+        getSherlockActivity().getSupportActionBar().setTitle("Alerts");
         super.onResume();
     }
 

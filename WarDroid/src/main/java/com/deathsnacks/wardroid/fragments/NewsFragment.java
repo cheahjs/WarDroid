@@ -87,6 +87,7 @@ public class NewsFragment extends SherlockFragment {
     @Override
     public void onResume() {
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
+        getSherlockActivity().getSupportActionBar().setTitle("News");
         super.onResume();
     }
 
