@@ -145,7 +145,7 @@ public class AlertsFragment extends SherlockFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                String response = Http.get(activity, "http://deathsnacks.com/wf/data/last15alerts.json");
+                String response = Http.get("http://deathsnacks.com/wf/data/last15alerts.json");
                 Type collectionType = new TypeToken<List<Alert>>() {
                 }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);

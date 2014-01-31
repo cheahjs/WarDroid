@@ -128,7 +128,7 @@ public class InvasionFragment extends SherlockFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                String response = Http.get(activity, "http://deathsnacks.com/wf/data/invasion_raw.txt");
+                String response = Http.get("http://deathsnacks.com/wf/data/invasion_raw.txt");
                 data = Arrays.asList(response.split("\\n"));
                 return true;
             } catch (Exception e) {

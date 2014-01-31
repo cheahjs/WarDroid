@@ -143,7 +143,7 @@ public class NewsFragment extends SherlockFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                String response = Http.get(activity, "http://deathsnacks.com/wf/data/news_raw.txt");
+                String response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt");
                 data = Arrays.asList(response.split("\\n"));
                 if (response.length() < 2)
                     data = new ArrayList<String>();

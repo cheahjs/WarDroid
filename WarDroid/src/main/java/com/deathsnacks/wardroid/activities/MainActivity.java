@@ -14,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -23,19 +22,10 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
-import com.deathsnacks.wardroid.fragments.ClanFragment;
-import com.deathsnacks.wardroid.fragments.DronesFragment;
-import com.deathsnacks.wardroid.fragments.FoundryFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
-import com.deathsnacks.wardroid.fragments.LoginFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.fragments.NotificationsFragment;
-import com.deathsnacks.wardroid.utils.GlobalApplication;
 import com.deathsnacks.wardroid.utils.Names;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Admin on 23/01/14.
@@ -45,9 +35,8 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "Notifications", "", "Foundry", "Extractors", "Clan", "Log Out"};
+    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "Notifications",};
     private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions", "Notifications"};
-    private String[] mAccountTitles = new String[]{"Foundry", "Extractors", "Clan", "Log Out"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
     private SeparatedListAdapter mDrawerAdapter;
@@ -61,7 +50,6 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new SeparatedListAdapter(this);
         mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
-        //mDrawerAdapter.addSection("Account", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mAccountTitles));
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -122,36 +110,6 @@ public class MainActivity extends SherlockFragmentActivity {
             case 4: //notification
                 fragment = new NotificationsFragment();
                 break;
-            case 6: //foundry
-                if (((GlobalApplication) getApplication()).getDisplayName() == null)
-                    fragment = new LoginFragment(new FoundryFragment());
-                else
-                    fragment = new FoundryFragment();
-                break;
-            case 7: //drones
-                if (((GlobalApplication) getApplication()).getDisplayName() == null)
-                    fragment = new LoginFragment(new DronesFragment());
-                else
-                    fragment = new DronesFragment();
-                break;
-            case 8: //clan
-                if (((GlobalApplication) getApplication()).getDisplayName() == null)
-                    fragment = new LoginFragment(new ClanFragment());
-                else
-                    fragment = new ClanFragment();
-                break;
-            case 9: //logout
-                GlobalApplication app = (GlobalApplication) getApplication();
-                if (app.getDisplayName() != null) {
-                    app.setNonce(0);
-                    app.setDisplayName(null);
-                    app.setAccountId(null);
-                    Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "You aren't logged in", Toast.LENGTH_LONG).show();
-                }
-                mDrawerLayout.closeDrawer(mDrawerList);
-                return;
             default: //wat?
                 return;
         }
