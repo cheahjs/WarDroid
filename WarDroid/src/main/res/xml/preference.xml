@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <PreferenceCategory
+        android:title="Notifications">
+        <CheckBoxPreference
+            android:key="news_enabled"
+            android:title="News notifications"/>
+        <CheckBoxPreference
+            android:key="alert_enabled"
+            android:title="Alert/Invasion notifications"/>
+        </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Filter Settings">
+        <CheckBoxPreference
+            android:key="filter_enabled"
+            android:title="Enable item filter"
+            android:summary="Item filters will apply to alert/invasion notifications"/>
+        <EditTextPreference
+            android:dependency="filter_enabled"
+            android:key="item_filter"
+            android:title="Item filter"
+            android:summary="Items that contain this string. Multiple values are seperated by commas(,)"/>
+    </PreferenceCategory>
+
+    <Preference android:layout="@layout/fragment_preferences"></Preference>
+</PreferenceScreen>

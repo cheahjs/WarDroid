@@ -8,6 +8,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -35,8 +36,9 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "Notifications",};
-    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions", "Notifications"};
+    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "", "Notifications"};
+    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions"};
+    private String[] mOptionTitles = new String[]{"Notifications"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
     private SeparatedListAdapter mDrawerAdapter;
@@ -50,6 +52,7 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new SeparatedListAdapter(this);
         mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
+        mDrawerAdapter.addSection("Options", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mOptionTitles));
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -92,9 +95,6 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void selectItem(int position) {
-        //these are headers
-        if (position == 0 || position == 5)
-            return;
         // update the main content by replacing fragments
         SherlockFragment fragment = null;
         switch (position) {
@@ -107,10 +107,11 @@ public class MainActivity extends SherlockFragmentActivity {
             case 3: //invasions
                 fragment = new InvasionFragment();
                 break;
-            case 4: //notification
+            case 5: //notification
                 fragment = new NotificationsFragment();
                 break;
             default: //wat?
+                Log.w("deathsnacks", "we some how fucked up with the drawer positions");
                 return;
         }
 

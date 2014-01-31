@@ -24,8 +24,9 @@ import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v4.app.Fragment;
-import android.support.v4.preferencefragment.R;
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.deathsnacks.wardroid.R;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-public abstract class PreferenceFragment extends Fragment implements
+public abstract class PreferenceFragment extends SherlockFragment implements
 		PreferenceManagerCompat.OnPreferenceTreeClickListener {
     
 	private static final String PREFERENCES_TAG = "android:preferences";
@@ -278,17 +279,17 @@ public abstract class PreferenceFragment extends Fragment implements
         if (root == null) {
             throw new IllegalStateException("Content view not yet created");
         }
-        View rawListView = root.findViewById(android.R.id.list);
+        View rawListView = root.findViewById(R.id.list2);
         if (!(rawListView instanceof ListView)) {
             throw new RuntimeException(
-                    "Content has view with id attribute 'android.R.id.list' "
+                    "Content has view with id attribute 'R.id.list' "
                     + "that is not a ListView class");
         }
         mList = (ListView)rawListView;
         if (mList == null) {
             throw new RuntimeException(
                     "Your content must have a ListView whose id attribute is " +
-                    "'android.R.id.list'");
+                    "'R.id.list'");
         }
         mList.setOnKeyListener(mListOnKeyListener);
         mHandler.post(mRequestFocus);
