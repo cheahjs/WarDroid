@@ -10,6 +10,4 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="login_save_password">Save password</string>
-    <string name="data_drone_normal">{\"droneRes\":\"/Lotus/Types/Ship/BasicResourceDrone\",\"binCount\":1,\"binCapacity\":1,\"fillRate\":4,\"droneDurability\":100,\"repairRate\":10,\"capacityMultipliers\":[8,6,4,1],\"probabilities\":[0.755,0.22,0.02,0.0049999999],\"specialities\":[]}</string>
-    <string name="data_drone_prime">{\"droneRes\":\"/Lotus/Types/Ship/AdvancedResourceDrone\",\"binCount\":1,\"binCapacity\":2,\"fillRate\":4,\"droneDurability\":100,\"repairRate\":10,\"capacityMultipliers\":[8,6,4,1],\"probabilities\":[0.755,0.22,0.02,0.0049999999],\"specialities\":[]}</string>
 </resources>
