@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
@@ -38,7 +41,24 @@ public class InvasionFragment extends SherlockFragment {
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
         mHandler = new Handler();
+        setHasOptionsMenu(true);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_refresh, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                refresh(true);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void refresh(Boolean show) {

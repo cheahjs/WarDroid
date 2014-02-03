@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -25,7 +26,6 @@ import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
-import com.deathsnacks.wardroid.fragments.NotificationsFragment;
 import com.deathsnacks.wardroid.utils.Names;
 
 /**
@@ -47,12 +47,11 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InputMethodManager imm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new SeparatedListAdapter(this);
         mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
-        mDrawerAdapter.addSection("Options", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mOptionTitles));
+        mDrawerAdapter.addSection("Settings", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mOptionTitles));
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -107,9 +106,10 @@ public class MainActivity extends SherlockFragmentActivity {
             case 3: //invasions
                 fragment = new InvasionFragment();
                 break;
-            case 5: //notification
-                fragment = new NotificationsFragment();
-                break;
+            case 5: //notification settings
+                Intent intent = new Intent(this, NotificationsActivity.class);
+                startActivity(intent);
+                return;
             default: //wat?
                 Log.w("deathsnacks", "we some how fucked up with the drawer positions");
                 return;

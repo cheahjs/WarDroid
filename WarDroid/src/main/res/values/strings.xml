@@ -9,5 +9,94 @@
     <string name="app_name">WarDroid</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
-    <string name="login_save_password">Save password</string>
+    <string name="error_error_occurred">An error has occurred while refreshing</string>
+    <string name="refresh">Refresh</string>
+    <string name="settings_name">Notification Settings</string>
+    <string-array name="aura_filter_entries"><item>Corrosive Projection</item>
+        <item>Enemy Radar</item>
+        <item>Energy Siphon</item>
+        <item>Infested Impedance</item>
+        <item>Physique</item>
+        <item>Pistol Scavenger</item>
+        <item>Rejuvenation</item>
+        <item>Rifle Amp</item>
+        <item>Rifle Scavenger</item>
+        <item>Shield Disruption</item>
+        <item>Shotgun Scavenger</item>
+        <item>Sniper Scavenger</item>
+        <item>Speed Holster</item>
+        <item>Steel Charge</item></string-array>
+    <string-array name="bp_filter_entries"><item>Aura Trinity Helmet</item>
+        <item>Aurora Frost Helmet</item>
+        <item>Avalon Excalibur Helmet</item>
+        <item>Backdraft Ember Helmet</item>
+        <item>Bastet Valkyr Helmet</item>
+        <item>Brokk Hammer Skin</item>
+        <item>Ceramic Dagger</item>
+        <item>Chlora Saryn Helmet</item>
+        <item>Chorus Banshee Helmet</item>
+        <item>Coil Mag Helmet</item>
+        <item>Dagger Axe Skin</item>
+        <item>Dark Dagger</item>
+        <item>Dark Sword</item>
+        <item>Esprit Vauban Helmet</item>
+        <item>Essence Loki Helmet</item>
+        <item>Flux Nova Helmet</item>
+        <item>Forma</item>
+        <item>Gambit Vauban Helmet</item>
+        <item>Gauss Mag Helmet</item>
+        <item>Glaive</item>
+        <item>Heat Dagger</item>
+        <item>Heat Sword</item>
+        <item>Hemlock Saryn Helmet</item>
+        <item>Jaw Sword</item>
+        <item>Locust Ash Helmet</item>
+        <item>Manticore Axe Skin</item>
+        <item>Menticide Nyx Helmet</item>
+        <item>Meridian Trinity Helmet</item>
+        <item>Orokin Catalyst</item>
+        <item>Orokin Reactor</item>
+        <item>Pangolin Sword</item>
+        <item>Pendragon Excalibur Helmet</item>
+        <item>Phoenix Ember Helmet</item>
+        <item>Plasma Sword</item>
+        <item>Pulse Volt Helmet</item>
+        <item>Quantum Nova Helmet</item>
+        <item>Raknis Nekros Helmet</item>
+        <item>Reverb Banshee Helmet</item>
+        <item>Scorpion Ash Helmet</item>
+        <item>Shroud Nekros Helmet</item>
+        <item>Squall Frost Helmet</item>
+        <item>Storm Volt Helmet</item>
+        <item>Swindle Loki Helmet</item>
+        <item>Thrak Rhino Helmet</item>
+        <item>Vanguard Rhino Helmet</item>
+        <item>Vauban Chassis</item>
+        <item>Vauban Helmet</item>
+        <item>Vauban Systems</item>
+        <item>Vespa Nyx Helmet</item></string-array>
+    <string-array name="mod_filter_entries"><item>Accelerated Blast</item>
+        <item>Blaze</item>
+        <item>Constitution</item>
+        <item>Focus Energy</item>
+        <item>Fortitude</item>
+        <item>Hammer Shot</item>
+        <item>Ice Storm</item>
+        <item>Rending Strike</item>
+        <item>Stunning Speed</item>
+        <item>Wildfire</item></string-array>
+    <string-array name="misc_filter_entries"><item>Alloy Plate</item>
+        <item>Circuits</item>
+        <item>Control Module</item>
+        <item>Ferrite</item>
+        <item>Gallium</item>
+        <item>Morphics</item>
+        <item>Nano Spores</item>
+        <item>Neural Sensors</item>
+        <item>Neurodes</item>
+        <item>Orokin Cell</item>
+        <item>Plastids</item>
+        <item>Polymer Bundle</item>
+        <item>Rubedo</item>
+        <item>Salvage</item></string-array>
 </resources>
