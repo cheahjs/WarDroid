@@ -28,28 +28,6 @@ import android.util.AttributeSet;
 
 // android:defaultValue="entryValue1|entryValue2"
 public class MultiSelectListPreference extends ListPreference {
-    private static Boolean isEmpty(String str) {
-        return str == null || str.length() == 0;
-    }
-
-    public static String[] fromPersistedPreferenceValue(String val) {
-        if (isEmpty(val)) {
-            return new String[0];
-        } else {
-            return val.split("\\" + SEP);
-        }
-    }
-
-    public static String toPersistedPreferenceValue(CharSequence... entryKeys) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < entryKeys.length; i++) {
-            sb.append(entryKeys[i]);
-            if (i < entryKeys.length - 1) {
-                sb.append(SEP);
-            }
-        }
-        return sb.toString();
-    }
 
     public CharSequence[] getCheckedEntries() {
         CharSequence[] entries = getEntries();
@@ -63,8 +41,6 @@ public class MultiSelectListPreference extends ListPreference {
     }
 
     // boring stuff
-
-    private static final String SEP = "|";
 
     private boolean[] checkedEntryIndexes;
 
@@ -112,7 +88,7 @@ public class MultiSelectListPreference extends ListPreference {
                     checkedVals.add(entryVals[i]);
                 }
             }
-            String val = toPersistedPreferenceValue(checkedVals
+            String val = PreferenceUtils.toPersistedPreferenceValue(checkedVals
                     .toArray(new CharSequence[checkedVals.size()]));
             if (callChangeListener(val)) {
                 setValue(val);
@@ -126,7 +102,7 @@ public class MultiSelectListPreference extends ListPreference {
         String val = getValue();
         if (val != null) {
             HashSet<String> checkedEntryVals = new HashSet<String>(
-                    Arrays.asList(fromPersistedPreferenceValue(val)));
+                    Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(val)));
             for (int i = 0; i < entryVals.length; i++) {
                 checkedEntryIndexes[i] = checkedEntryVals
                         .contains(entryVals[i]);

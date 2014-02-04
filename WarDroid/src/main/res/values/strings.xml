@@ -1,17 +1,11 @@
 <resources>
-    <!--  Strings for possible PreferenceActivity Back/Next buttons -->
-    <string name="back_button_label">Back</string>
-    <string name="next_button_label">Next</string>
-
-    <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
-    <string name="skip_button_label">Skip</string>
-
     <string name="app_name">WarDroid</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="error_error_occurred">An error has occurred while refreshing</string>
     <string name="refresh">Refresh</string>
     <string name="settings_name">Notification Settings</string>
+    <string name="settings_notifications">Notifications</string>
     <string-array name="aura_filter_entries"><item>Corrosive Projection</item>
         <item>Enemy Radar</item>
         <item>Energy Siphon</item>

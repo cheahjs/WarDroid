@@ -1,10 +1,15 @@
 package com.deathsnacks.wardroid.activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +31,7 @@ import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
+import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.Names;
 
 /**
@@ -42,6 +48,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
     private SeparatedListAdapter mDrawerAdapter;
+    private SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,19 @@ public class MainActivity extends SherlockFragmentActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         (new PreloadData(this)).execute();
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (mPreferences.getBoolean("alert_enabled", false)) {
+            Log.d("deathsnacks", "starting alarm");
+            Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            try {
+                pendingIntent.send();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        }
         if (savedInstanceState == null) {
             selectItem(1);
         }
@@ -107,6 +127,8 @@ public class MainActivity extends SherlockFragmentActivity {
                 fragment = new InvasionFragment();
                 break;
             case 5: //notification settings
+                mDrawerLayout.closeDrawer(mDrawerList);
+                mDrawerList.setItemChecked(position, false);
                 Intent intent = new Intent(this, NotificationsActivity.class);
                 startActivity(intent);
                 return;

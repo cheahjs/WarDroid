@@ -6,17 +6,17 @@
     android:layout_height="fill_parent">
 
     <PreferenceCategory
-        android:title="Notifications">
-        <CheckBoxPreference
+        android:title="@string/settings_notifications">
+        <!--<CheckBoxPreference
             android:key="news_enabled"
-            android:title="Enable News notifications"/>
+            android:title="Enable News notifications"/>-->
         <CheckBoxPreference
             android:key="alert_enabled"
             android:title="Enable Alert notifications"
-            android:summary="This includes invasions"/>
-        <CheckBoxPreference
+            android:summary="This includes invasions. THIS IS IN BETA"/>
+        <!--<CheckBoxPreference
             android:key="sale_enabled"
-            android:title="Enable Flash Sale notifications"/>
+            android:title="Enable Flash Sale notifications"/>-->
         </PreferenceCategory>
 
     <PreferenceCategory
@@ -33,26 +33,36 @@
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Aura"
-            android:key="aura_filters"
+            android:key="item_filters"
             android:entries="@array/aura_filter_entries"
             android:entryValues="@array/aura_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Blueprints"
-            android:key="blueprint_filters"
+            android:key="item_filters"
             android:entries="@array/bp_filter_entries"
             android:entryValues="@array/bp_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Mods"
-            android:key="mod_filters"
+            android:key="item_filters"
             android:entries="@array/mod_filter_entries"
             android:entryValues="@array/mod_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Resources"
-            android:key="resource_filters"
+            android:key="item_filters"
             android:entries="@array/misc_filter_entries"
             android:entryValues="@array/misc_filter_entries"/>
     </PreferenceCategory>
+
+    <!--<PreferenceCategory
+        android:title="Settings">
+        <EditTextPreference
+            android:title="Notification refresh period"
+            android:summary="Sets the period of which the app will check for new alerts"
+            android:key="poll_period"
+            android:inputType="number"
+            android:numeric="integer"/>
+    </PreferenceCategory>-->
 </PreferenceScreen>
