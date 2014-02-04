@@ -232,7 +232,6 @@ public class PollingAlarmManager extends BroadcastReceiver {
             return;
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("Warframe Tracker")
                 .setContentText(String.format("%d filtered alerts/invasions", mNotifications.size()))
