@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -50,6 +51,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
     private Boolean mVibrate;
     private List<String> mFilters;
     private Boolean mFiltered;
+    private PowerManager.WakeLock mWakeLock;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -59,13 +61,26 @@ public class PollingAlarmManager extends BroadcastReceiver {
         mVibrate = false;
         mNotifications = new ArrayList<String>();
         Log.d("deathsnacks", "Received broadcast for alarm, starting polling.");
-        /*if (mPreferences.getBoolean("news_enabled", false)) {
-
-        }*/
         if (mPreferences.getBoolean("alert_enabled", false)) {
-            mFilters = Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("item_filters", "")));
+            ArrayList<String> aura = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_filters", ""))));
+            ArrayList<String> bp = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_filters", ""))));
+            ArrayList<String> mod = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_filters", ""))));
+            ArrayList<String> resource = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("resource_filters", ""))));
+            mFilters = new ArrayList<String>();
+            mFilters.addAll(aura);
+            mFilters.addAll(bp);
+            mFilters.addAll(mod);
+            mFilters.addAll(resource);
+            Log.d("deathsnacks", "item filters: " + PreferenceUtils.toPersistedPreferenceValue(mFilters.toArray(new String[mFilters.size()])));
             mFiltered = mPreferences.getBoolean("filter_enabled", false);
             (new RefreshTask()).execute();
+            mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    "WarDroid Notifications");
+            mWakeLock.acquire();
         } else {
             Log.d("deathsnacks", "cancelling alarm since we didn't enable alarm");
             ((AlarmManager)context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
@@ -88,6 +103,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         @Override
         protected void onPostExecute(Boolean success) {
             addNotifications();
+            mWakeLock.release();
         }
 
         @Override
@@ -108,7 +124,14 @@ public class PollingAlarmManager extends BroadcastReceiver {
             InputStream in = null;
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.d("deathsnacks", "we received something other than 201 for alerts");
+                    Log.d("deathsnacks", "we received something other than 201 for alerts: " + connection.getResponseCode());
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                        String cache = mPreferences.getString("alerts_cache", "");
+                        if (cache.length() > 2) {
+                            Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for alerts");
+                            parseAlerts(cache);
+                        }
+                    }
                     return;
                 }
                 in = connection.getInputStream();
@@ -117,6 +140,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 parseAlerts(resp);
                 mEditor = mPreferences.edit();
                 mEditor.putLong("alerts_modified", connection.getLastModified());
+                mEditor.putString("alerts_cache", resp);
                 mEditor.commit();
             } finally {
                 if (in != null) in.close();
@@ -140,8 +164,10 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(alert.getId());
             }
+            Log.d("deathsnacks", "found alert: " + alert.getNode());
             for (String reward : alert.getRewards()) {
                 if (mFilters.contains(reward.replace(" Blueprint", "")) || !mFiltered) {
+                    Log.d("deathsnacks", "accepted alert: " + alert.getNode());
                     if (mNew)
                         mVibrate = true;
                     mNotifications.add(String.format("Alert: <b>%s</b>",
@@ -168,7 +194,14 @@ public class PollingAlarmManager extends BroadcastReceiver {
             InputStream in = null;
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.d("deathsnacks", "we received something other than 201 for invasions");
+                    Log.d("deathsnacks", "we received something other than 201 for invasions: " + connection.getResponseCode());
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                        String cache = mPreferences.getString("invasion_cache", "");
+                        if (cache.length() > 2) {
+                            Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for invasion");
+                            parseInvasions(cache);
+                        }
+                    }
                     return;
                 }
                 in = connection.getInputStream();
@@ -177,6 +210,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 parseInvasions(resp);
                 mEditor = mPreferences.edit();
                 mEditor.putLong("invasion_modified", connection.getLastModified());
+                mEditor.putString("invasion_cache", resp);
                 mEditor.commit();
             } finally {
                 if (in != null) in.close();
@@ -200,9 +234,11 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(invasion.getId());
             }
+            Log.d("deathsnacks", "Found new invasion: " + invasion.getNotificationText());
             String[] rewards = invasion.getRewards();
             for (String reward : rewards) {
                 if (mFilters.contains(reward) || !mFiltered) {
+                   Log.d("deathsnacks", "Accepted invasion: " + invasion.getNotificationText());
                    if (mNew)
                        mVibrate = true;
                     mNotifications.add(invasion.getNotificationText());

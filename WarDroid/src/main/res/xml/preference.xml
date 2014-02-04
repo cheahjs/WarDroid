@@ -33,25 +33,25 @@
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Aura"
-            android:key="item_filters"
+            android:key="aura_filters"
             android:entries="@array/aura_filter_entries"
             android:entryValues="@array/aura_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Blueprints"
-            android:key="item_filters"
+            android:key="bp_filters"
             android:entries="@array/bp_filter_entries"
             android:entryValues="@array/bp_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Mods"
-            android:key="item_filters"
+            android:key="mod_filters"
             android:entries="@array/mod_filter_entries"
             android:entryValues="@array/mod_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="Resources"
-            android:key="item_filters"
+            android:key="resource_filters"
             android:entries="@array/misc_filter_entries"
             android:entryValues="@array/misc_filter_entries"/>
     </PreferenceCategory>
