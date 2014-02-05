@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.activities;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -106,6 +108,17 @@ public class MainActivity extends SherlockFragmentActivity {
                 try {
                     Log.d("deathsnacks", "forcing start of alarm");
                     pendingIntent.send();
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setContentTitle("Warframe Tracker")
+                            .setContentText("Starting background service.")
+                            .setOngoing(true);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("drawer_position", 2);
+                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent);
+                    mNotificationManager.notify(1, mBuilder.build());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

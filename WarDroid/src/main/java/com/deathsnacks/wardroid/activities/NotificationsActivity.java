@@ -1,13 +1,16 @@
 package com.deathsnacks.wardroid.activities;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -57,6 +60,17 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                     Log.d("deathsnacks", "starting alarm since pref was changed");
                     Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmManager.class);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setContentTitle("Warframe Tracker")
+                            .setContentText("Starting background service.")
+                            .setOngoing(true);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("drawer_position", 2);
+                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent2);
+                    mNotificationManager.notify(1, mBuilder.build());
                     try {
                         pendingIntent.send();
                     } catch (Exception e) {
@@ -64,6 +78,11 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                     }
                     ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                             SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+                } else {
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    mNotificationManager.cancel(1);
+                    ((AlarmManager)getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                            getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             }
         }
