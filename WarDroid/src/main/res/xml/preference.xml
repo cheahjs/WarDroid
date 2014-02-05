@@ -6,25 +6,26 @@
     android:layout_height="fill_parent">
 
     <PreferenceCategory
-        android:title="@string/settings_notifications">
+        android:title="@string/settings_notifications_title">
         <!--<CheckBoxPreference
             android:key="news_enabled"
             android:title="Enable News notifications"/>-->
         <CheckBoxPreference
             android:key="alert_enabled"
-            android:title="Enable Alert notifications"
-            android:summary="This includes invasions. THIS IS IN BETA"/>
+            android:title="@string/settings_enable_alerts_title"
+            android:summary="@string/settings_enable_alerts_summary"/>
         <!--<CheckBoxPreference
             android:key="sale_enabled"
             android:title="Enable Flash Sale notifications"/>-->
         </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Filter Settings">
+        android:title="@string/settings_filter_title">
         <CheckBoxPreference
             android:key="filter_enabled"
-            android:title="Enable item filter"
-            android:summary="Item filters will apply to alert/invasion notifications"/>
+            android:dependency="alert_enabled"
+            android:title="@string/settings_enable_filter_title"
+            android:summary="@string/settings_enable_filters_summary"/>
         <!--<CheckBoxPreference
             android:dependency="filter_enabled"
             android:key="unknown_enabled"
@@ -32,28 +33,36 @@
             android:summary="Notify on alerts/invasions that have unknown rewards"/>-->
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
-            android:title="Aura"
+            android:title="@string/settings_aura"
             android:key="aura_filters"
             android:entries="@array/aura_filter_entries"
             android:entryValues="@array/aura_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
-            android:title="Blueprints"
+            android:title="@string/settings_blueprints"
             android:key="bp_filters"
             android:entries="@array/bp_filter_entries"
             android:entryValues="@array/bp_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
-            android:title="Mods"
+            android:title="@string/settings_mods"
             android:key="mod_filters"
             android:entries="@array/mod_filter_entries"
             android:entryValues="@array/mod_filter_entries"/>
         <com.deathsnacks.wardroid.utils.MultiSelectListPreference
             android:dependency="filter_enabled"
-            android:title="Resources"
+            android:title="@string/settings_resources"
             android:key="resource_filters"
             android:entries="@array/misc_filter_entries"
             android:entryValues="@array/misc_filter_entries"/>
+        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
+            android:enabled="false"
+            android:dependency="alert_enabled"
+            android:title="@string/settings_planet_filter_title"
+            android:summary="@string/settings_planet_filter_summary"
+            android:key="planet_filters"
+            android:entries="@array/planet_filter_entries"
+            android:entryValues="@array/planet_filter_entries"/>
     </PreferenceCategory>
 
     <!--<PreferenceCategory

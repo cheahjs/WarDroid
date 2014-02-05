@@ -5,7 +5,21 @@
     <string name="error_error_occurred">An error has occurred while refreshing</string>
     <string name="refresh">Refresh</string>
     <string name="settings_name">Notification Settings</string>
-    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_enable_alerts_title">Enable Alert notifications</string>
+    <string name="settings_enable_alerts_summary">This includes invasions. May use data. THIS IS IN BETA. May consume a lot of data.</string>
+    <string name="settings_filter_title">Filter Settings</string>
+    <string name="settings_enable_filter_title">Enable item filter</string>
+    <string name="settings_enable_filters_summary">Item filters will apply to alert/invasion notifications</string>
+    <string name="settings_aura">Aura</string>
+    <string name="settings_blueprints">Blueprints</string>
+    <string name="settings_mods">Mods</string>
+    <string name="settings_resources">Resources</string>
+    <string name="settings_planet_filter_title">Planet filter</string>
+    <string name="settings_planet_filter_summary">Filter alerts by planet</string>
+
+    <!-- DO NOT EDIT FOR TRANSLATIONS -->
+    <string-array name="planet_filter_entries"></string-array>
     <string-array name="aura_filter_entries"><item>Corrosive Projection</item>
         <item>Enemy Radar</item>
         <item>Energy Siphon</item>
