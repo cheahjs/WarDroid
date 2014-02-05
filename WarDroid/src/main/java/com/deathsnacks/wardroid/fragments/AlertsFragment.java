@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,13 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -169,11 +174,29 @@ public class AlertsFragment extends SherlockFragment {
                 Type collectionType = new TypeToken<List<Alert>>() {
                 }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);
+                clearIds();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
+        }
+
+        private void clearIds() {
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
+            List<String> nowids = new ArrayList<String>();
+            for (Alert alert : data) {
+                nowids.add(alert.get_id().get$id());
+            }
+            for (String id : ids) {
+                if (!nowids.contains(id)) {
+                    ids.remove(id);
+                }
+            }
+            SharedPreferences.Editor mEditor = mPreferences.edit();
+            mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+            mEditor.commit();
         }
 
         @Override

@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,9 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -150,12 +154,31 @@ public class InvasionFragment extends SherlockFragment {
             try {
                 String response = Http.get("http://deathsnacks.com/wf/data/invasion_raw.txt");
                 data = Arrays.asList(response.split("\\n"));
+                clearIds();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
         }
+
+        private void clearIds() {
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
+            List<String> nowids = new ArrayList<String>();
+            for (int i = 1; i < data.size(); i++) {
+                nowids.add(data.get(i).split("\\|")[0]);
+            }
+            for (String id : ids) {
+                if (!nowids.contains(id)) {
+                    ids.remove(id);
+                }
+            }
+            SharedPreferences.Editor mEditor = mPreferences.edit();
+            mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+            mEditor.commit();
+        }
+
 
         @Override
         protected void onPostExecute(Boolean success) {
