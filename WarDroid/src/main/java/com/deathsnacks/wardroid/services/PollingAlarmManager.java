@@ -83,6 +83,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
             mWakeLock.acquire();
         } else {
             Log.d("deathsnacks", "cancelling alarm since we didn't enable alarm");
+            mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(1);
             ((AlarmManager)context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                     context, 0, new Intent(context, PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
         }
@@ -267,22 +269,21 @@ public class PollingAlarmManager extends BroadcastReceiver {
     private void addNotifications() {
         int size = mNotifications.size();
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (size == 0) {
-            mNotificationManager.cancel(1);
-            return;
-        }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("Warframe Tracker")
                 .setContentText(String.format("%d filtered alerts/invasions", mNotifications.size()))
-                .setNumber(size);
+                .setOngoing(true);
         NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
         if (size > 5)
             style.setSummaryText(String.format("+%s more", size - 5));
         for (int i = 0; i < 5 && i < size; i++) {
             style.addLine(Html.fromHtml(mNotifications.get(i)));
         }
-        mBuilder.setStyle(style);
+        if (size > 0) {
+            mBuilder.setNumber(size);
+            mBuilder.setStyle(style);
+        }
         if (mVibrate)
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         Intent intent = new Intent(mContext, MainActivity.class);
