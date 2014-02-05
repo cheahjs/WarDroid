@@ -170,6 +170,10 @@ public class PollingAlarmManager extends BroadcastReceiver {
             }
             Log.d("deathsnacks", "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
             + " - new: " + mNew);
+            if (alert.getExpiry() > System.currentTimeMillis()/1000) {
+                Log.d("deathsnacks", "alert: " + alert.getNode() + " has expired, ignore");
+                continue;
+            }
             for (String reward : alert.getRewards()) {
                 if (mFilters.contains(reward.replace(" Blueprint", "")) || !mFiltered) {
                     Log.d("deathsnacks", "accepted alert: " + alert.getNode());
