@@ -32,7 +32,21 @@
     </string-array>
 
     <!-- DO NOT EDIT FOR TRANSLATIONS -->
-    <string-array name="planet_filter_entries"></string-array>
+    <string-array name="planet_filter_entries">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+        <item>Pluto</item>
+        <item>Ceres</item>
+        <item>Eris</item>
+        <item>Sedna</item>
+        <item>Europa</item>
+    </string-array>
     <string-array name="aura_filter_entries"><item>Corrosive Projection</item>
         <item>Enemy Radar</item>
         <item>Energy Siphon</item>
