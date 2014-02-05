@@ -168,7 +168,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(alert.getId());
             }
-            Log.d("deathsnacks", "found alert: " + alert.getNode());
+            Log.d("deathsnacks", "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
+            + " - new: " + mNew);
             for (String reward : alert.getRewards()) {
                 if (mFilters.contains(reward.replace(" Blueprint", "")) || !mFiltered) {
                     Log.d("deathsnacks", "accepted alert: " + alert.getNode());
@@ -240,7 +241,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(invasion.getId());
             }
-            Log.d("deathsnacks", "Found new invasion: " + invasion.getNotificationText());
+            Log.d("deathsnacks", "found invasion: " + invasion.getNode() + " - " + invasion.getRewards()
+                    + " - new: " + mNew);
             String[] rewards = invasion.getRewards();
             for (String reward : rewards) {
                 if (mFilters.contains(reward) || !mFiltered) {
