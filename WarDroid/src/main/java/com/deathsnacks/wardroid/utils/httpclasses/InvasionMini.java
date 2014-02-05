@@ -66,8 +66,8 @@ public class InvasionMini {
     public String[] getRewards() {
         List<String> rewards = new ArrayList<String>();
         if (!invadingFaction.equals("Infestation"))
-            rewards.add(invadingReward.replace("\\d ", "").replace(" Blueprint", ""));
-        rewards.add(defendingReward.replace("\\d ", "").replace(" Blueprint", ""));
+            rewards.add(invadingReward.replaceAll("\\d+ ", "").replace(" Blueprint", ""));
+        rewards.add(defendingReward.replaceAll("\\d+ ", "").replace(" Blueprint", ""));
         return rewards.toArray(new String[rewards.size()]);
     }
 

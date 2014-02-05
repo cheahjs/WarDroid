@@ -158,6 +158,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
         for (String rawAlert : rawAlerts) {
+            if (rawAlert.split("\\|").length != 11)
+                continue;
             Alert alert = new Alert(rawAlert);
             mNew = false;
             if (!ids.contains(alert.getId())) {
@@ -228,6 +230,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
         String[] rawInvasions = response.split("\\n");
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {
+            if (rawInvasion.split("\\|").length != 11)
+                continue;
             InvasionMini invasion = new InvasionMini(rawInvasion);
             mNew = false;
             if (!ids.contains(invasion.getId())) {
@@ -282,6 +286,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         if (mVibrate)
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         Intent intent = new Intent(mContext, MainActivity.class);
+        intent.putExtra("drawer_position", 2);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         mNotificationManager.notify(1, mBuilder.build());

@@ -92,16 +92,21 @@ public class MainActivity extends SherlockFragmentActivity {
             Log.d("deathsnacks", "starting alarm");
             Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            try {
-                pendingIntent.send();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (savedInstanceState == null) {
+                try {
+                    Log.d("deathsnacks", "forcing start of alarm");
+                    pendingIntent.send();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                     SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
         }
         if (savedInstanceState == null) {
-            selectItem(1);
+            Intent intent = getIntent();
+            int startPos = intent.getIntExtra("drawer_position", 1);
+            selectItem(startPos);
         }
     }
 
