@@ -4,6 +4,7 @@
     <string name="drawer_close">Close Drawer</string>
     <string name="error_error_occurred">An error has occurred while refreshing</string>
     <string name="refresh">Refresh</string>
+
     <string name="settings_name">Notification Settings</string>
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_enable_alerts_title">Enable Alert notifications</string>
@@ -17,6 +18,18 @@
     <string name="settings_resources">Resources</string>
     <string name="settings_planet_filter_title">Planet filter</string>
     <string name="settings_planet_filter_summary">Filter alerts by planet</string>
+
+    <string name="drawer_trackers_title">Trackers</string>
+    <string name="drawer_settings_title">Settings</string>
+
+    <string-array name="drawer_titles">
+        <item>TRACKER HEADER</item>
+        <item>News</item>
+        <item>Alerts</item>
+        <item>Invasions</item>
+        <item>SETTINGS HEADER</item>
+        <item>Notifications</item>
+    </string-array>
 
     <!-- DO NOT EDIT FOR TRANSLATIONS -->
     <string-array name="planet_filter_entries"></string-array>

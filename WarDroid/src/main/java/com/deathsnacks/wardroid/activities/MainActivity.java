@@ -34,6 +34,9 @@ import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.Names;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Admin on 23/01/14.
  */
@@ -43,8 +46,6 @@ public class MainActivity extends SherlockFragmentActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "", "Notifications"};
-    private String[] mTrackerTitles = new String[]{"News", "Alerts", "Invasions"};
-    private String[] mOptionTitles = new String[]{"Notifications"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
     private SeparatedListAdapter mDrawerAdapter;
@@ -56,17 +57,26 @@ public class MainActivity extends SherlockFragmentActivity {
         setContentView(R.layout.activity_main);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerTitles = getResources().getStringArray(R.array.drawer_titles);
         mDrawerAdapter = new SeparatedListAdapter(this);
-        mDrawerAdapter.addSection("Trackers", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mTrackerTitles));
-        mDrawerAdapter.addSection("Settings", new ArrayAdapter<String>(this, R.layout.list_item_drawer, mOptionTitles));
+        mDrawerAdapter.addSection(getString(R.string.drawer_trackers_title),
+                new ArrayAdapter<String>(this, R.layout.list_item_drawer,
+                        Arrays.asList(mDrawerTitles[1], mDrawerTitles[2], mDrawerTitles[3])));
+        mDrawerAdapter.addSection(getString(R.string.drawer_settings_title),
+                new ArrayAdapter<String>(this, R.layout.list_item_drawer,
+                        Arrays.asList(mDrawerTitles[5])));
         mDrawerList.setAdapter(mDrawerAdapter);
+
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
         mTitle = mDrawerTitle = getTitle();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
