@@ -75,7 +75,6 @@ public class PollingAlarmManager extends BroadcastReceiver {
             mFilters.addAll(bp);
             mFilters.addAll(mod);
             mFilters.addAll(resource);
-            Log.d("deathsnacks", "item filters: " + PreferenceUtils.toPersistedPreferenceValue(mFilters.toArray(new String[mFilters.size()])));
             mFiltered = mPreferences.getBoolean("filter_enabled", false);
             (new RefreshTask()).execute();
             mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
@@ -245,7 +244,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(invasion.getId());
             }
-            Log.d("deathsnacks", "found invasion: " + invasion.getNode() + " - " + invasion.getRewards()
+            Log.d("deathsnacks", "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
                     + " - new: " + mNew);
             String[] rewards = invasion.getRewards();
             for (String reward : rewards) {
