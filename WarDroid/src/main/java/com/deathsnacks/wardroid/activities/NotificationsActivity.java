@@ -6,9 +6,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,6 +23,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
+
+import java.text.NumberFormat;
 
 /**
  * Created by Admin on 30/01/14.
@@ -35,6 +42,7 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
+        mPreferences.registerOnSharedPreferenceChangeListener(prefChanged);
         /*if (!mPreferences.contains("set_defaults")) {
             String[] strings = getResources().getStringArray(R.array.aura_filter_entries);
             mEditor.putString("aura_filters", PreferenceUtils.toPersistedPreferenceValue(strings));
@@ -49,12 +57,37 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
         }*/
         //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
         addPreferencesFromResource(R.xml.preference);
+        Preference cred = findPreference("credit_filter");
+        if (cred != null)
+            try {
+                cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt("credit_filter", 0)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        Preference uriPref = findPreference("sound");
+        if (uriPref != null) {
+            Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
+            String name = ringtone.getTitle(getApplicationContext());
+            if (mPreferences.getString("sound", "") == "") {
+                uriPref.setSummary("None");
+            } else {
+                uriPref.setSummary(name);
+            }
+        }
         //}
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPreferences.unregisterOnSharedPreferenceChangeListener(prefChanged);
+        super.onDestroy();
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+            Log.d("deathsnacks", "changed pref: " + s);
             if (s.equals("alert_enabled")) {
                 if (sharedPreferences.getBoolean("alert_enabled", false)) {
                     Log.d("deathsnacks", "starting alarm since pref was changed");
@@ -72,7 +105,7 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                     mBuilder.setContentIntent(pendingIntent2);
                     mNotificationManager.notify(1, mBuilder.build());
                     try {
-                        pendingIntent.send();
+                        (new PollingAlarmManager()).onReceive(getApplicationContext(), null);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -84,6 +117,22 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                     ((AlarmManager)getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                             getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
+            } else if (s.equals("credit_filter")) {
+                Preference cred = findPreference("credit_filter");
+                if (cred != null)
+                    cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt("credit_filter", 0)));
+            } else if (s.equals("sound")) {
+                Preference uriPref = findPreference("sound");
+                if (uriPref == null)
+                    return;
+                Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
+                String name = ringtone.getTitle(getApplicationContext());
+                if (mPreferences.getString("sound", "") == "") {
+                    uriPref.setSummary("None");
+                } else {
+                    uriPref.setSummary(name);
+                }
             }
         }
     };
@@ -93,7 +142,8 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
             case R.id.abs__home:
             case R.id.homeAsUp:
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                //NavUtils.navigateUpFromSameTask(this);
+                super.onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

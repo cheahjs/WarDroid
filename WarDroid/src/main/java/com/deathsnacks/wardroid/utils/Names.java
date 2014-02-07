@@ -24,7 +24,7 @@ public class Names {
     public static String getName(Activity act, String raw) {
         if (Names == null) {
             Gson gson = (new GsonBuilder().create());
-            InputStream rawResource = act.getResources().openRawResource(R.raw.names_11);
+            InputStream rawResource = act.getResources().openRawResource(R.raw.names_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
             Type token = new TypeToken<HashMap<String, String>>() {
             }.getType();
@@ -42,7 +42,7 @@ public class Names {
     public static String getString(Activity act, String raw) {
         if (Strings == null) {
             Gson gson = (new GsonBuilder().create());
-            InputStream rawResource = act.getResources().openRawResource(R.raw.strings_11);
+            InputStream rawResource = act.getResources().openRawResource(R.raw.strings_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
             Type token = new TypeToken<HashMap<String, String>>() {
             }.getType();
@@ -60,7 +60,7 @@ public class Names {
     public static String getNode(Activity act, String node) {
         if (PlanetNames == null) {
             Gson gson = (new GsonBuilder().create());
-            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
+            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
             Type token = new TypeToken<HashMap<String, String>>() {
             }.getType();
@@ -78,7 +78,7 @@ public class Names {
     public static String getRegion(Activity act, String node) {
         if (PlanetNames == null) {
             Gson gson = (new GsonBuilder().create());
-            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_11);
+            InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
             Type token = new TypeToken<HashMap<String, String>>() {
             }.getType();
@@ -161,6 +161,8 @@ public class Names {
             return "Rescue";
         if (raw.contains("mt_mobile_defense"))
             return "Mobile Defense";
+        if (raw.contains("mt_territory"))
+            return "Interception";
         return raw;
     }
 }

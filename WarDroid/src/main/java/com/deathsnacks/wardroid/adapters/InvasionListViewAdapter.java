@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
 import java.util.List;
 
@@ -48,17 +49,18 @@ public class InvasionListViewAdapter extends BaseAdapter {
         ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
 
         String line = mLines.get(position + 1);
-        String[] parts = line.split("\\|");
-        node.setText(String.format("%s (%s)", parts[1], parts[2]));
-        invadingfaction.setText(parts[3]);
-        invadingtype.setText(parts[3].contains("Infestation") ? "" : parts[4]);
-        invadingrewards.setText(parts[3].contains("Infestation") ? "" : parts[5]);
-        defendingfaction.setText(parts[8]);
-        defendingtype.setText(parts[9]);
-        defendingrewards.setText(parts[10]);
-        percent.setText(parts[16] + "%");
-        desc.setText(parts[18]);
-        int percentvalue = (int) Double.parseDouble(parts[16]);
+        Invasion invasion = new Invasion(line);
+        //String[] parts = line.split("\\|");
+        node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
+        invadingfaction.setText(invasion.getInvadingFaction());
+        invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());
+        invadingrewards.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingReward());
+        defendingfaction.setText(invasion.getDefendingFaction());
+        defendingtype.setText(invasion.getDefendingType());
+        defendingrewards.setText(invasion.getDefendingReward());
+        percent.setText(invasion.getPercent() + "%");
+        desc.setText(invasion.getDescription());
+        int percentvalue = (int) Double.parseDouble(invasion.getPercent());
         if (percentvalue > 100)
             percentvalue = 100;
         if (percentvalue < 0)
@@ -66,18 +68,19 @@ public class InvasionListViewAdapter extends BaseAdapter {
         bar.setProgress(0);
         Rect bounds = bar.getProgressDrawable().getBounds();
         bar.getProgressDrawable().setBounds(bounds);
-        if (parts[3].contains("Grineer"))
+        if (invasion.getInvadingFaction().contains("Grineer"))
             bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.grineer_corpus_bar));
-        else if (parts[3].contains("Corpus"))
+        else if (invasion.getInvadingFaction().contains("Corpus"))
             bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.corpus_grineer_bar));
-        else if (parts[3].contains("Infestation")) {
-            if (parts[8].contains("Corpus"))
+        else if (invasion.getInvadingFaction().contains("Infestation")) {
+            if (invasion.getDefendingFaction().contains("Corpus"))
                 bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_corpus_bar));
-            else if (parts[8].contains("Grineer"))
+            else if (invasion.getDefendingFaction().contains("Grineer"))
                 bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_grineer_bar));
         }
         bar.getProgressDrawable().setBounds(bounds);
         bar.setProgress(percentvalue);
+        view.setTag(invasion);
         return view;
     }
 

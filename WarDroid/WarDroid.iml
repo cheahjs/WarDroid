@@ -68,7 +68,6 @@
     <orderEntry type="library" exported="" name="okhttp-1.2.1-jar-with-dependencies" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="ComActionbarsherlockActionbarsherlock440.aar" level="project" />
-    <orderEntry type="library" exported="" name="jacksum" level="project" />
   </component>
 </module>
 

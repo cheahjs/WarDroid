@@ -33,6 +33,7 @@ import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
+import com.deathsnacks.wardroid.fragments.SalesFragment;
 import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.Names;
 
@@ -67,7 +68,7 @@ public class MainActivity extends SherlockFragmentActivity {
                         Arrays.asList(mDrawerTitles[1], mDrawerTitles[2], mDrawerTitles[3])));
         mDrawerAdapter.addSection(getString(R.string.drawer_settings_title),
                 new ArrayAdapter<String>(this, R.layout.list_item_drawer,
-                        Arrays.asList(mDrawerTitles[5])));
+                        Arrays.asList(mDrawerTitles[6])));
         mDrawerList.setAdapter(mDrawerAdapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -104,27 +105,17 @@ public class MainActivity extends SherlockFragmentActivity {
             Log.d("deathsnacks", "starting alarm");
             Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            if (savedInstanceState == null) {
+            if (pendingIntent != null) {
                 try {
                     Log.d("deathsnacks", "forcing start of alarm");
-                    pendingIntent.send();
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setContentTitle("Warframe Tracker")
-                            .setContentText("Starting background service.")
-                            .setOngoing(true);
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("drawer_position", 2);
-                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(pendingIntent);
-                    mNotificationManager.notify(1, mBuilder.build());
+                    (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
+                    ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                            SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
         }
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -154,6 +145,9 @@ public class MainActivity extends SherlockFragmentActivity {
             case 3: //invasions
                 fragment = new InvasionFragment();
                 break;
+            /*case 4: //sales
+                fragment = new SalesFragment();
+                break;*/
             case 5: //notification settings
                 mDrawerLayout.closeDrawer(mDrawerList);
                 mDrawerList.setItemChecked(position, false);

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Terminus (Mercury)"
-        android:textColor="#040404"
+        android:textColor="?android:textColorPrimary"
         android:typeface="sans"
         android:textSize="15sp"
         android:textStyle="bold"/>
@@ -22,7 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/alert_title"
-        android:textColor="#343434"
+        android:textColor="?android:textColorSecondary"
         android:textSize="12sp"
         android:layout_marginTop="1dip"
         android:text="Nightmare Mod Found" />
@@ -52,6 +52,6 @@
         android:text="Something - 5000cr"
         android:layout_marginRight="5dip"
         android:textSize="12sp"
-        android:textColor="#040404"
+        android:textColor="?android:textColorPrimary"
         android:textStyle="bold"/>
 </RelativeLayout>

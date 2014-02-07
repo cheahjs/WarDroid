@@ -1,6 +1,5 @@
 package com.deathsnacks.wardroid.services;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -9,6 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -19,13 +21,10 @@ import android.util.Log;
 
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.MainActivity;
-import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Alert;
 import com.deathsnacks.wardroid.utils.httpclasses.InvasionMini;
 import com.squareup.okhttp.OkHttpClient;
-
-import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,8 +33,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -49,9 +46,18 @@ public class PollingAlarmManager extends BroadcastReceiver {
     private List<String> mNotifications;
     private NotificationManager mNotificationManager;
     private Boolean mVibrate;
-    private List<String> mFilters;
-    private Boolean mFiltered;
+    private List<String> mItemFilters;
+    private List<String> mPlanetFilters;
+    private int mCreditFilter;
+    private Boolean mItemFiltered;
+    private Boolean mPlanetFiltered;
+    private Boolean mCreditFiltered;
     private PowerManager.WakeLock mWakeLock;
+    private Boolean mAlertSuccess;
+    private Boolean mInvasionSuccess;
+    private Boolean mEnableVibrate;
+    private Boolean mEnableLED;
+    private Boolean mInsistent;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -70,12 +76,27 @@ public class PollingAlarmManager extends BroadcastReceiver {
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_filters", ""))));
             ArrayList<String> resource = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("resource_filters", ""))));
-            mFilters = new ArrayList<String>();
-            mFilters.addAll(aura);
-            mFilters.addAll(bp);
-            mFilters.addAll(mod);
-            mFilters.addAll(resource);
-            mFiltered = mPreferences.getBoolean("filter_enabled", false);
+            mItemFilters = new ArrayList<String>();
+            mItemFilters.addAll(aura);
+            mItemFilters.addAll(bp);
+            mItemFilters.addAll(mod);
+            mItemFilters.addAll(resource);
+            mItemFiltered = mPreferences.getBoolean("filter_enabled", false);
+
+            mPlanetFiltered = mPreferences.getBoolean("planet_enabled", false);
+            mPlanetFilters = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("planet_filters", ""))));
+
+            mCreditFiltered = mPreferences.getBoolean("credit_enabled", false);
+            mCreditFilter = mPreferences.getInt("credit_filter", 0);
+
+            mInsistent = mPreferences.getBoolean("insistent", false);
+            mEnableVibrate = mPreferences.getBoolean("vibrate", true);
+            mEnableLED = mPreferences.getBoolean("light", true);
+
+            mAlertSuccess = false;
+            mInvasionSuccess = false;
+
             (new RefreshTask()).execute();
             mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     "WarDroid Notifications");
@@ -130,6 +151,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                         String cache = mPreferences.getString("alerts_cache", "");
                         if (cache.length() > 2) {
                             Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for alerts");
+                            Log.d("deathsnacks", cache);
                             parseAlerts(cache);
                         }
                     }
@@ -156,6 +178,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         if (response.length() < 10)
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
         for (String rawAlert : rawAlerts) {
@@ -168,25 +191,28 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 ids.add(alert.getId());
             }
             Log.d("deathsnacks", "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
-            + " - new: " + mNew);
-            if (alert.getExpiry() > System.currentTimeMillis()/1000) {
+                    + " - new: " + mNew);
+            if (alert.getExpiry() < System.currentTimeMillis()/1000) {
                 Log.d("deathsnacks", "alert: " + alert.getNode() + " has expired, ignore");
                 continue;
             }
-            for (String reward : alert.getRewards()) {
-                if (mFilters.contains(reward.replace(" Blueprint", "")) || !mFiltered) {
-                    Log.d("deathsnacks", "accepted alert: " + alert.getNode());
-                    if (mNew)
-                        mVibrate = true;
-                    mNotifications.add(String.format("Alert: <b>%s</b>",
-                            TextUtils.join(" - ", alert.getRewards())));
-                    break;
-                }
+            if (completedIds.contains(alert.getId())) {
+                Log.i("deathsnacks", "alert: " + alert.getNode() + " has been completed, ignore");
+                continue;
+            }
+            if (isAlertFiltered(alert)) {
+                Log.d("deathsnacks", "accepted alert: " + alert.getNode());
+                if (mNew)
+                    mVibrate = true;
+                mNotifications.add(String.format("Alert: <b>%s</b>",
+                        TextUtils.join(" - ", alert.getRewards())));
+                continue;
             }
         }
         mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.commit();
+        mAlertSuccess = true;
     }
 
     private void doInvasions() {
@@ -207,6 +233,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                         String cache = mPreferences.getString("invasion_cache", "");
                         if (cache.length() > 2) {
                             Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for invasion");
+                            Log.d("deathsnacks", cache);
                             parseInvasions(cache);
                         }
                     }
@@ -233,6 +260,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         if (response.length() < 10)
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         String[] rawInvasions = response.split("\\n");
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {
@@ -246,20 +274,23 @@ public class PollingAlarmManager extends BroadcastReceiver {
             }
             Log.d("deathsnacks", "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
                     + " - new: " + mNew);
+            if (completedIds.contains(invasion.getId())) {
+                Log.i("deathsnacks", "invasion: " + invasion.getNode() + " has been marked completed, ignore");
+                continue;
+            }
             String[] rewards = invasion.getRewards();
-            for (String reward : rewards) {
-                if (mFilters.contains(reward) || !mFiltered) {
-                   Log.d("deathsnacks", "Accepted invasion: " + invasion.getNotificationText());
-                   if (mNew)
-                       mVibrate = true;
-                    mNotifications.add(invasion.getNotificationText());
-                    break;
-                }
+            if (isInvasionFiltered(invasion)) {
+                Log.d("deathsnacks", "Accepted invasion: " + invasion.getNotificationText());
+                if (mNew)
+                    mVibrate = true;
+                mNotifications.add(invasion.getNotificationText());
+                continue;
             }
         }
         mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.commit();
+        mInvasionSuccess = true;
     }
 
     private static byte[] readAll(InputStream in) throws IOException {
@@ -279,22 +310,84 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 .setContentTitle("Warframe Tracker")
                 .setContentText(String.format("%d filtered alerts/invasions", mNotifications.size()))
                 .setOngoing(true);
-        NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
-        if (size > 5)
-            style.setSummaryText(String.format("+%s more", size - 5));
-        for (int i = 0; i < 5 && i < size; i++) {
-            style.addLine(Html.fromHtml(mNotifications.get(i)));
+        if (!mAlertSuccess || !mInvasionSuccess) {
+            //mBuilder.setContentText("Connection error");
+            return;
+        } else {
+            NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
+            if (size > 5)
+                style.setSummaryText(String.format("+%s more", size - 5));
+            for (int i = 0; i < 5 && i < size; i++) {
+                style.addLine(Html.fromHtml(mNotifications.get(i)));
+            }
+            if (size > 0) {
+                mBuilder.setNumber(size);
+                mBuilder.setStyle(style);
+            }
         }
-        if (size > 0) {
-            mBuilder.setNumber(size);
-            mBuilder.setStyle(style);
-        }
-        if (mVibrate)
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("drawer_position", 2);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
-        mNotificationManager.notify(1, mBuilder.build());
+        if (mVibrate) {
+            int defaults = 0;
+            if (mEnableVibrate) {
+                mBuilder.setVibrate(new long[] {0, 300});
+            }
+            if (mEnableLED) {
+                defaults |= Notification.DEFAULT_LIGHTS;
+            }
+            mBuilder.setSound(Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())));
+            mBuilder.setDefaults(defaults);
+        }
+        Notification notification = mBuilder.build();
+        if (mVibrate && mInsistent) {
+            notification.flags |= Notification.FLAG_INSISTENT;
+        }
+        mNotificationManager.notify(1, notification);
+    }
+
+    private Boolean isAlertFiltered(Alert alert) {
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered)
+            return true;
+        if (mPlanetFiltered && !mPlanetFilters.contains(alert.getRegion()))
+            return false;
+        for (String reward : alert.getRewards()) {
+            if (reward.contains("cr")) {
+                if (mCreditFiltered) {
+                    int credits =  Integer.parseInt(reward.replace(",", "").replace("cr", ""));
+                    if (credits >= mCreditFilter)
+                        return true;
+                }
+            } else {
+                if (mItemFiltered) {
+                    if (mItemFilters.contains(reward.replace(" Blueprint", "")))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean isInvasionFiltered(InvasionMini invasion) {
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered)
+            return true;
+        if (mPlanetFiltered && !mPlanetFilters.contains(invasion.getRegion()))
+            return false;
+        for (String reward : invasion.getRewards()) {
+            if (reward.contains("cr")) {
+                if (mCreditFiltered) {
+                    int credits =  Integer.parseInt(reward.replace(",", "").replace("cr", ""));
+                    if (credits >= mCreditFilter)
+                        return true;
+                }
+            } else {
+                if (mItemFiltered) {
+                    if (mItemFilters.contains(reward.replace(" Blueprint", "")))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }

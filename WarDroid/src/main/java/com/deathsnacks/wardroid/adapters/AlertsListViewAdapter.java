@@ -67,6 +67,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
             }
         }
         duration.setText(String.format(format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
+        view.setTag(alert);
         return view;
     }
 

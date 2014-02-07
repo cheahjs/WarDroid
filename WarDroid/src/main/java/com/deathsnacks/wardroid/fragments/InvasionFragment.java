@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,8 +25,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
+import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
+import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +47,41 @@ public class InvasionFragment extends SherlockFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
+        setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
+        mInvasionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Invasion invasion = (Invasion) view.getTag();
+                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                List<String> ids =
+                        new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+                if (ids.contains(invasion.getId()))
+                    return;
+                new AlertDialog.Builder(getActivity()).setMessage("Do you want to mark this invasion as completed?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                        .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+                                ids.add(invasion.getId());
+                                SharedPreferences.Editor mEditor = mPreferences.edit();
+                                mEditor.putString("invasion_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+                                mEditor.commit();
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).show();
+            }
+        });
         mHandler = new Handler();
         setHasOptionsMenu(true);
         return rootView;
@@ -163,20 +201,27 @@ public class InvasionFragment extends SherlockFragment {
         }
 
         private void clearIds() {
-            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-            List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
-            List<String> nowids = new ArrayList<String>();
-            for (int i = 1; i < data.size(); i++) {
-                nowids.add(data.get(i).split("\\|")[0]);
-            }
-            for (String id : ids) {
-                if (!nowids.contains(id)) {
-                    ids.remove(id);
+            if (activity == null)
+                return;
+            try {
+                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
+                List<String> newids = new ArrayList<String>();
+                List<String> nowids = new ArrayList<String>();
+                for (int i = 1; i < data.size(); i++) {
+                    nowids.add(data.get(i).split("\\|")[0]);
                 }
+                for (String id : ids) {
+                    if (nowids.contains(id)) {
+                        newids.add(id);
+                    }
+                }
+                SharedPreferences.Editor mEditor = mPreferences.edit();
+                mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(newids.toArray(new String[newids.size()])));
+                mEditor.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            SharedPreferences.Editor mEditor = mPreferences.edit();
-            mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-            mEditor.commit();
         }
 
 

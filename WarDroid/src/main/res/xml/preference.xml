@@ -31,47 +31,80 @@
             android:key="unknown_enabled"
             android:title="Enable unknown notifications"
             android:summary="Notify on alerts/invasions that have unknown rewards"/>-->
-        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_aura"
             android:key="aura_filters"
             android:entries="@array/aura_filter_entries"
             android:entryValues="@array/aura_filter_entries"/>
-        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_blueprints"
             android:key="bp_filters"
             android:entries="@array/bp_filter_entries"
             android:entryValues="@array/bp_filter_entries"/>
-        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_mods"
             android:key="mod_filters"
             android:entries="@array/mod_filter_entries"
             android:entryValues="@array/mod_filter_entries"/>
-        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_resources"
             android:key="resource_filters"
             android:entries="@array/misc_filter_entries"
             android:entryValues="@array/misc_filter_entries"/>
-        <com.deathsnacks.wardroid.utils.MultiSelectListPreference
-            android:enabled="false"
+
+        <CheckBoxPreference
             android:dependency="alert_enabled"
+            android:title="@string/settings_enable_planet_filter_title"
+            android:summary="@string/settings_enable_planet_filter_summary"
+            android:key="planet_enabled"/>
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
+            android:dependency="planet_enabled"
             android:title="@string/settings_planet_filter_title"
-            android:summary="@string/settings_planet_filter_summary"
             android:key="planet_filters"
             android:entries="@array/planet_filter_entries"
             android:entryValues="@array/planet_filter_entries"/>
-    </PreferenceCategory>
 
-    <!--<PreferenceCategory
-        android:title="Settings">
-        <EditTextPreference
-            android:title="Notification refresh period"
-            android:summary="Sets the period of which the app will check for new alerts"
-            android:key="poll_period"
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_enable_credit_filter_title"
+            android:summary="@string/settings_enable_credit_filter_summary"
+            android:key="credit_enabled"/>
+        <com.deathsnacks.wardroid.utils.preferences.IntEditTextPreference
+            android:title="@string/settings_credit_filter_title"
+            android:defaultValue="0"
+            android:dependency="credit_enabled"
+            android:key="credit_filter"
             android:inputType="number"
             android:numeric="integer"/>
-    </PreferenceCategory>-->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_notification_settings_title">
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_vibrate"
+            android:key="vibrate"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_light"
+            android:key="light"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_insistent"
+            android:key="insistent"
+            android:defaultValue="false"/>
+        <RingtonePreference
+            android:dependency="alert_enabled"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:ringtoneType="alarm|notification"
+            android:title="@string/settings_sound"
+            android:key="sound"/>
+    </PreferenceCategory>
 </PreferenceScreen>

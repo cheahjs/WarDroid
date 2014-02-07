@@ -14,7 +14,6 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:18.0.+'
-    compile files('libs/jacksum.jar')
     compile files('libs/gson-2.2.4.jar')
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile files('libs/okhttp-1.2.1-jar-with-dependencies.jar')

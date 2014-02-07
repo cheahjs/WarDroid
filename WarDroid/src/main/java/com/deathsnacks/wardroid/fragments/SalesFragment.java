@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,9 +11,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -23,7 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.adapters.NewsListViewAdapter;
+import com.deathsnacks.wardroid.adapters.SaleListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
 
 import java.util.ArrayList;
@@ -33,28 +29,20 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class NewsFragment extends SherlockFragment {
+public class SalesFragment extends SherlockFragment {
     private View mRefreshView;
-    private ListView mNewsView;
-    private NewsRefresh mTask;
-    private NewsListViewAdapter mAdapter;
+    private ListView mAlertView;
+    private SaleRefresh mTask;
+    private SaleListViewAdapter mAdapter;
     private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_news, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         setRetainInstance(true);
-        mRefreshView = rootView.findViewById(R.id.news_refresh);
-        mNewsView = (ListView) rootView.findViewById(R.id.list_news);
+        mRefreshView = rootView.findViewById(R.id.alert_refresh);
+        mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mHandler = new Handler();
-        mNewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String url = ((TextView) view.findViewById(R.id.news_url)).getText().toString();
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                getActivity().startActivity(intent);
-            }
-        });
         setHasOptionsMenu(true);
         return rootView;
     }
@@ -78,29 +66,39 @@ public class NewsFragment extends SherlockFragment {
     private void refresh(Boolean show) {
         showProgress(show);
         if (mTask == null) {
-            mTask = new NewsRefresh(getActivity());
+            mTask = new SaleRefresh(getActivity());
             mTask.execute();
         }
     }
 
-    private final Runnable mRefreshTimer = new Runnable() {
+    private final Runnable mTimer = new Runnable() {
         @Override
         public void run() {
             if (mAdapter != null) {
-                refresh(false);
-                mHandler.postDelayed(this, 60 * 1000);
+                mAdapter.notifyDataSetChanged();
             }
+            mHandler.postDelayed(this, 1000);
+        }
+    };
+
+    private final Runnable mRefreshTimer = new Runnable() {
+        @Override
+        public void run() {
+            refresh(false);
+            mHandler.postDelayed(this, 60 * 1000);
         }
     };
 
     @Override
     public void onDestroy() {
+        mHandler.removeCallbacksAndMessages(mTimer);
         mHandler.removeCallbacksAndMessages(mRefreshTimer);
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
+        mHandler.removeCallbacksAndMessages(mTimer);
         mHandler.removeCallbacksAndMessages(mRefreshTimer);
         super.onPause();
     }
@@ -108,7 +106,8 @@ public class NewsFragment extends SherlockFragment {
     @Override
     public void onResume() {
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
-        getSherlockActivity().getSupportActionBar().setTitle("News");
+        mTimer.run();
+        getSherlockActivity().getSupportActionBar().setTitle("Sales");
         super.onResume();
     }
 
@@ -118,56 +117,55 @@ public class NewsFragment extends SherlockFragment {
         super.onStart();
     }
 
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
-        if (isAdded()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-                mRefreshView.setVisibility(View.VISIBLE);
-                mRefreshView.animate()
-                        .setDuration(shortAnimTime)
-                        .alpha(show ? 1 : 0)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                            }
-                        });
+        if (!isAdded())
+            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            mRefreshView.setVisibility(View.VISIBLE);
+            mRefreshView.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha(show ? 1 : 0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                        }
+                    });
 
-                mNewsView.setVisibility(View.VISIBLE);
-                mNewsView.animate()
-                        .setDuration(shortAnimTime)
-                        .alpha(show ? 0 : 1)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
-                            }
-                        });
-            } else {
-                // The ViewPropertyAnimator APIs are not available, so simply show
-                // and hide the relevant UI components.
-                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
-            }
+            mAlertView.setVisibility(View.VISIBLE);
+            mAlertView.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha(show ? 0 : 1)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
+                        }
+                    });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
-    public class NewsRefresh extends AsyncTask<Void, Void, Boolean> {
+    public class SaleRefresh extends AsyncTask<Void, Void, Boolean> {
         private Activity activity;
         private List<String> data;
 
-        public NewsRefresh(Activity activity) {
+        public SaleRefresh(Activity activity) {
             this.activity = activity;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                String response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt");
-                data = Arrays.asList(response.split("\\n"));
-                if (response.length() < 2)
-                    data = new ArrayList<String>();
+                String response = Http.get("http://deathsnacks.com/wf/data/flashsales_raw.txt");
+                data = response.length() > 2 ? Arrays.asList(response.split("\\n")) : new ArrayList<String>();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -183,8 +181,8 @@ public class NewsFragment extends SherlockFragment {
             showProgress(false);
             if (success) {
                 try {
-                    mAdapter = new NewsListViewAdapter(activity, data);
-                    mNewsView.setAdapter(mAdapter);
+                    mAdapter = new SaleListViewAdapter(activity, data);
+                    mAlertView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

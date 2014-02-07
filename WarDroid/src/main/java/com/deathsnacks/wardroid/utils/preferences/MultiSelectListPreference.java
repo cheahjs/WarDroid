@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package com.deathsnacks.wardroid.utils;
+package com.deathsnacks.wardroid.utils.preferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +25,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
+
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
 // android:defaultValue="entryValue1|entryValue2"
 public class MultiSelectListPreference extends ListPreference {
