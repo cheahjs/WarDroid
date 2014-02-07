@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,23 +58,25 @@ public class AlertsFragment extends SherlockFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final Alert alert = (Alert) view.getTag();
-                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 List<String> ids =
                         new ArrayList<String>(Arrays.asList(PreferenceUtils
-                                .fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-                if (ids.contains(alert.get_id().get$id()))
+                                .fromPersistedPreferenceValue(mPreferences2.getString("alert_completed_ids", ""))));
+                if (ids.contains(alert.get_id().get$id())) {
+                    Toast.makeText(getSherlockActivity(), R.string.ui_marked_complete, Toast.LENGTH_SHORT).show();
                     return;
+                }
                 new AlertDialog.Builder(getActivity()).setMessage("Do you want to mark this alert as completed?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                                List<String> ids =
+                                List<String> ids2 =
                                         new ArrayList<String>(Arrays.asList(PreferenceUtils
                                                 .fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-                                ids.add(alert.get_id().get$id());
+                                ids2.add(alert.get_id().get$id());
                                 SharedPreferences.Editor mEditor = mPreferences.edit();
-                                mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+                                mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids2.toArray(new String[ids2.size()])));
                                 mEditor.commit();
                                 dialogInterface.cancel();
                             }
@@ -258,7 +261,7 @@ public class AlertsFragment extends SherlockFragment {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 

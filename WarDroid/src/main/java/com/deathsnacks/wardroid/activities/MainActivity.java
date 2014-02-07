@@ -58,7 +58,9 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        View drawerTest = findViewById(R.id.drawer_layout);
+        if (drawerTest != null)
+            mDrawerLayout = (DrawerLayout) drawerTest;
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         mDrawerTitles = getResources().getStringArray(R.array.drawer_titles);
@@ -72,33 +74,35 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerList.setAdapter(mDrawerAdapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mActionBar = getSupportActionBar();
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setHomeButtonEnabled(true);
         mTitle = mDrawerTitle = getTitle();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
+        if (mDrawerLayout != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeButtonEnabled(true);
+            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+            mDrawerToggle = new ActionBarDrawerToggle(
+                    this,                  /* host Activity */
+                    mDrawerLayout,         /* DrawerLayout object */
+                    R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                    R.string.drawer_open,  /* "open drawer" description for accessibility */
+                    R.string.drawer_close  /* "close drawer" description for accessibility */
 
-        ) {
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
+            ) {
+                public void onDrawerClosed(View view) {
+                    getSupportActionBar().setTitle(mTitle);
+                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                }
 
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+                public void onDrawerOpened(View drawerView) {
+                    getSupportActionBar().setTitle(mDrawerTitle);
+                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                }
+            };
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+        }
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mPreferences.getBoolean("alert_enabled", false)) {
@@ -149,7 +153,8 @@ public class MainActivity extends SherlockFragmentActivity {
                 fragment = new SalesFragment();
                 break;*/
             case 5: //notification settings
-                mDrawerLayout.closeDrawer(mDrawerList);
+                if (mDrawerLayout != null)
+                    mDrawerLayout.closeDrawer(mDrawerList);
                 mDrawerList.setItemChecked(position, false);
                 Intent intent = new Intent(this, NotificationsActivity.class);
                 startActivity(intent);
@@ -165,7 +170,8 @@ public class MainActivity extends SherlockFragmentActivity {
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(mDrawerTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        if (mDrawerLayout != null)
+            mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
@@ -194,7 +200,8 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null)
+            mDrawerToggle.syncState();
     }
 
     public class PreloadData extends AsyncTask<Void, Void, Void> {

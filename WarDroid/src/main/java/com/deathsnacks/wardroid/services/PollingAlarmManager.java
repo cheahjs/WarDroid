@@ -179,6 +179,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+        Log.d("deathsnacks", mPreferences.getString("alert_completed_ids", ""));
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
         for (String rawAlert : rawAlerts) {
@@ -261,6 +262,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        Log.d("deathsnacks", mPreferences.getString("invasion_completed_ids", ""));
         String[] rawInvasions = response.split("\\n");
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {

@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="marginPoint">
+        <item name="android:layout_width">900dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+</resources>

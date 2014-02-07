@@ -67,7 +67,7 @@
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-1.2.1-jar-with-dependencies" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
-    <orderEntry type="library" exported="" name="ComActionbarsherlockActionbarsherlock440.aar" level="project" />
+    <orderEntry type="library" exported="" name="actionbarsherlock-4.4.0" level="project" />
   </component>
 </module>
 

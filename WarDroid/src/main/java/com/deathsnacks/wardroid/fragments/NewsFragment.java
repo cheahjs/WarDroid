@@ -189,7 +189,7 @@ public class NewsFragment extends SherlockFragment {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 

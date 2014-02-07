@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,12 +55,14 @@ public class InvasionFragment extends SherlockFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final Invasion invasion = (Invasion) view.getTag();
-                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                List<String> ids =
+                SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                List<String> ids2 =
                         new ArrayList<String>(Arrays.asList(PreferenceUtils
-                                .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
-                if (ids.contains(invasion.getId()))
+                                .fromPersistedPreferenceValue(mPreferences2.getString("invasion_completed_ids", ""))));
+                if (ids2.contains(invasion.getId())) {
+                    Toast.makeText(getSherlockActivity(), R.string.ui_marked_complete, Toast.LENGTH_SHORT).show();
                     return;
+                }
                 new AlertDialog.Builder(getActivity()).setMessage("Do you want to mark this invasion as completed?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -239,7 +242,7 @@ public class InvasionFragment extends SherlockFragment {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 
