@@ -39,6 +39,7 @@ import java.util.List;
  * Created by Admin on 03/02/14.
  */
 public class PollingAlarmManager extends BroadcastReceiver {
+    private static final String TAG = "PollingAlarmManager";
     private Context mContext;
     private SharedPreferences mPreferences;
     private OkHttpClient client;
@@ -66,7 +67,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         client = new OkHttpClient();
         mVibrate = false;
         mNotifications = new ArrayList<String>();
-        Log.d("deathsnacks", "Received broadcast for alarm, starting polling.");
+        Log.d(TAG, "Received broadcast for alarm, starting polling.");
         if (mPreferences.getBoolean("alert_enabled", false)) {
             ArrayList<String> aura = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_filters", ""))));
@@ -102,7 +103,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                     "WarDroid Notifications");
             mWakeLock.acquire();
         } else {
-            Log.d("deathsnacks", "cancelling alarm since we didn't enable alarm");
+            Log.d(TAG, "cancelling alarm since we didn't enable alarm");
             mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(1);
             ((AlarmManager)context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
@@ -146,12 +147,12 @@ public class PollingAlarmManager extends BroadcastReceiver {
             InputStream in = null;
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.d("deathsnacks", "we received something other than 201 for alerts: " + connection.getResponseCode());
+                    Log.d(TAG, "we received something other than 201 for alerts: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                         String cache = mPreferences.getString("alerts_cache", "");
                         if (cache.length() > 2) {
-                            Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for alerts");
-                            Log.d("deathsnacks", cache);
+                            Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
+                            Log.d(TAG, cache);
                             parseAlerts(cache);
                         }
                     }
@@ -169,7 +170,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 if (in != null) in.close();
             }
         } catch (Exception e) {
-            Log.e("deathsnacks", "Error occurred during alerts alarm");
+            Log.e(TAG, "Error occurred during alerts alarm");
             e.printStackTrace();
         }
     }
@@ -179,7 +180,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-        Log.d("deathsnacks", mPreferences.getString("alert_completed_ids", ""));
+        Log.d(TAG, mPreferences.getString("alert_completed_ids", ""));
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
         for (String rawAlert : rawAlerts) {
@@ -191,18 +192,18 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(alert.getId());
             }
-            Log.d("deathsnacks", "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
+            Log.d(TAG, "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
                     + " - new: " + mNew);
             if (alert.getExpiry() < System.currentTimeMillis()/1000) {
-                Log.d("deathsnacks", "alert: " + alert.getNode() + " has expired, ignore");
+                Log.d(TAG, "alert: " + alert.getNode() + " has expired, ignore");
                 continue;
             }
             if (completedIds.contains(alert.getId())) {
-                Log.i("deathsnacks", "alert: " + alert.getNode() + " has been completed, ignore");
+                Log.i(TAG, "alert: " + alert.getNode() + " has been completed, ignore");
                 continue;
             }
             if (isAlertFiltered(alert)) {
-                Log.d("deathsnacks", "accepted alert: " + alert.getNode());
+                Log.d(TAG, "accepted alert: " + alert.getNode());
                 if (mNew)
                     mVibrate = true;
                 mNotifications.add(String.format("Alert: <b>%s</b>",
@@ -229,12 +230,12 @@ public class PollingAlarmManager extends BroadcastReceiver {
             InputStream in = null;
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.d("deathsnacks", "we received something other than 201 for invasions: " + connection.getResponseCode());
+                    Log.d(TAG, "we received something other than 201 for invasions: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                         String cache = mPreferences.getString("invasion_cache", "");
                         if (cache.length() > 2) {
-                            Log.d("deathsnacks", "we received NOT_MODIFIED, processing cache for invasion");
-                            Log.d("deathsnacks", cache);
+                            Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
+                            Log.d(TAG, cache);
                             parseInvasions(cache);
                         }
                     }
@@ -252,7 +253,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 if (in != null) in.close();
             }
         } catch (Exception e) {
-            Log.e("deathsnacks", "Error occurred during invasions alarm");
+            Log.e(TAG, "Error occurred during invasions alarm");
             e.printStackTrace();
         }
     }
@@ -262,7 +263,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             return;
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
-        Log.d("deathsnacks", mPreferences.getString("invasion_completed_ids", ""));
+        Log.d(TAG, mPreferences.getString("invasion_completed_ids", ""));
         String[] rawInvasions = response.split("\\n");
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {
@@ -274,15 +275,15 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mNew = true;
                 ids.add(invasion.getId());
             }
-            Log.d("deathsnacks", "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
+            Log.d(TAG, "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
                     + " - new: " + mNew);
             if (completedIds.contains(invasion.getId())) {
-                Log.i("deathsnacks", "invasion: " + invasion.getNode() + " has been marked completed, ignore");
+                Log.i(TAG, "invasion: " + invasion.getNode() + " has been marked completed, ignore");
                 continue;
             }
             String[] rewards = invasion.getRewards();
             if (isInvasionFiltered(invasion)) {
-                Log.d("deathsnacks", "Accepted invasion: " + invasion.getNotificationText());
+                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText());
                 if (mNew)
                     mVibrate = true;
                 mNotifications.add(invasion.getNotificationText());

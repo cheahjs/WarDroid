@@ -44,6 +44,7 @@ import java.util.Arrays;
  * Created by Admin on 23/01/14.
  */
 public class MainActivity extends SherlockFragmentActivity {
+    private static final String TAG = "MainActivity";
     private ActionBar mActionBar;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -106,12 +107,12 @@ public class MainActivity extends SherlockFragmentActivity {
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mPreferences.getBoolean("alert_enabled", false)) {
-            Log.d("deathsnacks", "starting alarm");
+            Log.d(TAG, "starting alarm");
             Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             if (pendingIntent != null) {
                 try {
-                    Log.d("deathsnacks", "forcing start of alarm");
+                    Log.d(TAG, "forcing start of alarm");
                     (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
                     ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                             SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
@@ -160,7 +161,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 startActivity(intent);
                 return;
             default: //wat?
-                Log.w("deathsnacks", "we some how fucked up with the drawer positions");
+                Log.w(TAG, "we some how fucked up with the drawer positions");
                 return;
         }
 

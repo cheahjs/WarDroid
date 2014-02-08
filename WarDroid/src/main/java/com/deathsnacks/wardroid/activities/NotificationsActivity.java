@@ -30,7 +30,7 @@ import java.text.NumberFormat;
  * Created by Admin on 30/01/14.
  */
 public class NotificationsActivity extends SherlockPreferenceActivity {
-
+    private static final String TAG = "NotificationsActivity";
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
@@ -91,10 +91,10 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
     SharedPreferences.OnSharedPreferenceChangeListener prefChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-            Log.d("deathsnacks", "changed pref: " + s);
+            Log.d(TAG, "changed pref: " + s);
             if (s.equals("alert_enabled")) {
                 if (sharedPreferences.getBoolean("alert_enabled", false)) {
-                    Log.d("deathsnacks", "starting alarm since pref was changed");
+                    Log.d(TAG, "starting alarm since pref was changed");
                     Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmManager.class);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -129,13 +129,17 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                 Preference uriPref = findPreference("sound");
                 if (uriPref == null)
                     return;
-                Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
-                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
-                String name = ringtone.getTitle(getApplicationContext());
-                if (mPreferences.getString("sound", "") == "") {
-                    uriPref.setSummary("None");
-                } else {
-                    uriPref.setSummary(name);
+                try {
+                    Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+                    Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
+                    String name = ringtone.getTitle(getApplicationContext());
+                    if (mPreferences.getString("sound", "") == "") {
+                        uriPref.setSummary("None");
+                    } else {
+                        uriPref.setSummary(name);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

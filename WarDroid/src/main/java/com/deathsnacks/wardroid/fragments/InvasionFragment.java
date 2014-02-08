@@ -28,6 +28,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
+import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
@@ -63,7 +64,9 @@ public class InvasionFragment extends SherlockFragment {
                     Toast.makeText(getSherlockActivity(), R.string.ui_marked_complete, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new AlertDialog.Builder(getActivity()).setMessage("Do you want to mark this invasion as completed?")
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()))
+                        .setMessage("Do you want to mark this invasion as completed?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
