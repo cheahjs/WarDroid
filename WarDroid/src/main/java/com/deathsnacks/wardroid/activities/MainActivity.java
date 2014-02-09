@@ -113,6 +113,17 @@ public class MainActivity extends SherlockFragmentActivity {
             if (pendingIntent != null) {
                 try {
                     Log.d(TAG, "forcing start of alarm");
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setContentTitle("Warframe Tracker")
+                            .setContentText("Starting background service.")
+                            .setOngoing(true);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("drawer_position", 2);
+                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent2);
+                    mNotificationManager.notify(1, mBuilder.build());
                     (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
                     ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                             SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
