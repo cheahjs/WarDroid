@@ -107,7 +107,6 @@ public class SalesFragment extends SherlockFragment {
     public void onResume() {
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
         mTimer.run();
-        getSherlockActivity().getSupportActionBar().setTitle("Sales");
         super.onResume();
     }
 

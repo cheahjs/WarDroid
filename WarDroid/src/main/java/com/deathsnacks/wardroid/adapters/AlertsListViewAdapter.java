@@ -53,7 +53,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
         long activation = alert.getActivation().getSec();
-        String format = "Starting: %dh %dm %ds";
+        String format = mActivity.getString(R.string.alert_starting);
         duration.setTextColor(Color.parseColor("#343434"));
         long diff = activation - now;
         if (diff < 0) {
@@ -62,7 +62,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
             duration.setTextColor(Color.parseColor("#10bcc9"));
             if (diff < 0) {
                 diff = now - expiry;
-                format = "EXPIRED - %dh %dm %ds";
+                format = mActivity.getString(R.string.alert_expired);
                 duration.setTextColor(Color.parseColor("#d9534f"));
             }
         }

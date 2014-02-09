@@ -310,8 +310,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Warframe Tracker")
-                .setContentText(String.format("%d filtered alerts/invasions", mNotifications.size()))
+                .setContentTitle(mContext.getString(R.string.notification_title))
+                .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
                 .setOngoing(true);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
@@ -319,7 +319,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         } else {
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
             if (size > 5)
-                style.setSummaryText(String.format("+%s more", size - 5));
+                style.setSummaryText(String.format(mContext.getString(R.string.notification_more), size - 5));
             for (int i = 0; i < 5 && i < size; i++) {
                 style.addLine(Html.fromHtml(mNotifications.get(i)));
             }

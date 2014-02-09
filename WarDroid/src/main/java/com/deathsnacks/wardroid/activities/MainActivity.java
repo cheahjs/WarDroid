@@ -116,8 +116,8 @@ public class MainActivity extends SherlockFragmentActivity {
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.drawable.ic_notification)
-                            .setContentTitle("Warframe Tracker")
-                            .setContentText("Starting background service.")
+                            .setContentTitle(getString(R.string.notification_title))
+                            .setContentText(getString(R.string.notification_starting))
                             .setOngoing(true);
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putExtra("drawer_position", 2);

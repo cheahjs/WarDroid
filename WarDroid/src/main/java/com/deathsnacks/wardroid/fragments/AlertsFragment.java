@@ -70,8 +70,8 @@ public class AlertsFragment extends SherlockFragment {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
                                 Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
-                        .setMessage("Do you want to mark this alert as completed?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setMessage(getActivity().getString(R.string.alert_mark_complete))
+                        .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -85,7 +85,7 @@ public class AlertsFragment extends SherlockFragment {
                                 dialogInterface.cancel();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
@@ -158,7 +158,6 @@ public class AlertsFragment extends SherlockFragment {
     public void onResume() {
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
         mTimer.run();
-        getSherlockActivity().getSupportActionBar().setTitle("Alerts");
         super.onResume();
     }
 

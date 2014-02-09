@@ -66,8 +66,8 @@ public class InvasionFragment extends SherlockFragment {
                 }
                 new AlertDialog.Builder(getActivity())
                         .setTitle(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()))
-                        .setMessage("Do you want to mark this invasion as completed?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setMessage(getActivity().getString(R.string.invasion_mark_complete))
+                        .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -80,7 +80,7 @@ public class InvasionFragment extends SherlockFragment {
                                 dialogInterface.cancel();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();

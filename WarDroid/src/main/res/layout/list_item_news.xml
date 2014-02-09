@@ -24,7 +24,9 @@
         android:text="Hotfix 11.8.3"
         android:id="@+id/news_text"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/news_duration"/>
 
     <TextView
         android:visibility="gone"
