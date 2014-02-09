@@ -49,8 +49,10 @@ public class InvasionListViewAdapter extends BaseAdapter {
         ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
 
         String line = mLines.get(position + 1);
+        String[] parts = line.split("\\|");
+        if (parts.length != 19)
+            return null;
         Invasion invasion = new Invasion(line);
-        //String[] parts = line.split("\\|");
         node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         invadingfaction.setText(invasion.getInvadingFaction());
         invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());
