@@ -93,39 +93,7 @@ public class Names {
         return PlanetNames.containsKey(node) ? PlanetNames.get(node).split("\\|")[0] : "?";
     }
 
-    public static String getRegion(int id) {
-        switch (id - 1) {
-            case 0:
-                return "Mercury";
-            case 1:
-                return "Venus";
-            case 2:
-                return "Earth";
-            case 3:
-                return "Mars";
-            case 4:
-                return "Jupiter";
-            case 5:
-                return "Saturn";
-            case 6:
-                return "Uranus";
-            case 7:
-                return "Neptune";
-            case 8:
-                return "Pluto";
-            case 9:
-                return "Ceres";
-            case 10:
-                return "Eris";
-            case 11:
-                return "Sedna";
-            case 12:
-                return "Europa";
-            default:
-                return "-";
-        }
-    }
-
+    //TODO: Switch all these to using strings for localization
     public static String getFaction(String raw) {
         raw = raw.toLowerCase();
         if (raw.contains("grin"))

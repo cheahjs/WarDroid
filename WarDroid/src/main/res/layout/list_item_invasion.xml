@@ -131,4 +131,14 @@
         android:layout_alignParentRight="true"
         android:gravity="right"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="ETA: 60 mins"
+        android:textColor="?android:textColorSecondary"
+        android:id="@+id/invasion_eta"
+        android:layout_below="@+id/invasion_percent"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

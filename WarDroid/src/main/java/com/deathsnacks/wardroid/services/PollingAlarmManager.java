@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -50,15 +51,18 @@ public class PollingAlarmManager extends BroadcastReceiver {
     private List<String> mItemFilters;
     private List<String> mPlanetFilters;
     private int mCreditFilter;
+    private List<String> mTypeFilters;
     private Boolean mItemFiltered;
     private Boolean mPlanetFiltered;
     private Boolean mCreditFiltered;
+    private Boolean mTypeFiltered;
     private PowerManager.WakeLock mWakeLock;
     private Boolean mAlertSuccess;
     private Boolean mInvasionSuccess;
     private Boolean mEnableVibrate;
     private Boolean mEnableLED;
     private Boolean mInsistent;
+    private int mStreamType;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -91,6 +95,12 @@ public class PollingAlarmManager extends BroadcastReceiver {
             mCreditFiltered = mPreferences.getBoolean("credit_enabled", false);
             mCreditFilter = mPreferences.getInt("credit_filter", 0);
 
+            mTypeFiltered = mPreferences.getBoolean("type_enabled", false);
+            String lowerCase = mPreferences.getString("type_filters", "").toLowerCase();
+            mTypeFilters = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(lowerCase)));
+            Log.d(TAG, lowerCase);
+
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
@@ -98,9 +108,17 @@ public class PollingAlarmManager extends BroadcastReceiver {
             mAlertSuccess = false;
             mInvasionSuccess = false;
 
+            String volumeType = mPreferences.getString("volume", "notification");
+            if (volumeType.equals("notification"))
+                mStreamType = AudioManager.STREAM_NOTIFICATION;
+            else if (volumeType.equals("alarm"))
+                mStreamType = AudioManager.STREAM_ALARM;
+            else if (volumeType.equals("media"))
+                mStreamType = AudioManager.STREAM_MUSIC;
+
             (new RefreshTask()).execute();
-            mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    "WarDroid Notifications");
+            mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
+                    .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WarDroid Notifications");
             mWakeLock.acquire();
         } else {
             Log.d(TAG, "cancelling alarm since we didn't enable alarm");
@@ -340,7 +358,9 @@ public class PollingAlarmManager extends BroadcastReceiver {
             if (mEnableLED) {
                 defaults |= Notification.DEFAULT_LIGHTS;
             }
-            mBuilder.setSound(Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())));
+            mBuilder.setSound(
+                    Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())),
+                    mStreamType);
             mBuilder.setDefaults(defaults);
         }
         Notification notification = mBuilder.build();
@@ -351,10 +371,16 @@ public class PollingAlarmManager extends BroadcastReceiver {
     }
 
     private Boolean isAlertFiltered(Alert alert) {
-        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered)
             return true;
         if (mPlanetFiltered && !mPlanetFilters.contains(alert.getRegion()))
             return false;
+        if (mTypeFiltered && !mTypeFilters.contains(alert.getMission().toLowerCase()))
+            return false;
+
+        if (!mItemFiltered && !mCreditFiltered)
+            return true;
+
         for (String reward : alert.getRewards()) {
             if (reward.contains("cr")) {
                 if (mCreditFiltered) {
@@ -373,10 +399,22 @@ public class PollingAlarmManager extends BroadcastReceiver {
     }
 
     private Boolean isInvasionFiltered(InvasionMini invasion) {
-        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered)
             return true;
         if (mPlanetFiltered && !mPlanetFilters.contains(invasion.getRegion()))
             return false;
+        if (mTypeFiltered) {
+            Log.d(TAG, invasion.getDefendingType().toLowerCase() + " " + invasion.getInvadingType().toLowerCase());
+            if (!mTypeFilters.contains(invasion.getDefendingType().toLowerCase())) {
+                if (!mTypeFilters.contains(invasion.getInvadingType().toLowerCase())) {
+                    return false;
+                }
+            }
+        }
+
+        if (!mItemFiltered && !mCreditFiltered)
+            return true;
+
         for (String reward : invasion.getRewards()) {
             if (reward.contains("cr")) {
                 if (mCreditFiltered) {

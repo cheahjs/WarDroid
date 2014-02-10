@@ -35,38 +35,27 @@
             android:dependency="filter_enabled"
             android:title="@string/settings_aura"
             android:key="aura_filters"
-            android:entries="@array/aura_filter_entries"
+            android:entries="@array/aura_filter_names"
             android:entryValues="@array/aura_filter_entries"/>
         <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_blueprints"
             android:key="bp_filters"
-            android:entries="@array/bp_filter_entries"
+            android:entries="@array/bp_filter_names"
             android:entryValues="@array/bp_filter_entries"/>
         <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_mods"
             android:key="mod_filters"
-            android:entries="@array/mod_filter_entries"
+            android:entries="@array/mod_filter_names"
             android:entryValues="@array/mod_filter_entries"/>
         <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_resources"
             android:key="resource_filters"
-            android:entries="@array/misc_filter_entries"
+            android:entries="@array/misc_filter_names"
             android:entryValues="@array/misc_filter_entries"/>
 
-        <CheckBoxPreference
-            android:dependency="alert_enabled"
-            android:title="@string/settings_enable_planet_filter_title"
-            android:summary="@string/settings_enable_planet_filter_summary"
-            android:key="planet_enabled"/>
-        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
-            android:dependency="planet_enabled"
-            android:title="@string/settings_planet_filter_title"
-            android:key="planet_filters"
-            android:entries="@array/planet_filter_entries"
-            android:entryValues="@array/planet_filter_entries"/>
 
         <CheckBoxPreference
             android:dependency="alert_enabled"
@@ -80,6 +69,30 @@
             android:key="credit_filter"
             android:inputType="number"
             android:numeric="integer"/>
+
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_enable_planet_filter_title"
+            android:summary="@string/settings_enable_planet_filter_summary"
+            android:key="planet_enabled"/>
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
+            android:dependency="planet_enabled"
+            android:title="@string/settings_planet_filter_title"
+            android:key="planet_filters"
+            android:entries="@array/planet_filter_names"
+            android:entryValues="@array/planet_filter_entries"/>
+
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_type_title"
+            android:summary="@string/settings_type_summary"
+            android:key="type_enabled"/>
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
+            android:dependency="type_enabled"
+            android:title="@string/settings_type_filter_title"
+            android:key="type_filters"
+            android:entries="@array/type_filter_names"
+            android:entryValues="@array/type_filter_entries"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -106,5 +119,12 @@
             android:ringtoneType="alarm|notification"
             android:title="@string/settings_sound"
             android:key="sound"/>
+        <ListPreference
+            android:dependency="alert_enabled"
+            android:defaultValue="notification"
+            android:entries="@array/volume_names"
+            android:entryValues="@array/volume_entries"
+            android:key="volume"
+            android:title="@string/settings_volume_title"/>
     </PreferenceCategory>
 </PreferenceScreen>

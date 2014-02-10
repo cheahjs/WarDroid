@@ -139,7 +139,6 @@ public class InvasionFragment extends SherlockFragment {
 
     @Override
     public void onResume() {
-        getSherlockActivity().getSupportActionBar().setTitle("Invasions");
         mHandler.postDelayed(mRefreshTimer, 60 * 1000);
         super.onResume();
     }

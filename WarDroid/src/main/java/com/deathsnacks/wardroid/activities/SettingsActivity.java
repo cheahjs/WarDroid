@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -29,8 +30,8 @@ import java.text.NumberFormat;
 /**
  * Created by Admin on 30/01/14.
  */
-public class NotificationsActivity extends SherlockPreferenceActivity {
-    private static final String TAG = "NotificationsActivity";
+public class SettingsActivity extends SherlockPreferenceActivity {
+    private static final String TAG = "SettingsActivity";
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
@@ -79,7 +80,18 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
                 e.printStackTrace();
             }
         }
-        //}
+        ListPreference volumeType = (ListPreference) findPreference("volume");
+        if (volumeType != null) {
+            volumeType.setSummary(volumeType.getEntry());
+            volumeType.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    ListPreference pref = (ListPreference) preference;
+                    preference.setSummary(pref.getEntries()[pref.findIndexOfValue(o.toString())]);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
@@ -87,6 +99,8 @@ public class NotificationsActivity extends SherlockPreferenceActivity {
         mPreferences.unregisterOnSharedPreferenceChangeListener(prefChanged);
         super.onDestroy();
     }
+
+
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override

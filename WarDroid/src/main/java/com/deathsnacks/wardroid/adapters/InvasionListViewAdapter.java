@@ -46,6 +46,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
         TextView defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
         TextView defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
         TextView defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
+        TextView eta = (TextView) view.findViewById(R.id.invasion_eta);
         ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
 
         String line = mLines.get(position + 1);
@@ -82,6 +83,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
         }
         bar.getProgressDrawable().setBounds(bounds);
         bar.setProgress(percentvalue);
+        eta.setText(invasion.getEta());
         view.setTag(invasion);
         return view;
     }

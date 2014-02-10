@@ -2,6 +2,6 @@
 
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header
-        android:fragment="com.deathsnacks.wardroid.activities.NotificationsActivity$PrefsFragment"
+        android:fragment="com.deathsnacks.wardroid.activities.SettingsActivity$PrefsFragment"
         android:title="Notifications"></header>
 </preference-headers>

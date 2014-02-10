@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -19,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -33,11 +31,9 @@ import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
-import com.deathsnacks.wardroid.fragments.SalesFragment;
 import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.Names;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -106,34 +102,35 @@ public class MainActivity extends SherlockFragmentActivity {
         }
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (mPreferences.getBoolean("alert_enabled", false)) {
-            Log.d(TAG, "starting alarm");
-            Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            if (pendingIntent != null) {
-                try {
-                    Log.d(TAG, "forcing start of alarm");
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setContentTitle(getString(R.string.notification_title))
-                            .setContentText(getString(R.string.notification_starting))
-                            .setOngoing(true);
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("drawer_position", 2);
-                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(pendingIntent2);
-                    mNotificationManager.notify(1, mBuilder.build());
-                    (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
-                    ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        if (savedInstanceState == null) {
+            Log.d(TAG, "no saved instance state");
+            if (mPreferences.getBoolean("alert_enabled", false)) {
+                Log.d(TAG, "starting alarm");
+                Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                if (pendingIntent != null) {
+                    try {
+                        Log.d(TAG, "forcing start of alarm");
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(R.drawable.ic_notification)
+                                .setContentTitle(getString(R.string.notification_title))
+                                .setContentText(getString(R.string.notification_starting))
+                                .setOngoing(true);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("drawer_position", 2);
+                        PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(pendingIntent2);
+                        mNotificationManager.notify(1, mBuilder.build());
+                        (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
+                        ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                                SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-        if (savedInstanceState == null) {
             Intent intent = getIntent();
             int startPos = intent.getIntExtra("drawer_position", 1);
             selectItem(startPos);
@@ -168,7 +165,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 if (mDrawerLayout != null)
                     mDrawerLayout.closeDrawer(mDrawerList);
                 mDrawerList.setItemChecked(position, false);
-                Intent intent = new Intent(this, NotificationsActivity.class);
+                Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return;
             default: //wat?
