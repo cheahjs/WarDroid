@@ -45,7 +45,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions", "", "Notifications"};
+    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions"};
     private CharSequence mTitle;
     private CharSequence mDrawerTitle;
     private SeparatedListAdapter mDrawerAdapter;
@@ -65,9 +65,6 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerAdapter.addSection(getString(R.string.drawer_trackers_title),
                 new ArrayAdapter<String>(this, R.layout.list_item_drawer,
                         Arrays.asList(mDrawerTitles[1], mDrawerTitles[2], mDrawerTitles[3])));
-        mDrawerAdapter.addSection(getString(R.string.drawer_settings_title),
-                new ArrayAdapter<String>(this, R.layout.list_item_drawer,
-                        Arrays.asList(mDrawerTitles[6])));
         mDrawerList.setAdapter(mDrawerAdapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());

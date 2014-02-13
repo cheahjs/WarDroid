@@ -21,10 +21,32 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
-        <ListView
-            style="@style/marginPoint"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/invasions_none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/list_alerts"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/invasions_none"
+            android:textStyle="italic"
+            android:id="@+id/invasion_none_text"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+    </LinearLayout>
+    <ListView
+        style="@style/marginPoint"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_alerts"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

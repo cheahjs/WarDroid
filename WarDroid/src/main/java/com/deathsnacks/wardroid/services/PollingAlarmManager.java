@@ -168,11 +168,9 @@ public class PollingAlarmManager extends BroadcastReceiver {
                     Log.d(TAG, "we received something other than 201 for alerts: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                         String cache = mPreferences.getString("alerts_cache", "");
-                        if (cache.length() > 2) {
-                            Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
-                            Log.d(TAG, cache);
-                            parseAlerts(cache);
-                        }
+                        Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
+                        Log.d(TAG, cache);
+                        parseAlerts(cache);
                     }
                     return;
                 }
@@ -194,8 +192,11 @@ public class PollingAlarmManager extends BroadcastReceiver {
     }
 
     private void parseAlerts(String response) {
-        if (response.length() < 10)
+        if (response.length() < 15) {
+            mAlertSuccess = true;
+            Log.i(TAG, "Alert response < 15, tagging success and continuing");
             return;
+        }
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
         Log.d(TAG, mPreferences.getString("alert_completed_ids", ""));
@@ -251,11 +252,9 @@ public class PollingAlarmManager extends BroadcastReceiver {
                     Log.d(TAG, "we received something other than 201 for invasions: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                         String cache = mPreferences.getString("invasion_cache", "");
-                        if (cache.length() > 2) {
-                            Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
-                            Log.d(TAG, cache);
-                            parseInvasions(cache);
-                        }
+                        Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
+                        Log.d(TAG, cache);
+                        parseInvasions(cache);
                     }
                     return;
                 }
@@ -277,8 +276,12 @@ public class PollingAlarmManager extends BroadcastReceiver {
     }
 
     private void parseInvasions(String response) {
-        if (response.length() < 10)
+        Log.d(TAG, response.length()+"");
+        if (response.length() < 15) {
+            mInvasionSuccess = true;
+            Log.i(TAG, "Invasion response < 15, tagging success and continuing");
             return;
+        }
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         Log.d(TAG, mPreferences.getString("invasion_completed_ids", ""));

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_name">Notification Settings</string>
+    <string name="settings_name">Settings</string>
     <string name="settings_notifications_title">General</string>
     <string name="settings_enable_alerts_title">Enable Alert notifications</string>
     <string name="settings_enable_alerts_summary">This includes invasions. THIS IS IN BETA. May consume a lot of data.</string>

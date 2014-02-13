@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,6 +26,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
@@ -45,11 +47,13 @@ public class InvasionFragment extends SherlockFragment {
     private InvasionRefresh mTask;
     private InvasionListViewAdapter mAdapter;
     private Handler mHandler;
+    private View mNoneView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         setRetainInstance(true);
+        mNoneView = rootView.findViewById(R.id.invasions_none);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
         mInvasionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,6 +107,10 @@ public class InvasionFragment extends SherlockFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 refresh(true);
+                return true;
+            case R.id.settings:
+                Intent intent = new Intent(getSherlockActivity(), SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -176,11 +184,13 @@ public class InvasionFragment extends SherlockFragment {
                             mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
                         }
                     });
+            mNoneView.setVisibility(View.GONE);
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
             mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mNoneView.setVisibility(View.GONE);
         }
     }
 
@@ -240,6 +250,9 @@ public class InvasionFragment extends SherlockFragment {
                 try {
                     mAdapter = new InvasionListViewAdapter(activity, data);
                     mInvasionView.setAdapter(mAdapter);
+                    if (data.size() < 2) {
+                        mNoneView.setVisibility(View.VISIBLE);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

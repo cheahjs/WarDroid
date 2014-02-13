@@ -16,6 +16,9 @@
     <string name="alert_mark_complete">Do you want to mark this alert as completed?</string>
     <string name="invasion_mark_complete">Do you want to mark this invasion as completed?</string>
     <string name="notification_more">+%1$s more</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="invasions_none">There are no invasions at this time.</string>
 
     <string-array name="drawer_titles">
         <item>TRACKER HEADER</item>
