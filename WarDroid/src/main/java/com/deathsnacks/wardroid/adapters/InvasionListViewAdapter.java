@@ -51,8 +51,11 @@ public class InvasionListViewAdapter extends BaseAdapter {
 
         String line = mLines.get(position + 1);
         String[] parts = line.split("\\|");
-        if (parts.length != 19)
-            return null;
+        if (parts.length != 19) {
+            View dedView = new View(mActivity);
+            dedView.setVisibility(View.GONE);
+            return dedView;
+        }
         Invasion invasion = new Invasion(line);
         node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         invadingfaction.setText(invasion.getInvadingFaction());

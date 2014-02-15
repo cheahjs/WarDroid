@@ -40,8 +40,11 @@ public class NewsListViewAdapter extends BaseAdapter {
 
         String line = mLines.get(position);
         String[] parts = line.split("\\|");
-        if (parts.length != 4)
-            return null;
+        if (parts.length != 4) {
+            View dedView = new View(mActivity);
+            dedView.setVisibility(View.GONE);
+            return dedView;
+        }
         text.setText(parts[3]);
         int activation = Integer.parseInt(parts[2]);
         long now = (long) (System.currentTimeMillis() / 1000);
