@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="reward_version">1</integer>
+
     <string name="settings_name">Settings</string>
     <string name="settings_notifications_title">General</string>
     <string name="settings_enable_alerts_title">Enable Alert notifications</string>
@@ -128,6 +130,7 @@
         <item>Alloy Plate</item>
         <item>Circuits</item>
         <item>Control Module</item>
+        <item>Detonite Injector</item>
         <item>Ferrite</item>
         <item>Fieldron</item>
         <item>Gallium</item>
@@ -263,6 +266,7 @@
         <item>Alloy Plate</item>
         <item>Circuits</item>
         <item>Control Module</item>
+        <item>Detonite Injector</item>
         <item>Ferrite</item>
         <item>Fieldron</item>
         <item>Gallium</item>
