@@ -48,6 +48,7 @@ public class AlertsFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mAlertView;
     private AlertsRefresh mTask;
+    private UpdateTask mUpdateTask;
     private AlertsListViewAdapter mAdapter;
     private Handler mHandler;
 
@@ -170,6 +171,10 @@ public class AlertsFragment extends SherlockFragment {
     @Override
     public void onStart() {
         refresh(true);
+        if (mUpdateTask == null) {
+            mUpdateTask = new UpdateTask(getActivity());
+            mUpdateTask.execute();
+        }
         super.onStart();
     }
 
@@ -278,6 +283,67 @@ public class AlertsFragment extends SherlockFragment {
         protected void onCancelled() {
             mTask = null;
             showProgress(false);
+        }
+    }
+
+    public class UpdateTask extends AsyncTask<Void, Void, Boolean> {
+        private Activity activity;
+        private int version;
+        private String[] list;
+        //MAGIC_NUMBER|planet|aura|bp|mod|misc
+
+        public UpdateTask(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                String response = Http.get("http://deathsnacks.com/wf/game_data/current_rewards.txt");
+                version = Integer.parseInt(response.trim());
+                if (version > preferences.getInt("reward_version", getResources().getInteger(R.integer.reward_version))) {
+                    String newEntries = Http.get("http://deathsnacks.com/wf/game_data/current_rewards_list.txt");
+                    if (!newEntries.contains("MAGIC_NUMBER"))
+                        return false;
+                    list = newEntries.split("\\n");
+                    if (list.length < 6)
+                        return false;
+                    return true;
+                }
+                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mUpdateTask = null;
+            if (activity == null)
+                return;
+            if (success) {
+                try {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt("reward_version", version);
+                    editor.putString("planet_entries",list[1]);
+                    editor.putString("aura_entries",list[2]);
+                    editor.putString("bp_entries",list[3]);
+                    editor.putString("mod_entries",list[4]);
+                    editor.putString("misc_entries",list[5]);
+                    editor.commit();
+                    Toast.makeText(activity, "Item filters have been updated.", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mUpdateTask = null;
         }
     }
 }
