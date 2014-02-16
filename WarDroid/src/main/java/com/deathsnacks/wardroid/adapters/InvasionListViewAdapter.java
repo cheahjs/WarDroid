@@ -19,6 +19,7 @@ import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -37,6 +38,20 @@ public class InvasionListViewAdapter extends BaseAdapter {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         mLines = data;
+        mLines.remove(0);
+        if (mPreferences.getBoolean("hide_completed", false)) {
+            List<String> newList = new ArrayList<String>();
+            for (int i = 0; i < mLines.size(); i++) {
+                String line = mLines.get(i);
+                Invasion invasion = new Invasion(line);
+                if (mCompletedIds.contains(invasion.getId())) {
+                    Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
+                } else {
+                    newList.add(line);
+                }
+            }
+            mLines = newList;
+        }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -44,11 +59,24 @@ public class InvasionListViewAdapter extends BaseAdapter {
     public void notifyDataSetChanged() {
         if (mPreferences.getBoolean("hide_completed", false))
             mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        if (mPreferences.getBoolean("hide_completed", false)) {
+            List<String> newList = new ArrayList<String>();
+            for (int i = 0; i < mLines.size(); i++) {
+                String line = mLines.get(i);
+                Invasion invasion = new Invasion(line);
+                if (mCompletedIds.contains(invasion.getId())) {
+                    Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
+                } else {
+                    newList.add(line);
+                }
+            }
+            mLines = newList;
+        }
         super.notifyDataSetChanged();
     }
 
     public int getCount() {
-        return mLines.size() - 1;
+        return mLines.size();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -68,7 +96,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
         TextView eta = (TextView) view.findViewById(R.id.invasion_eta);
         ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
 
-        String line = mLines.get(position + 1);
+        String line = mLines.get(position);
         String[] parts = line.split("\\|");
         if (parts.length != 19) {
             View dedView = new View(mActivity);
@@ -77,11 +105,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
         }
         Invasion invasion = new Invasion(line);
         if (mPreferences.getBoolean("hide_completed", false) && mCompletedIds.contains(invasion.getId())) {
-            mLines.remove(position + 1);
             notifyDataSetChanged();
-            view.setVisibility(View.GONE);
-            Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
-            return view;
         }
         node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         invadingfaction.setText(invasion.getInvadingFaction());

@@ -37,6 +37,18 @@ public class AlertsListViewAdapter extends BaseAdapter {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
         mAlerts = data;
+        if (mPreferences.getBoolean("hide_completed", false)) {
+            List<Alert> newList = new ArrayList<Alert>();
+            for (int i = 0; i < mAlerts.size(); i++) {
+                Alert alert = mAlerts.get(i);
+                if (mCompletedIds.contains(alert.get_id().get$id())) {
+                    Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
+                } else {
+                    newList.add(alert);
+                }
+            }
+            mAlerts = newList;
+        }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -44,6 +56,18 @@ public class AlertsListViewAdapter extends BaseAdapter {
     public void notifyDataSetChanged() {
         if (mPreferences.getBoolean("hide_completed", false))
             mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+        if (mPreferences.getBoolean("hide_completed", false)) {
+            List<Alert> newList = new ArrayList<Alert>();
+            for (int i = 0; i < mAlerts.size(); i++) {
+                Alert alert = mAlerts.get(i);
+                if (mCompletedIds.contains(alert.get_id().get$id())) {
+                    Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
+                } else {
+                    newList.add(alert);
+                }
+            }
+            mAlerts = newList;
+        }
         super.notifyDataSetChanged();
     }
 
