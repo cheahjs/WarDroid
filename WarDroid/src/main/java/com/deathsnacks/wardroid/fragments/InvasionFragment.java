@@ -81,6 +81,7 @@ public class InvasionFragment extends SherlockFragment {
                                 SharedPreferences.Editor mEditor = mPreferences.edit();
                                 mEditor.putString("invasion_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
                                 mEditor.commit();
+                                mAdapter.notifyDataSetChanged();
                                 dialogInterface.cancel();
                             }
                         })
@@ -206,7 +207,7 @@ public class InvasionFragment extends SherlockFragment {
         protected Boolean doInBackground(Void... params) {
             try {
                 String response = Http.get("http://deathsnacks.com/wf/data/invasion_raw.txt");
-                data = Arrays.asList(response.split("\\n"));
+                data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
                 clearIds();
                 return true;
             } catch (Exception e) {
@@ -238,7 +239,6 @@ public class InvasionFragment extends SherlockFragment {
                 e.printStackTrace();
             }
         }
-
 
         @Override
         protected void onPostExecute(Boolean success) {

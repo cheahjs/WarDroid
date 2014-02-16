@@ -2,7 +2,10 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +14,37 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Admin on 25/01/14.
  */
 public class InvasionListViewAdapter extends BaseAdapter {
+    private ArrayList<String> mCompletedIds;
+    private SharedPreferences mPreferences;
     private Activity mActivity;
     private List<String> mLines;
     private LayoutInflater mInflater;
+    private static String TAG = "InvasionListViewAdapter";
 
     public InvasionListViewAdapter(Activity act, List<String> data) {
         mActivity = act;
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
+        mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         mLines = data;
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        if (mPreferences.getBoolean("hide_completed", false))
+            mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        super.notifyDataSetChanged();
     }
 
     public int getCount() {
@@ -37,6 +55,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_invasion, null);
+        view.setVisibility(View.VISIBLE);
         TextView node = (TextView) view.findViewById(R.id.invasion_node);
         TextView desc = (TextView) view.findViewById(R.id.invasion_desc);
         TextView percent = (TextView) view.findViewById(R.id.invasion_percent);
@@ -57,6 +76,13 @@ public class InvasionListViewAdapter extends BaseAdapter {
             return dedView;
         }
         Invasion invasion = new Invasion(line);
+        if (mPreferences.getBoolean("hide_completed", false) && mCompletedIds.contains(invasion.getId())) {
+            mLines.remove(position + 1);
+            notifyDataSetChanged();
+            view.setVisibility(View.GONE);
+            Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
+            return view;
+        }
         node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         invadingfaction.setText(invasion.getInvadingFaction());
         invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());

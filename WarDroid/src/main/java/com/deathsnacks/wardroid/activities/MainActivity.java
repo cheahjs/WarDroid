@@ -129,7 +129,18 @@ public class MainActivity extends SherlockFragmentActivity {
                 }
             }
             Intent intent = getIntent();
-            int startPos = intent.getIntExtra("drawer_position", 1);
+            int startPos = intent.getIntExtra("drawer_position", 0);
+            if (startPos == 0) {
+                String defaultValue = mPreferences.getString("default_window", "news");
+                Log.d(TAG, "default window: " + defaultValue);
+                if (defaultValue.equals("news"))
+                    startPos = 1;
+                else if (defaultValue.equals("alerts"))
+                    startPos = 2;
+                else if (defaultValue.equals("invasions"))
+                    startPos = 3;
+            }
+            Log.d(TAG, "selected default window: " + startPos);
             selectItem(startPos);
         }
     }

@@ -7,16 +7,37 @@
 
     <PreferenceCategory
         android:title="@string/settings_notifications_title">
+        <ListPreference
+            android:defaultValue="news"
+            android:entries="@array/window_names"
+            android:entryValues="@array/window_entries"
+            android:key="default_window"
+            android:title="@string/settings_default_window_title"/>
         <!--<CheckBoxPreference
             android:key="news_enabled"
             android:title="Enable News notifications"/>-->
         <CheckBoxPreference
-            android:key="alert_enabled"
-            android:title="@string/settings_enable_alerts_title"
-            android:summary="@string/settings_enable_alerts_summary"/>
+            android:key="hide_completed"
+            android:title="@string/settings_hide_completed_title"
+            android:defaultValue="false"
+            android:summary="@string/settings_hide_completed_summary"/>
         <!--<CheckBoxPreference
             android:key="sale_enabled"
             android:title="Enable Flash Sale notifications"/>-->
+        </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_notifications_category_title">
+        <CheckBoxPreference
+            android:key="alert_enabled"
+            android:title="@string/settings_enable_alerts_title"
+            android:summary="@string/settings_enable_alerts_summary"/>
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:key="empty_enabled"
+            android:title="@string/settings_empty_title"
+            android:defaultValue="true"
+            android:summary="@string/settings_empty_summary"/>
         </PreferenceCategory>
 
     <PreferenceCategory
@@ -55,7 +76,6 @@
             android:key="resource_filters"
             android:entries="@array/misc_filter_names"
             android:entryValues="@array/misc_filter_entries"/>
-
 
         <CheckBoxPreference
             android:dependency="alert_enabled"

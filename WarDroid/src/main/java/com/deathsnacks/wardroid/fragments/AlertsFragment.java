@@ -85,6 +85,7 @@ public class AlertsFragment extends SherlockFragment {
                                 SharedPreferences.Editor mEditor = mPreferences.edit();
                                 mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids2.toArray(new String[ids2.size()])));
                                 mEditor.commit();
+                                mAdapter.notifyDataSetChanged();
                                 dialogInterface.cancel();
                             }
                         })

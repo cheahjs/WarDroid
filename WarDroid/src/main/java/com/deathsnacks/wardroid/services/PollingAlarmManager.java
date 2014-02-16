@@ -62,6 +62,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
     private Boolean mEnableVibrate;
     private Boolean mEnableLED;
     private Boolean mInsistent;
+    private Boolean mEmptyIcon;
     private int mStreamType;
 
     @Override
@@ -115,6 +116,8 @@ public class PollingAlarmManager extends BroadcastReceiver {
                 mStreamType = AudioManager.STREAM_ALARM;
             else if (volumeType.equals("media"))
                 mStreamType = AudioManager.STREAM_MUSIC;
+
+            mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
             (new RefreshTask()).execute();
             mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
@@ -370,7 +373,11 @@ public class PollingAlarmManager extends BroadcastReceiver {
         if (mVibrate && mInsistent) {
             notification.flags |= Notification.FLAG_INSISTENT;
         }
-        mNotificationManager.notify(1, notification);
+        if (!mEmptyIcon && mNotifications.size() == 0) {
+            mNotificationManager.cancel(1);
+        } else {
+            mNotificationManager.notify(1, notification);
+        }
     }
 
     private Boolean isAlertFiltered(Alert alert) {
