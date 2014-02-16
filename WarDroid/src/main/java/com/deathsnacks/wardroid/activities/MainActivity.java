@@ -4,37 +4,34 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.services.PollingAlarmManager;
 import com.deathsnacks.wardroid.utils.Names;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * Created by Admin on 23/01/14.
@@ -42,61 +39,30 @@ import java.util.Arrays;
 public class MainActivity extends SherlockFragmentActivity {
     private static final String TAG = "MainActivity";
     private ActionBar mActionBar;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
     private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions"};
-    private CharSequence mTitle;
-    private CharSequence mDrawerTitle;
-    private SeparatedListAdapter mDrawerAdapter;
     private SharedPreferences mPreferences;
+    private ViewPager mPager;
+    private FragmentManager mFragmentManager;
+    private TabsAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        View drawerTest = findViewById(R.id.drawer_layout);
-        if (drawerTest != null)
-            mDrawerLayout = (DrawerLayout) drawerTest;
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        setContentView(R.layout.activity_main_pager);
 
         mDrawerTitles = getResources().getStringArray(R.array.drawer_titles);
-        mDrawerAdapter = new SeparatedListAdapter(this);
-        mDrawerAdapter.addSection(getString(R.string.drawer_trackers_title),
-                new ArrayAdapter<String>(this, R.layout.list_item_drawer,
-                        Arrays.asList(mDrawerTitles[1], mDrawerTitles[2], mDrawerTitles[3])));
-        mDrawerList.setAdapter(mDrawerAdapter);
-
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
         mActionBar = getSupportActionBar();
-        mTitle = mDrawerTitle = getTitle();
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if (mDrawerLayout != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeButtonEnabled(true);
-            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-            mDrawerToggle = new ActionBarDrawerToggle(
-                    this,                  /* host Activity */
-                    mDrawerLayout,         /* DrawerLayout object */
-                    R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                    R.string.drawer_open,  /* "open drawer" description for accessibility */
-                    R.string.drawer_close  /* "close drawer" description for accessibility */
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(2);
+        mFragmentManager = getSupportFragmentManager();
+        mPagerAdapter = new TabsAdapter(this, mPager);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[1]), NewsFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[2]), AlertsFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[3]), InvasionFragment.class, null);
 
-            ) {
-                public void onDrawerClosed(View view) {
-                    getSupportActionBar().setTitle(mTitle);
-                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
-
-                public void onDrawerOpened(View drawerView) {
-                    getSupportActionBar().setTitle(mDrawerTitle);
-                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                }
-            };
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-        }
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (savedInstanceState == null) {
@@ -129,96 +95,26 @@ public class MainActivity extends SherlockFragmentActivity {
                 }
             }
             Intent intent = getIntent();
-            int startPos = intent.getIntExtra("drawer_position", 0);
-            if (startPos == 0) {
+            int startPos = intent.getIntExtra("drawer_position", -1);
+            if (startPos == -1) {
                 String defaultValue = mPreferences.getString("default_window", "news");
-                Log.d(TAG, "default window: " + defaultValue);
                 if (defaultValue.equals("news"))
-                    startPos = 1;
+                    startPos = 0;
                 else if (defaultValue.equals("alerts"))
-                    startPos = 2;
+                    startPos = 1;
                 else if (defaultValue.equals("invasions"))
-                    startPos = 3;
+                    startPos = 2;
             }
-            Log.d(TAG, "selected default window: " + startPos);
-            selectItem(startPos);
+            mActionBar.setSelectedNavigationItem(startPos);
+        } else {
+            mActionBar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
         }
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (position != 0 && position != 4)
-                selectItem(position);
-        }
-    }
-
-    private void selectItem(int position) {
-        // update the main content by replacing fragments
-        SherlockFragment fragment = null;
-        switch (position) {
-            case 1: //news
-                fragment = new NewsFragment();
-                break;
-            case 2: //alerts
-                fragment = new AlertsFragment();
-                break;
-            case 3: //invasions
-                fragment = new InvasionFragment();
-                break;
-            /*case 4: //sales
-                fragment = new SalesFragment();
-                break;*/
-            case 5: //notification settings
-                if (mDrawerLayout != null)
-                    mDrawerLayout.closeDrawer(mDrawerList);
-                mDrawerList.setItemChecked(position, false);
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return;
-            default: //wat?
-                Log.w(TAG, "we some how fucked up with the drawer positions");
-                return;
-        }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mDrawerTitles[position]);
-        if (mDrawerLayout != null)
-            mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        mActionBar.setTitle(title);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView drawer_list = (ListView) findViewById(R.id.left_drawer);
-        if (item.getItemId() == android.R.id.home) {
-
-            if (drawer_layout.isDrawerOpen(drawer_list)) {
-                drawer_layout.closeDrawer(drawer_list);
-            } else {
-                drawer_layout.openDrawer(drawer_list);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (mDrawerToggle != null)
-            mDrawerToggle.syncState();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());
     }
 
     public class PreloadData extends AsyncTask<Void, Void, Void> {
@@ -243,6 +139,84 @@ public class MainActivity extends SherlockFragmentActivity {
 
         @Override
         protected void onCancelled() {
+        }
+    }
+
+    public static class TabsAdapter extends FragmentPagerAdapter
+            implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
+        private final Context mContext;
+        private final ActionBar mActionBar;
+        private final ViewPager mViewPager;
+        private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+
+        static final class TabInfo {
+            private final Class<?> clss;
+            private final Bundle args;
+
+            TabInfo(Class<?> _class, Bundle _args) {
+                clss = _class;
+                args = _args;
+            }
+        }
+
+        public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
+            super(activity.getSupportFragmentManager());
+            mContext = activity;
+            mActionBar = activity.getSupportActionBar();
+            mViewPager = pager;
+            mViewPager.setAdapter(this);
+            mViewPager.setOnPageChangeListener(this);
+        }
+
+        public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
+            TabInfo info = new TabInfo(clss, args);
+            tab.setTag(info);
+            tab.setTabListener(this);
+            mTabs.add(info);
+            mActionBar.addTab(tab);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mTabs.size();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            TabInfo info = mTabs.get(position);
+            return Fragment.instantiate(mContext, info.clss.getName(), info.args);
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            mActionBar.setSelectedNavigationItem(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+
+        @Override
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            Object tag = tab.getTag();
+            for (int i=0; i<mTabs.size(); i++) {
+                if (mTabs.get(i) == tag) {
+                    mViewPager.setCurrentItem(i);
+                }
+            }
+        }
+
+        @Override
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        }
+
+        @Override
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
         }
     }
 }

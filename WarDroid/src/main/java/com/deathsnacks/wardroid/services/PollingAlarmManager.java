@@ -353,7 +353,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             }
         }
         Intent intent = new Intent(mContext, MainActivity.class);
-        intent.putExtra("drawer_position", 2);
+        intent.putExtra("drawer_position", 1);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         if (mVibrate) {
