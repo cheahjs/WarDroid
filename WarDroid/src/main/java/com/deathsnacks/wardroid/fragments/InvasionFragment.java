@@ -42,6 +42,7 @@ import java.util.List;
  * Created by Admin on 23/01/14.
  */
 public class InvasionFragment extends SherlockFragment {
+    private static final String TAG = "InvasionFragment";
     private View mRefreshView;
     private ListView mInvasionView;
     private InvasionRefresh mTask;
@@ -119,6 +120,7 @@ public class InvasionFragment extends SherlockFragment {
     }
 
     private void refresh(Boolean show) {
+        Log.d(TAG, "Starting refresh.");
         showProgress(show);
         if (mTask == null) {
             mTask = new InvasionRefresh(getActivity());
@@ -165,6 +167,8 @@ public class InvasionFragment extends SherlockFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             mRefreshView.setVisibility(View.VISIBLE);
+            mInvasionView.setVisibility(View.VISIBLE);
+            try {
             mRefreshView.animate()
                     .setDuration(shortAnimTime)
                     .alpha(show ? 1 : 0)
@@ -175,7 +179,6 @@ public class InvasionFragment extends SherlockFragment {
                         }
                     });
 
-            mInvasionView.setVisibility(View.VISIBLE);
             mInvasionView.animate()
                     .setDuration(shortAnimTime)
                     .alpha(show ? 0 : 1)
@@ -185,6 +188,11 @@ public class InvasionFragment extends SherlockFragment {
                             mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
                         }
                     });
+            } catch (Exception ex) {
+                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
+                ex.printStackTrace();
+            }
             mNoneView.setVisibility(View.GONE);
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show

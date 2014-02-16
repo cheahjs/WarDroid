@@ -45,6 +45,7 @@ import java.util.List;
  * Created by Admin on 23/01/14.
  */
 public class AlertsFragment extends SherlockFragment {
+    private static final String TAG = "AlertsFragment";
     private View mRefreshView;
     private ListView mAlertView;
     private AlertsRefresh mTask;
@@ -123,6 +124,7 @@ public class AlertsFragment extends SherlockFragment {
     }
 
     private void refresh(Boolean show) {
+        Log.d(TAG, "Starting refresh.");
         showProgress(show);
         if (mTask == null) {
             mTask = new AlertsRefresh(getActivity());

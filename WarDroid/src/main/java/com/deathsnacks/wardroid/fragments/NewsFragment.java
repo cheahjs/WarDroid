@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import java.util.List;
  * Created by Admin on 23/01/14.
  */
 public class NewsFragment extends SherlockFragment {
+    private static final String TAG = "NewsFragment";
     private View mRefreshView;
     private ListView mNewsView;
     private NewsRefresh mTask;
@@ -82,6 +84,7 @@ public class NewsFragment extends SherlockFragment {
     }
 
     private void refresh(Boolean show) {
+        Log.d(TAG, "Starting refresh.");
         showProgress(show);
         if (mTask == null) {
             mTask = new NewsRefresh(getActivity());
@@ -125,36 +128,41 @@ public class NewsFragment extends SherlockFragment {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
-        if (isAdded()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-                mRefreshView.setVisibility(View.VISIBLE);
-                mRefreshView.animate()
-                        .setDuration(shortAnimTime)
-                        .alpha(show ? 1 : 0)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                            }
-                        });
-
-                mNewsView.setVisibility(View.VISIBLE);
-                mNewsView.animate()
-                        .setDuration(shortAnimTime)
-                        .alpha(show ? 0 : 1)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
-                            }
-                        });
-            } else {
-                // The ViewPropertyAnimator APIs are not available, so simply show
-                // and hide the relevant UI components.
+        if (!isAdded())
+            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            mRefreshView.setVisibility(View.VISIBLE);
+            mNewsView.setVisibility(View.VISIBLE);
+            try {
+            mRefreshView.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha(show ? 1 : 0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                        }
+                    });
+            mNewsView.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha(show ? 0 : 1)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
+                        }
+                    });
+            } catch (Exception ex) {
                 mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
                 mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
+                ex.printStackTrace();
             }
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
