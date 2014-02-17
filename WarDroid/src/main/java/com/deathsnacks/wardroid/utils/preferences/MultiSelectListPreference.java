@@ -15,10 +15,6 @@
  */
 package com.deathsnacks.wardroid.utils.preferences;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +23,10 @@ import android.preference.ListPreference;
 import android.util.AttributeSet;
 
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 // android:defaultValue="entryValue1|entryValue2"
 public class MultiSelectListPreference extends ListPreference {

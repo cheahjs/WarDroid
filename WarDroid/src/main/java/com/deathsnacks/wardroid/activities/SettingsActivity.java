@@ -145,12 +145,12 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                    ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                             SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
                 } else {
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(1);
-                    ((AlarmManager)getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                    ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                             getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("credit_filter")) {

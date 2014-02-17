@@ -28,9 +28,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
-import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
-import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
@@ -169,25 +167,25 @@ public class InvasionFragment extends SherlockFragment {
             mRefreshView.setVisibility(View.VISIBLE);
             mInvasionView.setVisibility(View.VISIBLE);
             try {
-            mRefreshView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                        }
-                    });
+                mRefreshView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 1 : 0)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                            }
+                        });
 
-            mInvasionView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
-                        }
-                    });
+                mInvasionView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 0 : 1)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);
+                            }
+                        });
             } catch (Exception ex) {
                 mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
                 mInvasionView.setVisibility(show ? View.GONE : View.VISIBLE);

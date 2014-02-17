@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -127,7 +126,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             Log.d(TAG, "cancelling alarm since we didn't enable alarm");
             mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(1);
-            ((AlarmManager)context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                     context, 0, new Intent(context, PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
         }
     }
@@ -216,7 +215,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             }
             Log.d(TAG, "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
                     + " - new: " + mNew);
-            if (alert.getExpiry() < System.currentTimeMillis()/1000) {
+            if (alert.getExpiry() < System.currentTimeMillis() / 1000) {
                 Log.d(TAG, "alert: " + alert.getNode() + " has expired, ignore");
                 continue;
             }
@@ -279,7 +278,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
     }
 
     private void parseInvasions(String response) {
-        Log.d(TAG, response.length()+"");
+        Log.d(TAG, response.length() + "");
         if (response.length() < 15) {
             mInvasionSuccess = true;
             Log.i(TAG, "Invasion response < 15, tagging success and continuing");
@@ -359,7 +358,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         if (mVibrate) {
             int defaults = 0;
             if (mEnableVibrate) {
-                mBuilder.setVibrate(new long[] {0, 300});
+                mBuilder.setVibrate(new long[]{0, 300});
             }
             if (mEnableLED) {
                 defaults |= Notification.DEFAULT_LIGHTS;
@@ -394,7 +393,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         for (String reward : alert.getRewards()) {
             if (reward.contains("cr")) {
                 if (mCreditFiltered) {
-                    int credits =  Integer.parseInt(reward.replace(",", "").replace("cr", ""));
+                    int credits = Integer.parseInt(reward.replace(",", "").replace("cr", ""));
                     if (credits >= mCreditFilter)
                         return true;
                 }
@@ -428,7 +427,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
         for (String reward : invasion.getRewards()) {
             if (reward.contains("cr")) {
                 if (mCreditFiltered) {
-                    int credits =  Integer.parseInt(reward.replace(",", "").replace("cr", ""));
+                    int credits = Integer.parseInt(reward.replace(",", "").replace("cr", ""));
                     if (credits >= mCreditFilter)
                         return true;
                 }

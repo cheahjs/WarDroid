@@ -135,24 +135,24 @@ public class NewsFragment extends SherlockFragment {
             mRefreshView.setVisibility(View.VISIBLE);
             mNewsView.setVisibility(View.VISIBLE);
             try {
-            mRefreshView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                        }
-                    });
-            mNewsView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 0 : 1)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
-                        }
-                    });
+                mRefreshView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 1 : 0)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                            }
+                        });
+                mNewsView.animate()
+                        .setDuration(shortAnimTime)
+                        .alpha(show ? 0 : 1)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);
+                            }
+                        });
             } catch (Exception ex) {
                 mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
                 mNewsView.setVisibility(show ? View.GONE : View.VISIBLE);

@@ -32,7 +32,6 @@ import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
-import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -331,11 +330,11 @@ public class AlertsFragment extends SherlockFragment {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putInt("reward_version", version);
-                    editor.putString("planet_entries",list[1]);
-                    editor.putString("aura_entries",list[2]);
-                    editor.putString("bp_entries",list[3]);
-                    editor.putString("mod_entries",list[4]);
-                    editor.putString("misc_entries",list[5]);
+                    editor.putString("planet_entries", list[1]);
+                    editor.putString("aura_entries", list[2]);
+                    editor.putString("bp_entries", list[3]);
+                    editor.putString("mod_entries", list[4]);
+                    editor.putString("misc_entries", list[5]);
                     editor.commit();
                     Toast.makeText(activity, "Item filters have been updated.", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {

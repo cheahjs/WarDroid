@@ -19,7 +19,6 @@ import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**

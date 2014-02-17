@@ -1,14 +1,10 @@
 package com.deathsnacks.wardroid.utils;
 
-import android.app.Activity;
-import android.util.Log;
-
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 

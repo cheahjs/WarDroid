@@ -2,16 +2,12 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.gson.Alert;
-import com.deathsnacks.wardroid.utils.Names;
 
 import java.util.List;
 

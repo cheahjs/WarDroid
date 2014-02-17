@@ -21,8 +21,6 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
@@ -86,7 +84,7 @@ public class MainActivity extends SherlockFragmentActivity {
                         mBuilder.setContentIntent(pendingIntent2);
                         mNotificationManager.notify(1, mBuilder.build());
                         (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
-                        ((AlarmManager)getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                        ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                                 SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
 
                     } catch (Exception e) {
@@ -204,7 +202,7 @@ public class MainActivity extends SherlockFragmentActivity {
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             Object tag = tab.getTag();
-            for (int i=0; i<mTabs.size(); i++) {
+            for (int i = 0; i < mTabs.size(); i++) {
                 if (mTabs.get(i) == tag) {
                     mViewPager.setCurrentItem(i);
                 }

@@ -2,7 +2,6 @@ package com.deathsnacks.wardroid.utils;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 /**
  * Created by Admin on 24/01/14.
