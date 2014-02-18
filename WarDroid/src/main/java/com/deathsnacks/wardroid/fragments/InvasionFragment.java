@@ -51,11 +51,11 @@ public class InvasionFragment extends SherlockFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_invasions, container, false);
         setRetainInstance(true);
         mNoneView = rootView.findViewById(R.id.invasions_none);
-        mRefreshView = rootView.findViewById(R.id.alert_refresh);
-        mInvasionView = (ListView) rootView.findViewById(R.id.list_alerts);
+        mRefreshView = rootView.findViewById(R.id.invasion_refresh);
+        mInvasionView = (ListView) rootView.findViewById(R.id.list_invasions);
         mInvasionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
