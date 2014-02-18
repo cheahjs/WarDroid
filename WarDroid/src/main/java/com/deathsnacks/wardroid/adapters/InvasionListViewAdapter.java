@@ -84,21 +84,29 @@ public class InvasionListViewAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.list_item_invasion, null);
             holder = new ViewHolder();
             holder.completed = view.findViewById(R.id.invasion_completed);
-            holder. node = (TextView) view.findViewById(R.id.invasion_node);
-            holder. desc = (TextView) view.findViewById(R.id.invasion_desc);
-            holder. percent = (TextView) view.findViewById(R.id.invasion_percent);
-            holder. invadingfaction = (TextView) view.findViewById(R.id.invasion_invading_faction);
-            holder. invadingtype = (TextView) view.findViewById(R.id.invasion_invading_type);
-            holder. invadingrewards = (TextView) view.findViewById(R.id.invasion_invading_reward);
-            holder. defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
-            holder. defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
-            holder. defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
-            holder. eta = (TextView) view.findViewById(R.id.invasion_eta);
-            holder. bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
+            holder.node = (TextView) view.findViewById(R.id.invasion_node);
+            holder.desc = (TextView) view.findViewById(R.id.invasion_desc);
+            holder.percent = (TextView) view.findViewById(R.id.invasion_percent);
+            holder.invadingfaction = (TextView) view.findViewById(R.id.invasion_invading_faction);
+            holder.invadingtype = (TextView) view.findViewById(R.id.invasion_invading_type);
+            holder.invadingrewards = (TextView) view.findViewById(R.id.invasion_invading_reward);
+            holder.defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
+            holder.defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
+            holder.defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
+            holder.eta = (TextView) view.findViewById(R.id.invasion_eta);
+            holder.bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
         } else {
             holder = (ViewHolder) view.getTag();
         }
+        view.setEnabled(true);
         view.setVisibility(View.VISIBLE);
+        if (position >= mLines.size()) {
+            Log.e(TAG, "We are above size of invasion array: " + position + " (" + mLines.size() + "), setting GONE");
+            view.setVisibility(View.GONE);
+            view.setEnabled(false);
+            view.setTag(holder);
+            return view;
+        }
         holder.completed.setVisibility(View.GONE);
         String line = mLines.get(position);
         String[] parts = line.split("\\|");

@@ -93,9 +93,16 @@ public class AlertsListViewAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         view.setVisibility(View.VISIBLE);
-
+        view.setEnabled(true);
         holder.completed.setVisibility(View.GONE);
 
+        if (position >= mAlerts.size()) {
+            Log.e(TAG, "We are above size of alerts array: " + position + " (" + mAlerts.size() + "), setting GONE");
+            view.setVisibility(view.GONE);
+            view.setEnabled(false);
+            view.setTag(holder);
+            return view;
+        }
         Alert alert = mAlerts.get(position);
         holder.alert = alert;
         if (mCompletedIds.contains(alert.get_id().get$id())) {
