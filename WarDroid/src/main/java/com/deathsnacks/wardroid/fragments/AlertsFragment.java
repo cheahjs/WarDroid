@@ -136,7 +136,7 @@ public class AlertsFragment extends SherlockFragment {
         @Override
         public void run() {
             if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChangedLight();
             }
             mHandler.postDelayed(this, 1000);
         }

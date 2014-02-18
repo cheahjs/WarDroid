@@ -233,6 +233,7 @@ public class InvasionFragment extends SherlockFragment {
                     response = cache;
                     error = true;
                 }
+                response = response.trim();
                 data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
                 clearIds();
                 return true;

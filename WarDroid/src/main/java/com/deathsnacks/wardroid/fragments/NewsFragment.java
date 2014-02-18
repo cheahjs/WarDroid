@@ -200,6 +200,7 @@ public class NewsFragment extends SherlockFragment {
                     response = cache;
                     error = true;
                 }
+                response = response.trim();
                 data = Arrays.asList(response.split("\\n"));
                 if (response.length() < 2)
                     data = new ArrayList<String>();
