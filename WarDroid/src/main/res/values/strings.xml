@@ -20,6 +20,7 @@
     <string name="about">About</string>
     <string name="invasions_none">There are no invasions at this time.</string>
     <string name="completed">✓</string>
+    <string name="alerts_none">There are no alerts at this time.</string>
 
     <string-array name="drawer_titles">
         <item>TRACKER HEADER</item>

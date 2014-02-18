@@ -275,11 +275,8 @@ public class InvasionFragment extends SherlockFragment {
             showProgress(false);
             if (success) {
                 try {
-                    mAdapter = new InvasionListViewAdapter(activity, data);
+                    mAdapter = new InvasionListViewAdapter(activity, data, mNoneView);
                     mInvasionView.setAdapter(mAdapter);
-                    if (mAdapter.getCount() == 0) {
-                        mNoneView.setVisibility(View.VISIBLE);
-                    }
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
                     }

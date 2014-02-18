@@ -52,12 +52,14 @@ public class AlertsFragment extends SherlockFragment {
     private UpdateTask mUpdateTask;
     private AlertsListViewAdapter mAdapter;
     private Handler mHandler;
+    private View mNoneView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
+        mNoneView = rootView.findViewById(R.id.alerts_none);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mAlertView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -189,17 +191,8 @@ public class AlertsFragment extends SherlockFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             mRefreshView.setVisibility(View.VISIBLE);
-            mRefreshView.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha(show ? 1 : 0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-                        }
-                    });
-
             mAlertView.setVisibility(View.VISIBLE);
+            try {
             mAlertView.animate()
                     .setDuration(shortAnimTime)
                     .alpha(show ? 0 : 1)
@@ -209,11 +202,27 @@ public class AlertsFragment extends SherlockFragment {
                             mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
                         }
                     });
+            mRefreshView.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha(show ? 1 : 0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                        }
+                    });
+            } catch (Exception ex) {
+                mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
+                ex.printStackTrace();
+            }
+            mNoneView.setVisibility(View.GONE);
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
             mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mNoneView.setVisibility(View.GONE);
         }
     }
 
@@ -291,7 +300,7 @@ public class AlertsFragment extends SherlockFragment {
             showProgress(false);
             if (success) {
                 try {
-                    mAdapter = new AlertsListViewAdapter(activity, data);
+                    mAdapter = new AlertsListViewAdapter(activity, data, mNoneView);
                     mAlertView.setAdapter(mAdapter);
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();

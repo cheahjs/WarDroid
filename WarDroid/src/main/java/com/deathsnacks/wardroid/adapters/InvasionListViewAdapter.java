@@ -31,8 +31,9 @@ public class InvasionListViewAdapter extends BaseAdapter {
     private List<String> mLines;
     private LayoutInflater mInflater;
     private static String TAG = "InvasionListViewAdapter";
+    private View mEmptyView;
 
-    public InvasionListViewAdapter(Activity act, List<String> data) {
+    public InvasionListViewAdapter(Activity act, List<String> data, View emptyView) {
         mActivity = act;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
@@ -52,6 +53,12 @@ public class InvasionListViewAdapter extends BaseAdapter {
             mLines = newList;
         }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mEmptyView = emptyView;
+        if (mLines.size() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -70,6 +77,11 @@ public class InvasionListViewAdapter extends BaseAdapter {
             }
             mLines = newList;
         }
+        if (mLines.size() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         super.notifyDataSetChanged();
     }
 
@@ -80,6 +92,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
+        //define viewholder
         if (view == null) {
             view = mInflater.inflate(R.layout.list_item_invasion, null);
             holder = new ViewHolder();
@@ -100,6 +113,9 @@ public class InvasionListViewAdapter extends BaseAdapter {
         }
         view.setEnabled(true);
         view.setVisibility(View.VISIBLE);
+        holder.completed.setVisibility(View.GONE);
+
+        //catch race conditions with hiding items
         if (position >= mLines.size()) {
             Log.e(TAG, "We are above size of invasion array: " + position + " (" + mLines.size() + "), setting GONE");
             view.setVisibility(View.GONE);
@@ -107,14 +123,17 @@ public class InvasionListViewAdapter extends BaseAdapter {
             view.setTag(holder);
             return view;
         }
-        holder.completed.setVisibility(View.GONE);
+
         String line = mLines.get(position);
         String[] parts = line.split("\\|");
+        //check if whatever we are parsing is valid
         if (parts.length != 19) {
-            View dedView = new View(mActivity);
-            dedView.setVisibility(View.GONE);
-            return dedView;
+            view.setVisibility(View.GONE);
+            view.setEnabled(false);
+            view.setTag(holder);
+            return view;
         }
+
         Invasion invasion = new Invasion(line);
         holder.invasion = invasion;
         if (mCompletedIds.contains(invasion.getId())) {

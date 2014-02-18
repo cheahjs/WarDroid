@@ -31,8 +31,9 @@ public class AlertsListViewAdapter extends BaseAdapter {
     private Activity mActivity;
     private List<Alert> mAlerts;
     private LayoutInflater mInflater;
+    private View mEmptyView;
 
-    public AlertsListViewAdapter(Activity act, List<Alert> data) {
+    public AlertsListViewAdapter(Activity act, List<Alert> data, View emptyView) {
         mActivity = act;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
@@ -50,6 +51,12 @@ public class AlertsListViewAdapter extends BaseAdapter {
             mAlerts = newList;
         }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mEmptyView = emptyView;
+        if (mAlerts.size() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -66,6 +73,11 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 }
             }
             mAlerts = newList;
+        }
+        if (mAlerts.size() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
         }
         super.notifyDataSetChanged();
     }
@@ -103,6 +115,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
             view.setTag(holder);
             return view;
         }
+
         Alert alert = mAlerts.get(position);
         holder.alert = alert;
         if (mCompletedIds.contains(alert.get_id().get$id())) {
