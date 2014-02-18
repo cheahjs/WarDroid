@@ -62,7 +62,7 @@ public class AlertsFragment extends SherlockFragment {
         mAlertView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Alert alert = (Alert) view.getTag();
+                final Alert alert = ((AlertsListViewAdapter.ViewHolder) view.getTag()).alert;
                 SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 List<String> ids =
                         new ArrayList<String>(Arrays.asList(PreferenceUtils

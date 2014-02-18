@@ -79,23 +79,27 @@ public class InvasionListViewAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
+        ViewHolder holder;
+        if (view == null) {
             view = mInflater.inflate(R.layout.list_item_invasion, null);
+            holder = new ViewHolder();
+            holder.completed = view.findViewById(R.id.invasion_completed);
+            holder. node = (TextView) view.findViewById(R.id.invasion_node);
+            holder. desc = (TextView) view.findViewById(R.id.invasion_desc);
+            holder. percent = (TextView) view.findViewById(R.id.invasion_percent);
+            holder. invadingfaction = (TextView) view.findViewById(R.id.invasion_invading_faction);
+            holder. invadingtype = (TextView) view.findViewById(R.id.invasion_invading_type);
+            holder. invadingrewards = (TextView) view.findViewById(R.id.invasion_invading_reward);
+            holder. defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
+            holder. defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
+            holder. defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
+            holder. eta = (TextView) view.findViewById(R.id.invasion_eta);
+            holder. bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
         view.setVisibility(View.VISIBLE);
-        View completed = view.findViewById(R.id.invasion_completed);
-        completed.setVisibility(View.GONE);
-        TextView node = (TextView) view.findViewById(R.id.invasion_node);
-        TextView desc = (TextView) view.findViewById(R.id.invasion_desc);
-        TextView percent = (TextView) view.findViewById(R.id.invasion_percent);
-        TextView invadingfaction = (TextView) view.findViewById(R.id.invasion_invading_faction);
-        TextView invadingtype = (TextView) view.findViewById(R.id.invasion_invading_type);
-        TextView invadingrewards = (TextView) view.findViewById(R.id.invasion_invading_reward);
-        TextView defendingfaction = (TextView) view.findViewById(R.id.invasion_defending_faction);
-        TextView defendingtype = (TextView) view.findViewById(R.id.invasion_defending_type);
-        TextView defendingrewards = (TextView) view.findViewById(R.id.invasion_defending_reward);
-        TextView eta = (TextView) view.findViewById(R.id.invasion_eta);
-        ProgressBar bar = (ProgressBar) view.findViewById(R.id.invasion_bar);
-
+        holder.completed.setVisibility(View.GONE);
         String line = mLines.get(position);
         String[] parts = line.split("\\|");
         if (parts.length != 19) {
@@ -104,44 +108,45 @@ public class InvasionListViewAdapter extends BaseAdapter {
             return dedView;
         }
         Invasion invasion = new Invasion(line);
+        holder.invasion = invasion;
         if (mCompletedIds.contains(invasion.getId())) {
             if (mPreferences.getBoolean("hide_completed", false)) {
                 notifyDataSetChanged();
             } else {
-                completed.setVisibility(View.VISIBLE);
+                holder.completed.setVisibility(View.VISIBLE);
             }
         }
-        node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
-        invadingfaction.setText(invasion.getInvadingFaction());
-        invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());
-        invadingrewards.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingReward());
-        defendingfaction.setText(invasion.getDefendingFaction());
-        defendingtype.setText(invasion.getDefendingType());
-        defendingrewards.setText(invasion.getDefendingReward());
-        percent.setText(invasion.getPercent() + "%");
-        desc.setText(invasion.getDescription());
+        holder.node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
+        holder.invadingfaction.setText(invasion.getInvadingFaction());
+        holder.invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());
+        holder.invadingrewards.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingReward());
+        holder.defendingfaction.setText(invasion.getDefendingFaction());
+        holder.defendingtype.setText(invasion.getDefendingType());
+        holder.defendingrewards.setText(invasion.getDefendingReward());
+        holder.percent.setText(invasion.getPercent() + "%");
+        holder.desc.setText(invasion.getDescription());
         int percentvalue = (int) Double.parseDouble(invasion.getPercent());
         if (percentvalue > 100)
             percentvalue = 100;
         if (percentvalue < 0)
             percentvalue = 0;
-        bar.setProgress(0);
-        Rect bounds = bar.getProgressDrawable().getBounds();
-        bar.getProgressDrawable().setBounds(bounds);
+        holder.bar.setProgress(0);
+        Rect bounds = holder.bar.getProgressDrawable().getBounds();
+        holder.bar.getProgressDrawable().setBounds(bounds);
         if (invasion.getInvadingFaction().contains("Grineer"))
-            bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.grineer_corpus_bar));
+            holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.grineer_corpus_bar));
         else if (invasion.getInvadingFaction().contains("Corpus"))
-            bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.corpus_grineer_bar));
+            holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.corpus_grineer_bar));
         else if (invasion.getInvadingFaction().contains("Infestation")) {
             if (invasion.getDefendingFaction().contains("Corpus"))
-                bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_corpus_bar));
+                holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_corpus_bar));
             else if (invasion.getDefendingFaction().contains("Grineer"))
-                bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_grineer_bar));
+                holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_grineer_bar));
         }
-        bar.getProgressDrawable().setBounds(bounds);
-        bar.setProgress(percentvalue);
-        eta.setText(invasion.getEta());
-        view.setTag(invasion);
+        holder.bar.getProgressDrawable().setBounds(bounds);
+        holder.bar.setProgress(percentvalue);
+        holder.eta.setText(invasion.getEta());
+        view.setTag(holder);
         return view;
     }
 
@@ -151,5 +156,21 @@ public class InvasionListViewAdapter extends BaseAdapter {
 
     public long getItemId(int position) {
         return position;
+    }
+
+    public class ViewHolder {
+        public View completed;
+        public TextView node;
+        public TextView desc;
+        public TextView percent;
+        public TextView invadingfaction;
+        public TextView defendingfaction;
+        public TextView invadingtype;
+        public TextView invadingrewards;
+        public TextView defendingtype;
+        public TextView defendingrewards;
+        public TextView eta;
+        public ProgressBar bar;
+        public Invasion invasion;
     }
 }

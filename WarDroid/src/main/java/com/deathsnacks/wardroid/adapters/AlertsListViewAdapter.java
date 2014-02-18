@@ -80,17 +80,24 @@ public class AlertsListViewAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
+        ViewHolder holder;
+        if (view == null) {
             view = mInflater.inflate(R.layout.list_item_alert, null);
+            holder = new ViewHolder();
+            holder.node = (TextView) view.findViewById(R.id.alert_title);
+            holder.completed = view.findViewById(R.id.alert_completed);
+            holder.desc = (TextView) view.findViewById(R.id.alert_desc);
+            holder.duration = (TextView) view.findViewById(R.id.alert_duration);
+            holder.rewards = (TextView) view.findViewById(R.id.alert_rewards);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
         view.setVisibility(View.VISIBLE);
-        TextView node = (TextView) view.findViewById(R.id.alert_title);
-        View completed = view.findViewById(R.id.alert_completed);
-        TextView desc = (TextView) view.findViewById(R.id.alert_desc);
-        TextView duration = (TextView) view.findViewById(R.id.alert_duration);
-        TextView rewards = (TextView) view.findViewById(R.id.alert_rewards);
-        completed.setVisibility(View.GONE);
+
+        holder.completed.setVisibility(View.GONE);
 
         Alert alert = mAlerts.get(position);
+        holder.alert = alert;
         if (mCompletedIds.contains(alert.get_id().get$id())) {
             if (mPreferences.getBoolean("hide_completed", false)) {
                 mAlerts.remove(position);
@@ -99,34 +106,34 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 Log.d(TAG, "marking alert GONE." + alert.getMissionInfo().getLocation());
                 return view;
             } else {
-                completed.setVisibility(View.VISIBLE);
+                holder.completed.setVisibility(View.VISIBLE);
             }
         }
-        node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
+        holder.node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
                 Names.getRegion(mActivity, alert.getMissionInfo().getLocation())));
         String descTxt = String.format("%s | %s (%s)", Names.getString(mActivity, alert.getMissionInfo().getDescText()),
                 Names.getFaction(alert.getMissionInfo().getFaction()),
                 Names.getMissionType(alert.getMissionInfo().getMissionType()));
-        desc.setText(Names.getString(mActivity, descTxt));
-        rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
+        holder.desc.setText(Names.getString(mActivity, descTxt));
+        holder.rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
         long activation = alert.getActivation().getSec();
         String format = mActivity.getString(R.string.alert_starting);
-        duration.setTextColor(Color.parseColor("#343434"));
+        holder.duration.setTextColor(Color.parseColor("#343434"));
         long diff = activation - now;
         if (diff < 0) {
             diff = expiry - now;
             format = "%dh %dm %ds";
-            duration.setTextColor(Color.parseColor("#10bcc9"));
+            holder.duration.setTextColor(Color.parseColor("#10bcc9"));
             if (diff < 0) {
                 diff = now - expiry;
                 format = mActivity.getString(R.string.alert_expired);
-                duration.setTextColor(Color.parseColor("#d9534f"));
+                holder.duration.setTextColor(Color.parseColor("#d9534f"));
             }
         }
-        duration.setText(String.format(format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
-        view.setTag(alert);
+        holder.duration.setText(String.format(format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
+        view.setTag(holder);
         return view;
     }
 
@@ -136,5 +143,14 @@ public class AlertsListViewAdapter extends BaseAdapter {
 
     public long getItemId(int position) {
         return position;
+    }
+
+    public class ViewHolder {
+        public TextView node;
+        public TextView desc;
+        public TextView duration;
+        public TextView rewards;
+        public View completed;
+        public Alert alert;
     }
 }

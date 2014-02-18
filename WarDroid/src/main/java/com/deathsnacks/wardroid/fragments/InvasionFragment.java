@@ -59,7 +59,7 @@ public class InvasionFragment extends SherlockFragment {
         mInvasionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Invasion invasion = (Invasion) view.getTag();
+                final Invasion invasion = ((InvasionListViewAdapter.ViewHolder) view.getTag()).invasion;
                 SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 List<String> ids2 =
                         new ArrayList<String>(Arrays.asList(PreferenceUtils
