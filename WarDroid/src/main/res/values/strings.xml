@@ -19,6 +19,7 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="invasions_none">There are no invasions at this time.</string>
+    <string name="completed">✓</string>
 
     <string-array name="drawer_titles">
         <item>TRACKER HEADER</item>

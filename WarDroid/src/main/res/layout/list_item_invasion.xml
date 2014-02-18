@@ -28,6 +28,17 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
+        android:id="@+id/invasion_completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/completed"
+        android:textColor="?android:textColorSecondary"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/invasion_node"
+        android:layout_alignBaseline="@id/invasion_node"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"

@@ -83,6 +83,8 @@ public class InvasionListViewAdapter extends BaseAdapter {
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_invasion, null);
         view.setVisibility(View.VISIBLE);
+        View completed = view.findViewById(R.id.invasion_completed);
+        completed.setVisibility(View.GONE);
         TextView node = (TextView) view.findViewById(R.id.invasion_node);
         TextView desc = (TextView) view.findViewById(R.id.invasion_desc);
         TextView percent = (TextView) view.findViewById(R.id.invasion_percent);
@@ -103,8 +105,12 @@ public class InvasionListViewAdapter extends BaseAdapter {
             return dedView;
         }
         Invasion invasion = new Invasion(line);
-        if (mPreferences.getBoolean("hide_completed", false) && mCompletedIds.contains(invasion.getId())) {
-            notifyDataSetChanged();
+        if (mCompletedIds.contains(invasion.getId())) {
+            if (mPreferences.getBoolean("hide_completed", false)) {
+                notifyDataSetChanged();
+            } else {
+                completed.setVisibility(View.VISIBLE);
+            }
         }
         node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         invadingfaction.setText(invasion.getInvadingFaction());

@@ -81,17 +81,23 @@ public class AlertsListViewAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.list_item_alert, null);
         view.setVisibility(View.VISIBLE);
         TextView node = (TextView) view.findViewById(R.id.alert_title);
+        View completed = view.findViewById(R.id.alert_completed);
         TextView desc = (TextView) view.findViewById(R.id.alert_desc);
         TextView duration = (TextView) view.findViewById(R.id.alert_duration);
         TextView rewards = (TextView) view.findViewById(R.id.alert_rewards);
+        completed.setVisibility(View.GONE);
 
         Alert alert = mAlerts.get(position);
-        if (mPreferences.getBoolean("hide_completed", false) && mCompletedIds.contains(alert.get_id().get$id())) {
-            mAlerts.remove(position);
-            notifyDataSetChanged();
-            view.setVisibility(View.GONE);
-            Log.d(TAG, "marking alert GONE." + alert.getMissionInfo().getLocation());
-            return view;
+        if (mCompletedIds.contains(alert.get_id().get$id())) {
+            if (mPreferences.getBoolean("hide_completed", false)) {
+                mAlerts.remove(position);
+                notifyDataSetChanged();
+                view.setVisibility(View.GONE);
+                Log.d(TAG, "marking alert GONE." + alert.getMissionInfo().getLocation());
+                return view;
+            } else {
+                completed.setVisibility(View.VISIBLE);
+            }
         }
         node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
                 Names.getRegion(mActivity, alert.getMissionInfo().getLocation())));

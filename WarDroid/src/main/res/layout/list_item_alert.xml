@@ -16,6 +16,19 @@
         android:textSize="15sp"
         android:textStyle="bold"/>
 
+    <!-- Alert completed -->
+    <TextView
+        android:id="@+id/alert_completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/completed"
+        android:textColor="?android:textColorSecondary"
+        android:typeface="sans"
+        android:textSize="12sp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/alert_title"
+        android:layout_alignBaseline="@id/alert_title"/>
+
     <!-- Alert Description -->
     <TextView
         android:id="@+id/alert_desc"
@@ -36,7 +49,7 @@
         android:layout_alignTop="@id/alert_title"
         android:gravity="right"
         android:text="5:45"
-        android:layout_marginRight="5dip"
+        android:layout_marginRight="5dp"
         android:textSize="11sp"
         android:textColor="#10bcc9"
         android:textStyle="bold"/>
@@ -50,7 +63,7 @@
         android:layout_below="@id/alert_desc"
         android:gravity="right"
         android:text="Something - 5000cr"
-        android:layout_marginRight="5dip"
+        android:layout_marginRight="5dp"
         android:textSize="12sp"
         android:textColor="?android:textColorPrimary"
         android:textStyle="bold"/>
