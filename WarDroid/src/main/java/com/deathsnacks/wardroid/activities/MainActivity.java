@@ -143,6 +143,7 @@ public class MainActivity extends SherlockFragmentActivity {
     public static class TabsAdapter extends FragmentPagerAdapter
             implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
         private final Context mContext;
+        private final SherlockFragmentActivity mActivity;
         private final ActionBar mActionBar;
         private final ViewPager mViewPager;
         private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
@@ -160,6 +161,7 @@ public class MainActivity extends SherlockFragmentActivity {
         public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
             super(activity.getSupportFragmentManager());
             mContext = activity;
+            mActivity = activity;
             mActionBar = activity.getSupportActionBar();
             mViewPager = pager;
             mViewPager.setAdapter(this);
@@ -192,6 +194,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
         @Override
         public void onPageSelected(int position) {
+            mActivity.supportInvalidateOptionsMenu();
             mActionBar.setSelectedNavigationItem(position);
         }
 
@@ -204,7 +207,8 @@ public class MainActivity extends SherlockFragmentActivity {
             Object tag = tab.getTag();
             for (int i = 0; i < mTabs.size(); i++) {
                 if (mTabs.get(i) == tag) {
-                    mViewPager.setCurrentItem(i);
+                    if (mViewPager.getCurrentItem() != i)
+                        mViewPager.setCurrentItem(i);
                 }
             }
         }
