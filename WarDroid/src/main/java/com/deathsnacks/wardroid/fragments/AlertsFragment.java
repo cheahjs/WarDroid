@@ -35,6 +35,7 @@ import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,17 +218,36 @@ public class AlertsFragment extends SherlockFragment {
     }
 
     public class AlertsRefresh extends AsyncTask<Void, Void, Boolean> {
+        private static final String KEY = "alerts_json";
         private Activity activity;
         private List<Alert> data;
+        private Boolean error;
 
         public AlertsRefresh(Activity activity) {
             this.activity = activity;
+            error = false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (activity == null)
+                return false;
             try {
-                String response = Http.get("http://deathsnacks.com/wf/data/last15alerts.json");
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                String cache = preferences.getString(KEY + "_cache", "_ded");
+                String response;
+                try {
+                    response = Http.get("http://deathsnacks.com/wf/data/last15alerts.json",
+                            preferences.getLong(KEY + "_modified", 0), cache, preferences.edit(), KEY);
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache.equals("_ded"))
+                        throw ex;
+                    response = cache;
+                    error = true;
+                }
                 Type collectionType = new TypeToken<List<Alert>>() {
                 }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);
@@ -273,11 +293,14 @@ public class AlertsFragment extends SherlockFragment {
                 try {
                     mAdapter = new AlertsListViewAdapter(activity, data);
                     mAlertView.setAdapter(mAdapter);
+                    if (error) {
+                        Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 

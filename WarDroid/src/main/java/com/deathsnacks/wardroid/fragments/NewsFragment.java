@@ -5,11 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.NewsListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -167,17 +170,36 @@ public class NewsFragment extends SherlockFragment {
     }
 
     public class NewsRefresh extends AsyncTask<Void, Void, Boolean> {
+        private static final String KEY = "news_raw";
         private Activity activity;
         private List<String> data;
+        private boolean error;
 
         public NewsRefresh(Activity activity) {
             this.activity = activity;
+            error = false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (activity == null)
+                return false;
             try {
-                String response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt");
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                String cache = preferences.getString(KEY + "_cache", "_ded");
+                String response;
+                try {
+                    response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt",
+                            preferences.getLong(KEY + "_modified", 0), cache, preferences.edit(), KEY);
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache.equals("_ded"))
+                        throw ex;
+                    response = cache;
+                    error = true;
+                }
                 data = Arrays.asList(response.split("\\n"));
                 if (response.length() < 2)
                     data = new ArrayList<String>();
@@ -198,11 +220,14 @@ public class NewsFragment extends SherlockFragment {
                 try {
                     mAdapter = new NewsListViewAdapter(activity, data);
                     mNewsView.setAdapter(mAdapter);
+                    if (error) {
+                        Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 

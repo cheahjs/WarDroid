@@ -32,6 +32,7 @@ import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -202,17 +203,36 @@ public class InvasionFragment extends SherlockFragment {
     }
 
     public class InvasionRefresh extends AsyncTask<Void, Void, Boolean> {
+        private static final String KEY = "invasion_raw";
         private Activity activity;
         private List<String> data;
+        private boolean error;
 
         public InvasionRefresh(Activity activity) {
             this.activity = activity;
+            error = false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (activity == null)
+                return false;
             try {
-                String response = Http.get("http://deathsnacks.com/wf/data/invasion_raw.txt");
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                String cache = preferences.getString(KEY + "_cache", "_ded");
+                String response;
+                try {
+                    response = Http.get("http://deathsnacks.com/wf/data/invasion_raw.txt",
+                            preferences.getLong(KEY + "_modified", 0), cache, preferences.edit(), KEY);
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache.equals("_ded"))
+                        throw ex;
+                    response = cache;
+                    error = true;
+                }
                 data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
                 clearIds();
                 return true;
@@ -256,14 +276,17 @@ public class InvasionFragment extends SherlockFragment {
                 try {
                     mAdapter = new InvasionListViewAdapter(activity, data);
                     mInvasionView.setAdapter(mAdapter);
-                    if (data.size() < 2) {
+                    if (mAdapter.getCount() == 0) {
                         mNoneView.setVisibility(View.VISIBLE);
+                    }
+                    if (error) {
+                        Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
             }
         }
 
