@@ -56,8 +56,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        if (mPreferences.getBoolean("hide_completed", false))
-            mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<String> newList = new ArrayList<String>();
             for (int i = 0; i < mLines.size(); i++) {
