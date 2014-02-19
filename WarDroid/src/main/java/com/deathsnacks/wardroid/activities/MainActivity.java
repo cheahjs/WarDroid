@@ -57,9 +57,9 @@ public class MainActivity extends SherlockFragmentActivity {
         mPager.setOffscreenPageLimit(2);
         mFragmentManager = getSupportFragmentManager();
         mPagerAdapter = new TabsAdapter(this, mPager);
-        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[1]), NewsFragment.class, null);
-        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[2]), AlertsFragment.class, null);
-        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[3]), InvasionFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[0]), NewsFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[1]), AlertsFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[2]), InvasionFragment.class, null);
 
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);

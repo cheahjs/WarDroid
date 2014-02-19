@@ -2,7 +2,7 @@
     <string name="app_name">WarDroid</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
-    <string name="error_error_occurred">An error has occurred while refreshing</string>
+    <string name="error_error_occurred">An error occurred while refreshing</string>
     <string name="refresh">Refresh</string>
 
     <string name="drawer_trackers_title">TRACKERS</string>
@@ -21,14 +21,4 @@
     <string name="invasions_none">There are no invasions at this time.</string>
     <string name="completed">✓</string>
     <string name="alerts_none">There are no alerts at this time.</string>
-
-    <string-array name="drawer_titles">
-        <item>TRACKER HEADER</item>
-        <item>News</item>
-        <item>Alerts</item>
-        <item>Invasions</item>
-        <item>Sales</item>
-        <item>SETTINGS HEADER</item>
-        <item>Notifications</item>
-    </string-array>
 </resources>
