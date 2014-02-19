@@ -38,11 +38,13 @@ public class Http {
         }
     }
 
-    public static String get(String Url, long lastModified, String cache, SharedPreferences.Editor editor, String key) throws IOException {
+    public static String get(String Url, SharedPreferences preferences, String key) throws IOException {
         URL url = new URL(Url);
         HttpURLConnection connection = client.open(url);
         System.setProperty("http.agent", "");
         connection.setRequestProperty("User-Agent", "WarDroid/Android/");
+        long lastModified = preferences.getLong(key + "_modified", 0);
+        String cache = preferences.getString(key + "_cache", "_ded");
         if (lastModified != 0) {
             connection.setIfModifiedSince(lastModified);
         }
@@ -52,6 +54,7 @@ public class Http {
                 in = connection.getInputStream();
                 byte[] response = readAll(in);
                 String txt = new String(response, "UTF-8");
+                SharedPreferences.Editor editor = preferences.edit();
                 editor.putLong(key + "_modified", connection.getLastModified());
                 editor.putString(key + "_cache", txt);
                 editor.commit();

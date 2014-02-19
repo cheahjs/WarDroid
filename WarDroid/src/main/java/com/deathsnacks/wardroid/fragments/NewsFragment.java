@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -185,12 +186,11 @@ public class NewsFragment extends SherlockFragment {
             if (activity == null)
                 return false;
             try {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                SharedPreferences preferences = activity.getSharedPreferences(KEY, Context.MODE_PRIVATE);
                 String cache = preferences.getString(KEY + "_cache", "_ded");
                 String response;
                 try {
-                    response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt",
-                            preferences.getLong(KEY + "_modified", 0), cache, preferences.edit(), KEY);
+                    response = Http.get("http://deathsnacks.com/wf/data/news_raw.txt", preferences, KEY);
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
