@@ -6,19 +6,41 @@
     android:padding="5dip"
     android:id="@+id/list_item_invasions">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progress="50"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/invasion_bar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true" />
+        android:id="@+id/invasion_bar_layout">
+        <ProgressBar
+            android:progressDrawable="@drawable/grineer_corpus_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progress="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/invasion_bar"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="50.00%"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimaryInverse"
+            android:shadowColor="@android:color/black"
+            android:shadowRadius="1"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:id="@+id/invasion_percent"/>
+    </RelativeLayout>
 
     <TextView
-        android:layout_below="@id/invasion_bar"
-        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_below="@id/invasion_bar_layout"
+        android:layout_alignParentEnd="@id/invasion_bar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -48,19 +70,8 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:textColorPrimary"
-        android:text="50.00%"
-        android:id="@+id/invasion_percent"
-        android:layout_below="@+id/invasion_desc"
-        android:layout_centerHorizontal="true"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_below="@id/invasion_bar"
-        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_below="@id/invasion_bar_layout"
+        android:layout_alignParentEnd="@id/invasion_bar_layout"
         android:layout_toLeftOf="@id/invasion_node"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,8 +111,8 @@
         android:textStyle="bold" />
 
     <TextView
-        android:layout_below="@id/invasion_bar"
-        android:layout_alignParentEnd="@id/invasion_bar"
+        android:layout_below="@id/invasion_bar_layout"
+        android:layout_alignParentEnd="@id/invasion_bar_layout"
         android:layout_toRightOf="@id/invasion_node"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -149,6 +160,6 @@
         android:text="ETA: 60 mins"
         android:textColor="?android:textColorSecondary"
         android:id="@+id/invasion_eta"
-        android:layout_below="@+id/invasion_percent"
+        android:layout_below="@+id/invasion_desc"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
