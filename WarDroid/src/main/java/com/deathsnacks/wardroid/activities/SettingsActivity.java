@@ -20,7 +20,7 @@ import android.util.Log;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.services.PollingAlarmManager;
+import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference;
 
@@ -127,7 +127,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             if (s.equals("alert_enabled")) {
                 if (sharedPreferences.getBoolean("alert_enabled", false)) {
                     Log.d(TAG, "starting alarm since pref was changed");
-                    Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmManager.class);
+                    Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmReceiver.class);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
@@ -141,7 +141,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     mBuilder.setContentIntent(pendingIntent2);
                     mNotificationManager.notify(1, mBuilder.build());
                     try {
-                        (new PollingAlarmManager()).onReceive(getApplicationContext(), null);
+                        (new PollingAlarmReceiver()).onReceive(getApplicationContext(), null);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -151,7 +151,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(1);
                     ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
-                            getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                            getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("credit_filter")) {
                 Preference cred = findPreference("credit_filter");

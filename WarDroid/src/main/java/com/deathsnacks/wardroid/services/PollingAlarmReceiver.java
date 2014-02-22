@@ -38,8 +38,8 @@ import java.util.List;
 /**
  * Created by Admin on 03/02/14.
  */
-public class PollingAlarmManager extends BroadcastReceiver {
-    private static final String TAG = "PollingAlarmManager";
+public class PollingAlarmReceiver extends BroadcastReceiver {
+    private static final String TAG = "PollingAlarmReceiver";
     private Context mContext;
     private SharedPreferences mPreferences;
     private OkHttpClient client;
@@ -127,7 +127,7 @@ public class PollingAlarmManager extends BroadcastReceiver {
             mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(1);
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
-                    context, 0, new Intent(context, PollingAlarmManager.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                    context, 0, new Intent(context, PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
         }
     }
 

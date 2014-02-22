@@ -26,7 +26,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
-import com.deathsnacks.wardroid.services.PollingAlarmManager;
+import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Names;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class MainActivity extends SherlockFragmentActivity {
             Log.d(TAG, "no saved instance state");
             if (mPreferences.getBoolean("alert_enabled", false)) {
                 Log.d(TAG, "starting alarm");
-                Intent alarmIntent = new Intent(this, PollingAlarmManager.class);
+                Intent alarmIntent = new Intent(this, PollingAlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if (pendingIntent != null) {
                     try {
@@ -83,7 +83,7 @@ public class MainActivity extends SherlockFragmentActivity {
                         PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(pendingIntent2);
                         mNotificationManager.notify(1, mBuilder.build());
-                        (new PollingAlarmManager()).onReceive(this.getApplicationContext(), null);
+                        (new PollingAlarmReceiver()).onReceive(this.getApplicationContext(), null);
                         ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                                 SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
 
