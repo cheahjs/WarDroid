@@ -21,4 +21,6 @@
     <string name="invasions_none">There are no invasions at this time.</string>
     <string name="completed">✓</string>
     <string name="alerts_none">There are no alerts at this time.</string>
+    <string name="invasion_mark_incomplete">Do you want to mark this invasion as incomplete?</string>
+    <string name="alert_mark_incomplete">Do you want to mark this alert as incomplete?</string>
 </resources>

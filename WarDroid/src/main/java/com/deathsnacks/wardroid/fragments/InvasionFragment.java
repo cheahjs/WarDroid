@@ -66,32 +66,54 @@ public class InvasionFragment extends SherlockFragment {
                         new ArrayList<String>(Arrays.asList(PreferenceUtils
                                 .fromPersistedPreferenceValue(mPreferences2.getString("invasion_completed_ids", ""))));
                 if (ids2.contains(invasion.getId())) {
-                    Toast.makeText(getSherlockActivity(), R.string.ui_marked_complete, Toast.LENGTH_SHORT).show();
-                    return;
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()))
+                            .setMessage(getActivity().getString(R.string.invasion_mark_incomplete))
+                            .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                            .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+                                    ids.remove(invasion.getId());
+                                    SharedPreferences.Editor mEditor = mPreferences.edit();
+                                    mEditor.putString("invasion_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+                                    mEditor.commit();
+                                    mAdapter.notifyDataSetChanged();
+                                    dialogInterface.cancel();
+                                }
+                            })
+                            .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            }).show();
+                } else {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()))
+                            .setMessage(getActivity().getString(R.string.invasion_mark_complete))
+                            .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                            .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+                                    ids.add(invasion.getId());
+                                    SharedPreferences.Editor mEditor = mPreferences.edit();
+                                    mEditor.putString("invasion_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+                                    mEditor.commit();
+                                    mAdapter.notifyDataSetChanged();
+                                    dialogInterface.cancel();
+                                }
+                            })
+                            .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            }).show();
                 }
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()))
-                        .setMessage(getActivity().getString(R.string.invasion_mark_complete))
-                        .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                                List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils
-                                        .fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
-                                ids.add(invasion.getId());
-                                SharedPreferences.Editor mEditor = mPreferences.edit();
-                                mEditor.putString("invasion_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-                                mEditor.commit();
-                                mAdapter.notifyDataSetChanged();
-                                dialogInterface.cancel();
-                            }
-                        })
-                        .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
             }
         });
         mHandler = new Handler();

@@ -71,34 +71,58 @@ public class AlertsFragment extends SherlockFragment {
                         new ArrayList<String>(Arrays.asList(PreferenceUtils
                                 .fromPersistedPreferenceValue(mPreferences2.getString("alert_completed_ids", ""))));
                 if (ids.contains(alert.get_id().get$id())) {
-                    Toast.makeText(getSherlockActivity(), R.string.ui_marked_complete, Toast.LENGTH_SHORT).show();
-                    return;
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
+                                    Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
+                            .setMessage(getActivity().getString(R.string.alert_mark_incomplete))
+                            .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    List<String> ids2 =
+                                            new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                                    .fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+                                    ids2.remove(alert.get_id().get$id());
+                                    SharedPreferences.Editor mEditor = mPreferences.edit();
+                                    mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids2.toArray(new String[ids2.size()])));
+                                    mEditor.commit();
+                                    mAdapter.notifyDataSetChanged();
+                                    dialogInterface.cancel();
+                                }
+                            })
+                            .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            }).show();
+                } else {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
+                                    Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
+                            .setMessage(getActivity().getString(R.string.alert_mark_complete))
+                            .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    List<String> ids2 =
+                                            new ArrayList<String>(Arrays.asList(PreferenceUtils
+                                                    .fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+                                    ids2.add(alert.get_id().get$id());
+                                    SharedPreferences.Editor mEditor = mPreferences.edit();
+                                    mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids2.toArray(new String[ids2.size()])));
+                                    mEditor.commit();
+                                    mAdapter.notifyDataSetChanged();
+                                    dialogInterface.cancel();
+                                }
+                            })
+                            .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            }).show();
                 }
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
-                                Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
-                        .setMessage(getActivity().getString(R.string.alert_mark_complete))
-                        .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                                List<String> ids2 =
-                                        new ArrayList<String>(Arrays.asList(PreferenceUtils
-                                                .fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-                                ids2.add(alert.get_id().get$id());
-                                SharedPreferences.Editor mEditor = mPreferences.edit();
-                                mEditor.putString("alert_completed_ids", PreferenceUtils.toPersistedPreferenceValue(ids2.toArray(new String[ids2.size()])));
-                                mEditor.commit();
-                                mAdapter.notifyDataSetChanged();
-                                dialogInterface.cancel();
-                            }
-                        })
-                        .setNegativeButton(getActivity().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
             }
         });
         mHandler = new Handler();
