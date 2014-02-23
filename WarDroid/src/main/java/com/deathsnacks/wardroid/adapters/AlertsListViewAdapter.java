@@ -16,6 +16,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
+import com.deathsnacks.wardroid.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,7 +136,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 Names.getFaction(alert.getMissionInfo().getFaction()),
                 Names.getMissionType(alert.getMissionInfo().getMissionType()));
         holder.desc.setText(Names.getString(mActivity, descTxt));
-        holder.rewards.setText(alert.getMissionInfo().getMissionReward().getRewardString());
+        holder.rewards.setText(Utils.getImageSpannable(mActivity, alert.getMissionInfo().getMissionReward().getRewardString()));
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
         long activation = alert.getActivation().getSec();

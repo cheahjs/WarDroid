@@ -55,7 +55,7 @@ public class MissionReward {
     public String getRewardString() {
         String rtn = "";
         if (credits > 0)
-            rtn += NumberFormat.getIntegerInstance().format(credits) + "cr";
+            rtn += NumberFormat.getIntegerInstance().format(credits) + "*c";
         if (countedItems.size() > 0) {
             String rawtxt = "";
             CountedItem item = countedItems.get(0);

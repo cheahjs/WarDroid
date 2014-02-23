@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
+import com.deathsnacks.wardroid.utils.Utils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
 
 import java.util.ArrayList;
@@ -146,10 +147,18 @@ public class InvasionListViewAdapter extends BaseAdapter {
         holder.node.setText(String.format("%s (%s)", invasion.getNode(), invasion.getRegion()));
         holder.invadingfaction.setText(invasion.getInvadingFaction());
         holder.invadingtype.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingType());
-        holder.invadingrewards.setText(invasion.getInvadingFaction().contains("Infestation") ? "" : invasion.getInvadingReward());
+        String invadingReward = invasion.getInvadingReward();
+        if (invadingReward.endsWith("cr"))
+            invadingReward = invadingReward.replaceAll("cr$", "*c");
+        holder.invadingrewards.setText(invasion.getInvadingFaction().contains("Infestation") ? ""
+                : Utils.getImageSpannable(mActivity, invadingReward));
         holder.defendingfaction.setText(invasion.getDefendingFaction());
         holder.defendingtype.setText(invasion.getDefendingType());
-        holder.defendingrewards.setText(invasion.getDefendingReward());
+        String defendingReward = invasion.getDefendingReward();
+        if (defendingReward.endsWith("cr")) {
+            defendingReward = defendingReward.replaceAll("cr$", "*c");
+        }
+        holder.defendingrewards.setText(Utils.getImageSpannable(mActivity, defendingReward));
         holder.percent.setText(invasion.getPercent() + "%");
         holder.desc.setText(invasion.getDescription());
         int percentvalue = (int) Double.parseDouble(invasion.getPercent());
