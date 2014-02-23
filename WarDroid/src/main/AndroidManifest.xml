@@ -39,5 +39,6 @@
                 android:value=".activities.MainActivity" />
         </activity>
         <receiver android:name=".services.PollingAlarmReceiver" />
+        <receiver android:name=".services.NotificationsUpdate" />
     </application>
 </manifest>

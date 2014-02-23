@@ -12,7 +12,9 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -62,6 +64,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private Boolean mEnableLED;
     private Boolean mInsistent;
     private Boolean mEmptyIcon;
+    private long mForceUpdateTime;
+    private Boolean mForceUpdate;
     private int mStreamType;
 
     @Override
@@ -118,6 +122,10 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
+            mForceUpdateTime = 0;
+
+            mForceUpdate = intent != null && intent.getBooleanExtra("force", false);
+
             (new RefreshTask()).execute();
             mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
                     .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WarDroid Notifications");
@@ -168,7 +176,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     Log.d(TAG, "we received something other than 201 for alerts: " + connection.getResponseCode());
-                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
                         String cache = mPreferences.getString("alerts_cache", "");
                         Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
                         Log.d(TAG, cache);
@@ -227,6 +235,13 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 Log.d(TAG, "accepted alert: " + alert.getNode());
                 if (mNew)
                     mVibrate = true;
+                if (mForceUpdateTime == 0)
+                    mForceUpdateTime = alert.getExpiry();
+                else {
+                    if (alert.getExpiry() < mForceUpdateTime) {
+                        mForceUpdateTime = alert.getExpiry();
+                    }
+                }
                 mNotifications.add(String.format("Alert: <b>%s</b>",
                         TextUtils.join(" - ", alert.getRewards())));
                 continue;
@@ -252,7 +267,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             try {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     Log.d(TAG, "we received something other than 201 for invasions: " + connection.getResponseCode());
-                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
                         String cache = mPreferences.getString("invasion_cache", "");
                         Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
                         Log.d(TAG, cache);
@@ -372,10 +387,28 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         if (mVibrate && mInsistent) {
             notification.flags |= Notification.FLAG_INSISTENT;
         }
+        Intent alarmIntent = new Intent(mContext, NotificationsUpdate.class);
+        PendingIntent pendingForceIntent = PendingIntent.getBroadcast(mContext, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).cancel(pendingForceIntent);
         if (!mEmptyIcon && mNotifications.size() == 0) {
             mNotificationManager.cancel(1);
         } else {
             mNotificationManager.notify(1, notification);
+            //if its more than 15 minutes, we might as well wait for the next update.
+            mForceUpdateTime = mForceUpdateTime - (System.currentTimeMillis() / 1000);
+            Log.d(TAG, "force update time: " + mForceUpdateTime);
+            if (mForceUpdateTime > 0 && mForceUpdateTime < 900) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.ELAPSED_REALTIME,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + (10 * 1000),
+                            pendingForceIntent);
+                } else {
+                    ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000), 30 * 1000,
+                            pendingForceIntent);
+                }
+                Log.d(TAG, "we've set a force update in " + mForceUpdateTime);
+            }
         }
     }
 

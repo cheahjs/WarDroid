@@ -24,7 +24,9 @@ public class NotificationsUpdate extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Context mContext = context;
+        Log.i(TAG, "We are now forcing an update of notifications, because expiry and stuff.");
+        (new PollingAlarmReceiver()).onReceive(context, intent.putExtra("force", true));
+        /*Context mContext = context;
         String[] mNotifications = intent.getStringArrayExtra("notifications");
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -61,6 +63,6 @@ public class NotificationsUpdate extends BroadcastReceiver {
             mNotificationManager.cancel(1);
         } else {
             mNotificationManager.notify(1, notification);
-        }
+        }*/
     }
 }
