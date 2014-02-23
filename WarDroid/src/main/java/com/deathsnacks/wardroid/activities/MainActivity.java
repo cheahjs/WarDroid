@@ -93,16 +93,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 }
             }
             Intent intent = getIntent();
-            int startPos = intent.getIntExtra("drawer_position", -1);
-            if (startPos == -1) {
-                String defaultValue = mPreferences.getString("default_window", "news");
-                if (defaultValue.equals("news"))
-                    startPos = 0;
-                else if (defaultValue.equals("alerts"))
-                    startPos = 1;
-                else if (defaultValue.equals("invasions"))
-                    startPos = 2;
-            }
+            int startPos = intent.getIntExtra("drawer_position", 0);
             mActionBar.setSelectedNavigationItem(startPos);
         } else {
             mActionBar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));

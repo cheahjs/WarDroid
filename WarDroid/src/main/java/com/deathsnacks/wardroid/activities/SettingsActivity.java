@@ -100,18 +100,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             });
         }
-        ListPreference defaultWindow = (ListPreference) findPreference("default_window");
-        if (defaultWindow != null) {
-            defaultWindow.setSummary(defaultWindow.getEntry());
-            defaultWindow.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    ListPreference pref = (ListPreference) preference;
-                    preference.setSummary(pref.getEntries()[pref.findIndexOfValue(o.toString())]);
-                    return true;
-                }
-            });
-        }
     }
 
     @Override
