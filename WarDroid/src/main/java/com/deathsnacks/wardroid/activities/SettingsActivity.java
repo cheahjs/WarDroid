@@ -184,6 +184,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             } else if (s.equals("push")) {
                 Preference pushPref = findPreference("push");
+                if (pushPref == null)
+                    return;
+                pushPref.setEnabled(false);
                 if (mPreferences.getBoolean("push", false)) {
                     String regid = getRegistrationId(getApplicationContext());
 
@@ -301,10 +304,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
             @Override
             protected void onPostExecute(String msg) {
+                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                pushPref.setEnabled(true);
                 if (msg.startsWith("Error :") && !msg.contains("already exists")) {
-                    Toast.makeText(getApplicationContext(), "Error occurred while trying to register push notifications.", Toast.LENGTH_LONG).show();
-                    CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                    Toast.makeText(getApplicationContext(), "Error occurred while trying to register for push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(false);
+                    SharedPreferences.Editor editor = mPreferences.edit();
+                    editor.putBoolean("push", false);
+                    editor.commit();
                 }
             }
         }.execute();
@@ -329,10 +336,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
             @Override
             protected void onPostExecute(String msg) {
+                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                pushPref.setEnabled(true);
                 if (msg.startsWith("Error :")) {
-                    Toast.makeText(getApplicationContext(), "Error occurred while trying to unregister push notifications.", Toast.LENGTH_LONG).show();
-                    CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                    Toast.makeText(getApplicationContext(), "Error occurred while trying to unregister from push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(true);
+                    SharedPreferences.Editor editor = mPreferences.edit();
+                    editor.putBoolean("push", true);
+                    editor.commit();
                 }
             }
         }.execute();
