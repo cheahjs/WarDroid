@@ -19,14 +19,15 @@ import com.deathsnacks.wardroid.activities.MainActivity;
 /**
  * Created by Admin on 22/02/14.
  */
-public class NotificationsUpdate extends BroadcastReceiver {
-    private static final String TAG = "NotificationsUpdate";
+public class NotificationsUpdateReceiver extends BroadcastReceiver {
+    private static final String TAG = "NotificationsUpdateReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "We are now forcing an update of notifications, because expiry and stuff.");
-        if (intent.getBooleanExtra("gcm", false))
-            (new GcmBroadcastReceiver()).onReceive(context, intent);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (preferences.getBoolean("push", false))
+            (new GcmBroadcastReceiver()).onReceive(context, intent.putExtra("force", true));
         else
             (new PollingAlarmReceiver()).onReceive(context, intent.putExtra("force", true));
     }

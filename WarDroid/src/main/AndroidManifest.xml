@@ -44,7 +44,7 @@
                 android:value=".activities.MainActivity" />
         </activity>
         <receiver android:name=".services.PollingAlarmReceiver" />
-        <receiver android:name=".services.NotificationsUpdate" />
+        <receiver android:name=".services.NotificationsUpdateReceiver" />
         <receiver
             android:name=".services.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">

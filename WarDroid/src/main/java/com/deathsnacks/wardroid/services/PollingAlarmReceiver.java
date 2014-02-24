@@ -392,7 +392,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         if (mVibrate && mInsistent) {
             notification.flags |= Notification.FLAG_INSISTENT;
         }
-        Intent alarmIntent = new Intent(mContext, NotificationsUpdate.class);
+        Intent alarmIntent = new Intent(mContext, NotificationsUpdateReceiver.class);
         PendingIntent pendingForceIntent = PendingIntent.getBroadcast(mContext, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).cancel(pendingForceIntent);
         if (!mEmptyIcon && mNotifications.size() == 0) {
@@ -409,7 +409,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                             pendingForceIntent);
                 } else {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 30 * 1000,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 10 * 60 * 1000,
                             pendingForceIntent);
                 }
                 Log.d(TAG, "we've set a force update in " + mForceUpdateTime);

@@ -29,7 +29,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
-import com.deathsnacks.wardroid.services.NotificationsUpdate;
+import com.deathsnacks.wardroid.services.NotificationsUpdateReceiver;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Names;
 
@@ -131,7 +131,7 @@ public class MainActivity extends SherlockFragmentActivity {
                                         new Intent(getApplicationContext(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                                 ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                                         getApplicationContext(), 0,
-                                        new Intent(getApplicationContext(), NotificationsUpdate.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                                        new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                                 finish();
                             }
                         })

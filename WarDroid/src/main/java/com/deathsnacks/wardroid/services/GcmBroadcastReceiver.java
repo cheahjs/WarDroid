@@ -11,9 +11,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -27,13 +25,7 @@ import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.gcmclasses.Alert;
 import com.deathsnacks.wardroid.utils.gcmclasses.Invasion;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.squareup.okhttp.OkHttpClient;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,19 +65,32 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         gcm = GoogleCloudMessaging.getInstance(context);
         Log.d(TAG, "GCM BROADCAST RECEIVED!");
-        if (gcm.getMessageType(intent).equals(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE)
+        String messageType = gcm.getMessageType(intent);
+        if ((messageType != null && messageType.equals(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE))
                 || intent.getBooleanExtra("gcm", false)) {
             Log.i(TAG, "We've received a gcm message.");
             String alerts = intent.getStringExtra("alerts");
             String invasions = intent.getStringExtra("invasions");
+            boolean force = intent.getBooleanExtra("force", false);
             Log.d(TAG, alerts);
             Log.d(TAG, invasions);
-            if (alerts == null || invasions == null)
+            if ((alerts == null || invasions == null) && !force) {
+                Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
+            }
+            mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (force) {
+                alerts = mPreferences.getString("gcm_alerts", "");
+                invasions = mPreferences.getString("gcm_invasions", "");
+            }
             mAlerts = alerts;
             mInvasions = invasions;
             mContext = context;
-            mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = mPreferences.edit();
+            if (!force) {
+                editor.putString("gcm_alerts", alerts);
+                editor.putString("gcm_invasions", invasions);
+            }
             mVibrate = false;
             mNotifications = new ArrayList<String>();
             if (!mPreferences.getBoolean("alert_enabled", false) || !mPreferences.getBoolean("push", false)) {
@@ -282,7 +287,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         if (mVibrate && mInsistent) {
             notification.flags |= Notification.FLAG_INSISTENT;
         }
-        Intent alarmIntent = new Intent(mContext, NotificationsUpdate.class);
+        Intent alarmIntent = new Intent(mContext, NotificationsUpdateReceiver.class);
         alarmIntent.putExtra("gcm", true);
         alarmIntent.putExtra("alerts", mAlerts);
         alarmIntent.putExtra("invasions", mInvasions);
@@ -301,7 +306,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                             pendingForceIntent);
                 } else {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 30 * 1000,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 10 * 60 * 1000,
                             pendingForceIntent);
                 }
                 Log.d(TAG, "we've set a force update in " + mForceUpdateTime);
