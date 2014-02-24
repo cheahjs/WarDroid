@@ -217,10 +217,14 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, mPreferences.getString("alert_completed_ids", ""));
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
+        String gcmAlerts = "";
         for (String rawAlert : rawAlerts) {
             if (rawAlert.split("\\|").length != 11)
                 continue;
             Alert alert = new Alert(rawAlert);
+            gcmAlerts += TextUtils.join("|", new String[]{alert.getId(), alert.getNode(), alert.getRegion(),
+                    alert.getMission(), alert.getFaction(), String.valueOf(alert.getActivation()),
+                    String.valueOf(alert.getExpiry()), TextUtils.join(" - ", alert.getRewards())}) + "\n";
             mNew = false;
             if (!ids.contains(alert.getId())) {
                 mNew = true;
@@ -254,6 +258,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.putString("gcm_alerts", gcmAlerts);
         mEditor.commit();
         mAlertSuccess = true;
     }
@@ -308,11 +313,15 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         Log.d(TAG, mPreferences.getString("invasion_completed_ids", ""));
         String[] rawInvasions = response.split("\\n");
+        String gcmInvasions = "";
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {
             if (rawInvasion.split("\\|").length != 11)
                 continue;
             InvasionMini invasion = new InvasionMini(rawInvasion);
+            gcmInvasions += TextUtils.join("|", new String[]{invasion.getId(), invasion.getNode(), invasion.getRegion(),
+                    invasion.getInvadingFaction(), invasion.getInvadingType(), invasion.getInvadingReward(),
+                    invasion.getDefendingFaction(), invasion.getDefendingType(), invasion.getDefendingReward()}) + "\n";
             mNew = false;
             if (!ids.contains(invasion.getId())) {
                 mNew = true;
@@ -335,6 +344,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.putString("gcm_invasions", gcmInvasions);
         mEditor.commit();
         mInvasionSuccess = true;
     }
