@@ -32,6 +32,9 @@
     <string name="settings_hide_completed_summary">Hide alerts/invasions that have been marked completed.</string>
     <string name="settings_default_window_title">Default window</string>
     <string name="settings_notifications_category_title">Notification Settings</string>
+    <string name="push_title">Enable Push notifications (EXPERIMENTAL!!!)</string>
+    <string name="push_summary">Saves battery and data.\nMay break and not work. If you have issues, turn this off.</string>
+    <string name="push_disabled_summary">Google Play Services missing, unable to use push notifications.</string>
 
     <string-array name="planet_filter_names">
         <item>Mercury</item>

@@ -76,6 +76,11 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         mVibrate = false;
         mNotifications = new ArrayList<String>();
         Log.d(TAG, "Received broadcast for alarm, starting polling.");
+        if (mPreferences.getBoolean("push", false) && intent != null) {
+            Log.i(TAG, "We are abandoning the alarm, since push is on and this isn't forced.");
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                    context, 0, new Intent(context, PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        }
         if (mPreferences.getBoolean("alert_enabled", false)) {
             ArrayList<String> aura = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_filters", ""))));
@@ -404,7 +409,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                             pendingForceIntent);
                 } else {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000), 30 * 1000,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 30 * 1000,
                             pendingForceIntent);
                 }
                 Log.d(TAG, "we've set a force update in " + mForceUpdateTime);

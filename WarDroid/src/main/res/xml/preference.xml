@@ -27,6 +27,10 @@
             android:title="@string/settings_enable_alerts_title"
             android:summary="@string/settings_enable_alerts_summary"/>
         <CheckBoxPreference
+            android:key="push"
+            android:title="@string/push_title"
+            android:summary="@string/push_summary"/>
+        <CheckBoxPreference
             android:dependency="alert_enabled"
             android:key="empty_enabled"
             android:title="@string/settings_empty_title"

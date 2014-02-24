@@ -6,24 +6,34 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
+import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 
 /**
@@ -31,6 +41,7 @@ import java.text.NumberFormat;
  */
 public class SettingsActivity extends SherlockPreferenceActivity {
     private static final String TAG = "SettingsActivity";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
@@ -100,6 +111,13 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             });
         }
+        Preference pushPref = findPreference("push");
+        if (pushPref != null) {
+            if (!checkPlayServices()) {
+                pushPref.setEnabled(false);
+                pushPref.setSummary(getString(R.string.push_disabled_summary));
+            }
+        }
     }
 
     @Override
@@ -108,6 +126,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         super.onDestroy();
     }
 
+    @SuppressWarnings("deprecation")
     SharedPreferences.OnSharedPreferenceChangeListener prefChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
@@ -133,8 +152,10 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+                    if (!mPreferences.getBoolean("push", false)) {
+                        ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                                SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+                    }
                 } else {
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(1);
@@ -161,6 +182,17 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else if (s.equals("push")) {
+                Preference pushPref = findPreference("push");
+                if (mPreferences.getBoolean("push", false)) {
+                    String regid = getRegistrationId(getApplicationContext());
+
+                    if (regid.trim().length() == 0) {
+                        registerInBackground();
+                    }
+                } else {
+                    unregisterInBackground();
+                }
             }
         }
     };
@@ -175,5 +207,173 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Gets the current registration ID for application on GCM service.
+     * <p>
+     * If result is empty, the app needs to register.
+     *
+     * @return registration ID, or empty string if there is no existing
+     *         registration ID.
+     */
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString("gcm_reg_id", "");
+        Log.d(TAG, "regId="+ registrationId);
+        if (registrationId.trim().length() == 0) {
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = prefs.getInt("gcm_app_version", Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    /**
+     * @return Application's {@code SharedPreferences}.
+     */
+    private SharedPreferences getGCMPreferences(Context context) {
+        // This sample app persists the registration ID in shared preferences, but
+        // how you store the regID in your app is up to you.
+        return getSharedPreferences("gcm", Context.MODE_PRIVATE);
+    }
+
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    String regid = gcm.register("338009375920");
+                    msg = "Device registered, registration ID=" + regid;
+
+                    sendRegistrationIdToBackend(regid);
+
+                    storeRegistrationId(getApplicationContext(), regid);
+                } catch (IOException ex) {
+                    //if we fail and attempt to register again, we get the same id, so no problem.
+                    msg = "Error :" + ex.getMessage();
+                    ex.printStackTrace();
+                    Log.e(TAG, ex.getMessage());
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                if (msg.startsWith("Error :") && !msg.contains("already exists")) {
+                    Toast.makeText(getApplicationContext(), "Error occurred while trying to register push notifications.", Toast.LENGTH_LONG).show();
+                    CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                    pushPref.setChecked(false);
+                }
+            }
+        }.execute();
+    }
+
+    private void unregisterInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    String regid = getRegistrationId(getApplicationContext());
+                    removeRegistrationIdFromBackend(regid);
+                    removeRegistrationId(getApplicationContext());
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                    ex.printStackTrace();
+                    Log.e(TAG, ex.getMessage());
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                if (msg.startsWith("Error :")) {
+                    Toast.makeText(getApplicationContext(), "Error occurred while trying to unregister push notifications.", Toast.LENGTH_LONG).show();
+                    CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                    pushPref.setChecked(true);
+                }
+            }
+        }.execute();
+    }
+
+    private void storeRegistrationId(Context context, String regId) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        Log.i(TAG, "regId=" + regId);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("gcm_reg_id", regId);
+        editor.putInt("gcm_app_version", appVersion);
+        editor.commit();
+    }
+
+    private void removeRegistrationId(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        Log.i(TAG, "removing reg id.");
+        editor.remove("gcm_reg_id");
+        editor.remove("gcm_app_version");
+        editor.commit();
+    }
+
+    /**
+     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP
+     * to send messages to your app.
+     */
+    private void sendRegistrationIdToBackend(String id) throws IOException {
+        String response = Http.get("http://deathsnacks.com/api/wardroid/registerPush.php?id=" + id);
+        if (!response.contains("success:"))
+            throw new IOException("Failed to send gcm id back to server. " + response);
+    }
+
+    /**
+     * Removes the registration ID to your server over HTTP.
+     */
+    private void removeRegistrationIdFromBackend(String id) throws IOException {
+        String response = Http.get("http://deathsnacks.com/api/wardroid/unregisterPush.php?id=" + id);
+        if (!response.contains("removed:"))
+            throw new IOException("Failed to remove gcm id from the server. " + response);
     }
 }

@@ -84,8 +84,10 @@ public class MainActivity extends SherlockFragmentActivity {
                         mBuilder.setContentIntent(pendingIntent2);
                         mNotificationManager.notify(1, mBuilder.build());
                         (new PollingAlarmReceiver()).onReceive(this.getApplicationContext(), null);
-                        ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                                SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+                        if (!mPreferences.getBoolean("push", false)) {
+                            ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                                    SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
