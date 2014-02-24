@@ -156,7 +156,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         String[] rawAlerts = response.split("\\n");
         Boolean mNew = false;
         for (String rawAlert : rawAlerts) {
-            if (rawAlert.split("\\|").length != 11)
+            if (rawAlert.split("\\|").length != 8)
                 continue;
             Alert alert = new Alert(rawAlert);
             mNew = false;
@@ -209,7 +209,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         String[] rawInvasions = response.split("\\n");
         Boolean mNew = false;
         for (String rawInvasion : rawInvasions) {
-            if (rawInvasion.split("\\|").length != 11)
+            if (rawInvasion.split("\\|").length != 9)
                 continue;
             Invasion invasion = new Invasion(rawInvasion);
             mNew = false;
