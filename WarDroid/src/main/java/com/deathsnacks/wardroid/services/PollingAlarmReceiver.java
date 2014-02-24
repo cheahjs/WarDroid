@@ -409,10 +409,9 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mNotificationManager.cancel(1);
         } else {
             mNotificationManager.notify(1, notification);
-            //if its more than 15 minutes, we might as well wait for the next update.
             mForceUpdateTime = mForceUpdateTime - (System.currentTimeMillis() / 1000);
             Log.d(TAG, "force update time: " + mForceUpdateTime);
-            if (mForceUpdateTime > 0 && mForceUpdateTime < 900) {
+            if (mForceUpdateTime > 0) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.ELAPSED_REALTIME,
                             SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + (10 * 1000),
