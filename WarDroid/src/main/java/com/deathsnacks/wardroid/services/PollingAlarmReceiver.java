@@ -418,7 +418,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                             pendingForceIntent);
                 } else {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 10 * 60 * 1000,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 2 * 60 * 1000,
                             pendingForceIntent);
                 }
                 Log.d(TAG, "we've set a force update in " + mForceUpdateTime);
