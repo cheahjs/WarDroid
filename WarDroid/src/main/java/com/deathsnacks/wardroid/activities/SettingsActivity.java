@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.services.NotificationsUpdateReceiver;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -161,6 +162,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     mNotificationManager.cancel(1);
                     ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                             getApplicationContext(), 0, new Intent(getApplicationContext(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                    ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                            getApplicationContext(), 0,
+                            new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("credit_filter")) {
                 Preference cred = findPreference("credit_filter");
