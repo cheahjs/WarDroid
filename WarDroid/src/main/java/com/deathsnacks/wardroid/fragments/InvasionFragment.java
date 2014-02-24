@@ -132,10 +132,6 @@ public class InvasionFragment extends SherlockFragment {
             case R.id.refresh:
                 refresh(true);
                 return true;
-            case R.id.settings:
-                Intent intent = new Intent(getSherlockActivity(), SettingsActivity.class);
-                startActivity(intent);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

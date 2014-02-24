@@ -69,7 +69,6 @@ public class NewsFragment extends SherlockFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_refresh, menu);
-        menu.removeItem(R.id.settings);
     }
 
     @Override
@@ -77,10 +76,6 @@ public class NewsFragment extends SherlockFragment {
         switch (item.getItemId()) {
             case R.id.refresh:
                 refresh(true);
-                return true;
-            case R.id.settings:
-                Intent intent = new Intent(getSherlockActivity(), SettingsActivity.class);
-                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -2,9 +2,11 @@ package com.deathsnacks.wardroid.activities;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -22,10 +24,12 @@ import android.view.WindowManager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
+import com.deathsnacks.wardroid.services.NotificationsUpdate;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Names;
 
@@ -106,6 +110,40 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.exit:
+                new AlertDialog.Builder(this)
+                        .setTitle(this.getString(R.string.menu_exit))
+                        .setMessage(getString(R.string.menu_exit_message))
+                        .setPositiveButton(this.getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                                        getApplicationContext(), 0,
+                                        new Intent(getApplicationContext(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                                ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
+                                        getApplicationContext(), 0,
+                                        new Intent(getApplicationContext(), NotificationsUpdate.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(this.getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class PreloadData extends AsyncTask<Void, Void, Void> {
