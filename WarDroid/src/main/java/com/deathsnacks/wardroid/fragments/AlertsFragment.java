@@ -175,15 +175,15 @@ public class AlertsFragment extends SherlockFragment {
 
     @Override
     public void onDestroy() {
-        mHandler.removeCallbacksAndMessages(mTimer);
-        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        mHandler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "we called ondestroy");
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
-        mHandler.removeCallbacksAndMessages(mTimer);
-        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        mHandler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "we called onpause");
         super.onPause();
     }
 

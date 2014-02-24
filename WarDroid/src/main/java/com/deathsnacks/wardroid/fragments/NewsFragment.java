@@ -103,13 +103,15 @@ public class NewsFragment extends SherlockFragment {
 
     @Override
     public void onDestroy() {
-        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        mHandler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "we called ondestroy");
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
-        mHandler.removeCallbacksAndMessages(mRefreshTimer);
+        mHandler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "we called onpause");
         super.onPause();
     }
 
