@@ -56,7 +56,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private Boolean mEnableLED;
     private Boolean mInsistent;
     private Boolean mEmptyIcon;
-    private Boolean mDismissible;
+    private Boolean mOngoing;
     private long mForceUpdateTime;
     private int mStreamType;
     private String mAlerts;
@@ -130,7 +130,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
-            mDismissible = !mPreferences.getBoolean("dismissible", false);
+            mOngoing = !mPreferences.getBoolean("dismissible", false);
 
             mAlertSuccess = false;
             mInvasionSuccess = false;
@@ -254,7 +254,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
-                .setOngoing(mDismissible);
+                .setOngoing(mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -286,6 +286,9 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())),
                     mStreamType);
             mBuilder.setDefaults(defaults);
+        } else {
+            if (mOngoing)
+                return;
         }
         Notification notification = mBuilder.build();
         if (mVibrate && mInsistent) {

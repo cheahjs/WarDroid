@@ -68,7 +68,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private long mForceUpdateTime;
     private Boolean mForceUpdate;
     private int mStreamType;
-    private boolean mDismissible;
+    private boolean mOngoing;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -116,7 +116,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
-            mDismissible = !mPreferences.getBoolean("dismissible", false);
+            mOngoing = !mPreferences.getBoolean("dismissible", false);
 
             mAlertSuccess = false;
             mInvasionSuccess = false;
@@ -365,12 +365,12 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private void addNotifications() {
         int size = mNotifications.size();
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        Log.d(TAG, "dismissible:" + mDismissible);
+        Log.d(TAG, "dismissible:" + mOngoing);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
-                .setOngoing(mDismissible);
+                .setOngoing(mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -402,6 +402,9 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())),
                     mStreamType);
             mBuilder.setDefaults(defaults);
+        } else {
+            if (mOngoing)
+                return;
         }
         Notification notification = mBuilder.build();
         if (mVibrate && mInsistent) {
