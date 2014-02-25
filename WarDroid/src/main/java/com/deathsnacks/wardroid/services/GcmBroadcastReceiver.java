@@ -67,7 +67,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         Log.d(TAG, "GCM BROADCAST RECEIVED!");
         String messageType = gcm.getMessageType(intent);
         if ((messageType != null && messageType.equals(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE))
-                || intent.getBooleanExtra("gcm", false)) {
+                || intent.getBooleanExtra("force", false)) {
             Log.i(TAG, "We've received a gcm message.");
             String alerts = intent.getStringExtra("alerts");
             String invasions = intent.getStringExtra("invasions");
