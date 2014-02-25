@@ -71,7 +71,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             Log.i(TAG, "We've received a gcm message.");
             String alerts = intent.getStringExtra("alerts");
             String invasions = intent.getStringExtra("invasions");
-            boolean force = intent.getBooleanExtra("force", false);
+            boolean force = intent.getBooleanExtra("force", false) || intent.getBooleanExtra("tickle", false);
             Log.d(TAG, alerts);
             Log.d(TAG, invasions);
             if ((alerts == null || invasions == null) && !force) {

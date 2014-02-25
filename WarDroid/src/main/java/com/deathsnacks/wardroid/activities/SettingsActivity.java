@@ -233,6 +233,10 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         return true;
     }
 
+    private String getRegistrationId(Context context) {
+        return getRegistrationId(context, true);
+    }
+
     /**
      * Gets the current registration ID for application on GCM service.
      * <p>
@@ -241,7 +245,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
      * @return registration ID, or empty string if there is no existing
      *         registration ID.
      */
-    private String getRegistrationId(Context context) {
+    private String getRegistrationId(Context context, boolean versionCheck) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString("gcm_reg_id", "");
         Log.d(TAG, "regId="+ registrationId);
@@ -254,7 +258,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         // app version.
         int registeredVersion = prefs.getInt("gcm_app_version", Integer.MIN_VALUE);
         int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
+        if (registeredVersion != currentVersion && versionCheck) {
             Log.i(TAG, "App version changed.");
             return "";
         }
@@ -327,7 +331,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             protected String doInBackground(Void... params) {
                 String msg = "";
                 try {
-                    String regid = getRegistrationId(getApplicationContext());
+                    String regid = getRegistrationId(getApplicationContext(), false);
                     removeRegistrationIdFromBackend(regid);
                     removeRegistrationId(getApplicationContext());
                 } catch (IOException ex) {
