@@ -383,7 +383,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
      */
     private void sendRegistrationIdToBackend(String id) throws IOException {
         String response = Http.get("http://deathsnacks.com/api/wardroid/registerPush.php?id=" + id);
-        if (!response.contains("success:"))
+        if (!response.contains("success:") && !response.contains("already exists"))
             throw new IOException("Failed to send gcm id back to server. " + response);
     }
 
@@ -392,7 +392,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
      */
     private void removeRegistrationIdFromBackend(String id) throws IOException {
         String response = Http.get("http://deathsnacks.com/api/wardroid/unregisterPush.php?id=" + id);
-        if (!response.contains("removed:"))
+        if (!response.contains("removed:") && !response.contains("doesn't exist"))
             throw new IOException("Failed to remove gcm id from the server. " + response);
     }
 }

@@ -514,7 +514,7 @@ public class AlertsFragment extends SherlockFragment {
      */
     private void sendRegistrationIdToBackend(String id) throws IOException {
         String response = Http.get("http://deathsnacks.com/api/wardroid/registerPush.php?id=" + id);
-        if (!response.contains("success:"))
+        if (!response.contains("success:") && !response.contains("already exists"))
             throw new IOException("Failed to send gcm id back to server. " + response);
     }
 }

@@ -71,15 +71,16 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             Log.i(TAG, "We've received a gcm message.");
             String alerts = intent.getStringExtra("alerts");
             String invasions = intent.getStringExtra("invasions");
-            boolean force = intent.getBooleanExtra("force", false) || intent.getBooleanExtra("tickle", false);
-            Log.d(TAG, alerts);
-            Log.d(TAG, invasions);
+            boolean force = intent.getBooleanExtra("force", false);
+            Log.d(TAG, "gcm alerts:" + alerts);
+            Log.d(TAG, "gcm invasions:" + invasions);
             if ((alerts == null || invasions == null) && !force) {
                 Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
             }
             mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (force) {
+            if (force && (alerts == null || invasions == null)) {
+                Log.d(TAG, "We are forcing, so we are grabbing cached stuff.");
                 alerts = mPreferences.getString("gcm_alerts", "");
                 invasions = mPreferences.getString("gcm_invasions", "");
             }
@@ -153,6 +154,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         if (response.length() < 15) {
             mAlertSuccess = true;
             Log.i(TAG, "Alert response < 15, tagging success and continuing");
+            Log.i(TAG, response);
             return;
         }
         List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));

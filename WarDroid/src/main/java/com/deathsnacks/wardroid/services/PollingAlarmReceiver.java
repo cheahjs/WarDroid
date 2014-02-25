@@ -44,8 +44,9 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "PollingAlarmReceiver";
     private Context mContext;
     private SharedPreferences mPreferences;
+    private SharedPreferences mHttpPreferences;
     private OkHttpClient client;
-    private SharedPreferences.Editor mEditor;
+    //private SharedPreferences.Editor mEditor;
     private List<String> mNotifications;
     private NotificationManager mNotificationManager;
     private Boolean mVibrate;
@@ -72,6 +73,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mContext = context;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mHttpPreferences = context.getSharedPreferences("polling", Context.MODE_PRIVATE);
         client = new OkHttpClient();
         mVibrate = false;
         mNotifications = new ArrayList<String>();
@@ -173,7 +175,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             HttpURLConnection connection = client.open(url);
             System.setProperty("http.agent", "");
             connection.setRequestProperty("User-Agent", "WarDroid/Android/");
-            long mod = mPreferences.getLong("alerts_modified", 0);
+            long mod = mHttpPreferences.getLong("alerts_modified", 0);
             if (mod != 0) {
                 connection.setIfModifiedSince(mod);
             }
@@ -182,7 +184,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     Log.d(TAG, "we received something other than 201 for alerts: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
-                        String cache = mPreferences.getString("alerts_cache", "");
+                        String cache = mHttpPreferences.getString("alerts_cache", "");
                         Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
                         Log.d(TAG, cache);
                         parseAlerts(cache);
@@ -193,7 +195,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 byte[] response = readAll(in);
                 String resp = new String(response, "UTF-8");
                 parseAlerts(resp);
-                mEditor = mPreferences.edit();
+                SharedPreferences.Editor mEditor = mHttpPreferences.edit();
                 mEditor.putLong("alerts_modified", connection.getLastModified());
                 mEditor.putString("alerts_cache", resp);
                 mEditor.commit();
@@ -256,7 +258,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 continue;
             }
         }
-        mEditor = mPreferences.edit();
+        SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.putString("gcm_alerts", gcmAlerts);
         mEditor.commit();
@@ -269,7 +271,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             HttpURLConnection connection = client.open(url);
             System.setProperty("http.agent", "");
             connection.setRequestProperty("User-Agent", "WarDroid/Android/");
-            long mod = mPreferences.getLong("invasion_modified", 0);
+            long mod = mHttpPreferences.getLong("invasion_modified", 0);
             if (mod != 0) {
                 connection.setIfModifiedSince(mod);
             }
@@ -278,7 +280,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     Log.d(TAG, "we received something other than 201 for invasions: " + connection.getResponseCode());
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
-                        String cache = mPreferences.getString("invasion_cache", "");
+                        String cache = mHttpPreferences.getString("invasion_cache", "");
                         Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
                         Log.d(TAG, cache);
                         parseInvasions(cache);
@@ -289,7 +291,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 byte[] response = readAll(in);
                 String resp = new String(response, "UTF-8");
                 parseInvasions(resp);
-                mEditor = mPreferences.edit();
+                SharedPreferences.Editor mEditor = mHttpPreferences.edit();
                 mEditor.putLong("invasion_modified", connection.getLastModified());
                 mEditor.putString("invasion_cache", resp);
                 mEditor.commit();
@@ -342,7 +344,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 continue;
             }
         }
-        mEditor = mPreferences.edit();
+        SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.putString("gcm_invasions", gcmInvasions);
         mEditor.commit();
