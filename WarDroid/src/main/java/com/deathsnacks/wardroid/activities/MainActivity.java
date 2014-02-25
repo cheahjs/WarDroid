@@ -71,14 +71,14 @@ public class MainActivity extends SherlockFragmentActivity {
             Log.d(TAG, "no saved instance state");
             if (mPreferences.getBoolean("alert_enabled", false)) {
                 Log.d(TAG, "starting alarm");
-                SharedPreferences httpPrefs = getSharedPreferences("polling", MODE_PRIVATE);
-                SharedPreferences.Editor edit = httpPrefs.edit();
-                edit.clear();
-                edit.commit();
                 Intent alarmIntent = new Intent(this, PollingAlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if (pendingIntent != null) {
                     try {
+                        SharedPreferences httpPrefs = getSharedPreferences("polling", MODE_PRIVATE);
+                        SharedPreferences.Editor edit = httpPrefs.edit();
+                        edit.clear();
+                        edit.commit();
                         Log.d(TAG, "forcing start of alarm");
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
