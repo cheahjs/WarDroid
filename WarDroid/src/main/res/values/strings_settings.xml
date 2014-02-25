@@ -35,6 +35,8 @@
     <string name="push_title">Enable Push notifications (EXPERIMENTAL!!!)</string>
     <string name="push_summary">Saves battery and data.\nMay break and not work. If you have issues, turn this off.</string>
     <string name="push_disabled_summary">Google Play Services missing, unable to use push notifications.</string>
+    <string name="setting_dismiss_title">Dismissible</string>
+    <string name="setting_dismiss_summary">Allows for the notification to be dismissed/cleared.</string>
 
     <string-array name="planet_filter_names">
         <item>Mercury</item>

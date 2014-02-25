@@ -80,12 +80,13 @@ public class MainActivity extends SherlockFragmentActivity {
                         edit.clear();
                         edit.commit();
                         Log.d(TAG, "forcing start of alarm");
+                        boolean mDismissible = !mPreferences.getBoolean("dismissible", false);
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setContentTitle(getString(R.string.notification_title))
                                 .setContentText(getString(R.string.notification_starting))
-                                .setOngoing(true);
+                                .setOngoing(mDismissible);
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("drawer_position", 2);
                         PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

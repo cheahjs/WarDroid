@@ -56,6 +56,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private Boolean mEnableLED;
     private Boolean mInsistent;
     private Boolean mEmptyIcon;
+    private Boolean mDismissible;
     private long mForceUpdateTime;
     private int mStreamType;
     private String mAlerts;
@@ -129,6 +130,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
+            mDismissible = !mPreferences.getBoolean("dismissible", false);
 
             mAlertSuccess = false;
             mInvasionSuccess = false;
@@ -252,7 +254,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
-                .setOngoing(true);
+                .setOngoing(mDismissible);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -308,7 +310,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                             pendingForceIntent);
                 } else {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).setWindow(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 2 * 60 * 1000,
+                            SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 30 * 1000,
                             pendingForceIntent);
                 }
                 Log.d(TAG, "we've set a force update in " + mForceUpdateTime);

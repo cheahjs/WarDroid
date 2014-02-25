@@ -131,6 +131,12 @@
             android:title="@string/settings_insistent"
             android:key="insistent"
             android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/setting_dismiss_title"
+            android:summary="@string/setting_dismiss_summary"
+            android:key="dismissible"
+            android:defaultValue="false"/>
         <RingtonePreference
             android:dependency="alert_enabled"
             android:showDefault="true"

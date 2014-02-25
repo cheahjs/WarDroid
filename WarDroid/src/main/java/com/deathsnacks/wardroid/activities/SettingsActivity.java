@@ -135,6 +135,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             if (s.equals("alert_enabled")) {
                 if (sharedPreferences.getBoolean("alert_enabled", false)) {
                     Log.d(TAG, "starting alarm since pref was changed");
+                    boolean mDismissible = !sharedPreferences.getBoolean("dismissible", false);
                     Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmReceiver.class);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -142,7 +143,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                             .setSmallIcon(R.drawable.ic_notification)
                             .setContentTitle(getString(R.string.notification_title))
                             .setContentText(getString(R.string.notification_starting))
-                            .setOngoing(true);
+                            .setOngoing(mDismissible);
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putExtra("drawer_position", 2);
                     PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
