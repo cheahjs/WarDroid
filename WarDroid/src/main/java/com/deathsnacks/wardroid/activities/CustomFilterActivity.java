@@ -1,18 +1,24 @@
 package com.deathsnacks.wardroid.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
@@ -41,8 +47,9 @@ public class CustomFilterActivity extends SherlockActivity {
         setContentView(R.layout.activity_filters);
         mList = (ListView) findViewById(R.id.listFilters);
         View footer = View.inflate(this, R.layout.list_item_custom_footer, null);
-        mList.setAdapter(mAdapter);
         mList.addFooterView(footer);
+        mList.setAdapter(mAdapter);
+        mList.setOnItemClickListener(clickListener);
         View addFilter = mList.findViewById(R.id.add_new_filter);
         addFilter.setOnClickListener(addListener);
         hideSoftKeyboard();
@@ -51,27 +58,85 @@ public class CustomFilterActivity extends SherlockActivity {
     public void hideSoftKeyboard() {
         if(getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
     }
+
+    ListView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            TextView text = (TextView) view;
+            final String filter = text.getText().toString();
+            if (mFilters.contains(filter)) {
+                new AlertDialog.Builder(CustomFilterActivity.this)
+                        .setMessage(String.format(getString(R.string.remove_custom),
+                                filter))
+                        .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                mFilters.remove(filter);
+                                //mAdapter.remove(filter);
+                                SharedPreferences.Editor mEditor = mPreferences.edit();
+                                mEditor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                                        mFilters.toArray(new String[mFilters.size()])));
+                                mEditor.commit();
+                                mAdapter.notifyDataSetChanged();
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).show();
+            }
+        }
+    };
 
     View.OnClickListener addListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            //TODO: Show dialog to add new filter
-            new AlertDialog.Builder(CustomFilterActivity.this)
-                    .setTitle(getString(R.string.menu_exit))
-                    .setMessage(getString(R.string.menu_exit_message))
-                    .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+            AlertDialog alertDialog = new AlertDialog.Builder(CustomFilterActivity.this)
+                    .setTitle("Add new custom filter")
+                    .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            Dialog dialog = (Dialog) dialogInterface;
+                            EditText text = (EditText) dialog.findViewById(R.id.filter_text);
+                            mFilters.add(text.getText().toString());
+                            //mAdapter.add(text.getText().toString());
+                            mAdapter.notifyDataSetChanged();
+                            SharedPreferences.Editor editor = mPreferences.edit();
+                            editor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                                    mFilters.toArray(new String[mFilters.size()])));
+                            editor.commit();
+                            dialogInterface.cancel();
                         }
                     })
-                    .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
                         }
-                    }).show();
+                    }).create();
+            alertDialog.setView(View.inflate(getApplicationContext(), R.layout.dialog_custom_filter, null));
+            alertDialog.show();
+            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
     };
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.abs__home:
+            case R.id.homeAsUp:
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                super.onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

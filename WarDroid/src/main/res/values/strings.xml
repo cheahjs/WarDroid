@@ -27,4 +27,6 @@
 If push notifications are enabled, you will still get notifications.</string>
     <string name="add_new_filter">Add new custom filter</string>
     <string name="settings_custom_filers">Custom Filters</string>
+    <string name="reward_contains">reward contains</string>
+    <string name="remove_custom">Are you sure you want to remove the filter \"%1$s\"?</string>
 </resources>

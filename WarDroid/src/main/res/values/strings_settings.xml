@@ -37,8 +37,8 @@
     <string name="push_disabled_summary">Google Play Services missing, unable to use push notifications.</string>
     <string name="setting_dismiss_title">Dismissible</string>
     <string name="setting_dismiss_summary">Allows for the notification to be dismissed/cleared.</string>
-    <string name="settings_enable_custom">Enable custom filters</string>
-    <string name="settings_custom_filter">Custom filters</string>
+    <string name="settings_enable_custom">Enable custom item filters</string>
+    <string name="settings_custom_filter">Custom item filters</string>
 
     <string-array name="planet_filter_names">
         <item>Mercury</item>

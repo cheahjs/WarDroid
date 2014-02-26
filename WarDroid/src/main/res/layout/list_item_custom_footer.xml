@@ -19,6 +19,8 @@
         android:textAppearance="?android:textAppearanceMedium"
         android:gravity="center_vertical"
         android:paddingStart="10dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:paddingEnd="10dip"
         android:minHeight="48dp"
         android:clickable="true"

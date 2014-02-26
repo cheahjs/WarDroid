@@ -54,6 +54,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private List<String> mPlanetFilters;
     private int mCreditFilter;
     private List<String> mTypeFilters;
+    private List<String> mCustomFilters;
+    private Boolean mCustomFilered;
     private Boolean mItemFiltered;
     private Boolean mPlanetFiltered;
     private Boolean mCreditFiltered;
@@ -99,6 +101,12 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mItemFilters.addAll(mod);
             mItemFilters.addAll(resource);
             mItemFiltered = mPreferences.getBoolean("filter_enabled", false);
+
+            mCustomFilters = new ArrayList<String>(Arrays.asList(
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("custom_filters", ""))));
+            mCustomFilered = mPreferences.getBoolean("custom_enabled", false);
+            Log.d(TAG, mPreferences.getString("custom_filters", ""));
+            Log.d(TAG, mCustomFilered+"");
 
             mPlanetFiltered = mPreferences.getBoolean("planet_enabled", false);
             mPlanetFilters = new ArrayList<String>(Arrays.asList(
@@ -403,7 +411,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     mStreamType);
             mBuilder.setDefaults(defaults);
         } else {
-            if (mOngoing)
+            if (!mOngoing)
                 return;
         }
         Notification notification = mBuilder.build();
@@ -435,14 +443,14 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     }
 
     private Boolean isAlertFiltered(Alert alert) {
-        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered && !mCustomFilered)
             return true;
         if (mPlanetFiltered && !mPlanetFilters.contains(alert.getRegion()))
             return false;
         if (mTypeFiltered && !mTypeFilters.contains(alert.getMission().toLowerCase()))
             return false;
 
-        if (!mItemFiltered && !mCreditFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mCustomFilered)
             return true;
 
         for (String reward : alert.getRewards()) {
@@ -457,13 +465,19 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     if (mItemFilters.contains(reward.replace(" Blueprint", "")))
                         return true;
                 }
+                if (mCustomFilered) {
+                    for (String filter : mCustomFilters) {
+                        if (reward.toLowerCase().contains(filter.toLowerCase()))
+                            return true;
+                    }
+                }
             }
         }
         return false;
     }
 
     private Boolean isInvasionFiltered(InvasionMini invasion) {
-        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mPlanetFiltered && !mTypeFiltered && !mCustomFilered)
             return true;
         if (mPlanetFiltered && !mPlanetFilters.contains(invasion.getRegion()))
             return false;
@@ -476,7 +490,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             }
         }
 
-        if (!mItemFiltered && !mCreditFiltered)
+        if (!mItemFiltered && !mCreditFiltered && !mCustomFilered)
             return true;
 
         for (String reward : invasion.getRewards()) {
@@ -490,6 +504,12 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 if (mItemFiltered) {
                     if (mItemFilters.contains(reward.replace(" Blueprint", "")))
                         return true;
+                }
+                if (mCustomFilered) {
+                    for (String filter : mCustomFilters) {
+                        if (reward.toLowerCase().contains(filter.toLowerCase()))
+                            return true;
+                    }
                 }
             }
         }
