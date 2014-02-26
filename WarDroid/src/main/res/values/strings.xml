@@ -25,4 +25,6 @@
     <string name="alert_mark_incomplete">Do you want to mark this alert as incomplete?</string>
     <string name="menu_exit">Exit</string><string name="menu_exit_message">Are you sure you want to exit?
 If push notifications are enabled, you will still get notifications.</string>
+    <string name="add_new_filter">Add new custom filter</string>
+    <string name="settings_custom_filers">Custom Filters</string>
 </resources>

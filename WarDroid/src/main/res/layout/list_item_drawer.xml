@@ -3,9 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="56dp"
-    android:textColor="?android:textColorPrimaryInverse"
-    style="@style/drawerActivated"
-    android:textSize="16dp"
-    android:height="48dp"/>
+    android:textSize="16sp"
+    android:height="48dp"
+    android:text="Test"/>

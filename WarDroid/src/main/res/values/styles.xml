@@ -15,6 +15,9 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
+        <!--<item name="listPreferredItemHeightSmall">48dp</item>
+        <item name="listPreferredItemPaddingEnd">10dip</item>
+        <item name="listPreferredItemPaddingStart">10dip</item>-->
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
@@ -30,5 +33,9 @@
 
     <style name="marginPoint">
         <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="selectableView">
+        <item name="android:background">@android:drawable/list_selector_background</item>
     </style>
 </resources>

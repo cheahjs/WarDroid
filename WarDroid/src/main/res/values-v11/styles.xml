@@ -12,4 +12,7 @@
         <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
     </style>
 
+    <style name="selectableView">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

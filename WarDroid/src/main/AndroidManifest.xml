@@ -43,6 +43,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
+        <activity
+            android:name=".activities.CustomFilterActivity"
+            android:label="@string/settings_custom_filers"
+            android:configChanges="orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:parentActivityName=".activities.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.SettingsActivity" />
+        </activity>
         <receiver android:name=".services.PollingAlarmReceiver" />
         <receiver android:name=".services.NotificationsUpdateReceiver" />
         <receiver
