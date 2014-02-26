@@ -124,10 +124,17 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         }
         Preference customPref = findPreference("custom_button");
         if (customPref != null) {
-            customPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            customPref.setIntent(new Intent(getApplicationContext(), CustomFilterActivity.class));
+        }
+        ListPreference defaultWindow = (ListPreference) findPreference("default_window");
+        if (defaultWindow != null) {
+            defaultWindow.setSummary(defaultWindow.getEntry());
+            defaultWindow.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    return false;
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    ListPreference pref = (ListPreference) preference;
+                    preference.setSummary(pref.getEntries()[pref.findIndexOfValue(o.toString())]);
+                    return true;
                 }
             });
         }

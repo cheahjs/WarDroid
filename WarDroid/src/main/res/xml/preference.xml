@@ -15,6 +15,12 @@
             android:title="@string/settings_hide_completed_title"
             android:defaultValue="false"
             android:summary="@string/settings_hide_completed_summary"/>
+        <ListPreference
+            android:defaultValue="news"
+            android:entries="@array/window_names"
+            android:entryValues="@array/window_entries"
+            android:key="default_window"
+            android:title="@string/settings_default_window_title"/>
         <!--<CheckBoxPreference
             android:key="sale_enabled"
             android:title="Enable Flash Sale notifications"/>-->
@@ -112,6 +118,15 @@
             android:key="type_filters"
             android:entries="@array/type_filter_names"
             android:entryValues="@array/type_filter_entries"/>
+
+        <CheckBoxPreference
+            android:dependency="alert_enabled"
+            android:title="@string/settings_enable_custom"
+            android:key="custom_enabled"/>
+        <Preference
+            android:dependency="custom_enabled"
+            android:title="@string/settings_custom_filter"
+            android:key="custom_button"/>
     </PreferenceCategory>
 
     <PreferenceCategory
