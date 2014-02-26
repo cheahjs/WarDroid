@@ -44,6 +44,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
     private static final String TAG = "SettingsActivity";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private SharedPreferences mPreferences;
+    private static boolean mForceChangingPush;
     private SharedPreferences.Editor mEditor;
 
     @Override
@@ -52,6 +53,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         super.onCreate(paramBundle);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mForceChangingPush = false;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
         mPreferences.registerOnSharedPreferenceChangeListener(prefChanged);
@@ -114,12 +116,46 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         }
         Preference pushPref = findPreference("push");
         if (pushPref != null) {
+            pushPref.setOnPreferenceChangeListener(pushPrefListener);
             if (!checkPlayServices()) {
                 pushPref.setEnabled(false);
                 pushPref.setSummary(getString(R.string.push_disabled_summary));
             }
         }
+        Preference customPref = findPreference("custom_button");
+        if (customPref != null) {
+            customPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    return false;
+                }
+            });
+        }
     }
+
+    Preference.OnPreferenceChangeListener pushPrefListener = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference pushPref, Object o) {
+            Log.d(TAG, "push force:" + mForceChangingPush);
+            boolean newpref = (Boolean) o;
+            if (mForceChangingPush) {
+                Log.d(TAG, "push pref force change, ignoring.");
+                mForceChangingPush = false;
+                return false;
+            }
+            pushPref.setEnabled(false);
+            if (newpref) {
+                String regid = getRegistrationId(getApplicationContext());
+
+                if (regid.trim().length() == 0) {
+                    registerInBackground();
+                }
+            } else {
+                unregisterInBackground();
+            }
+            return true;
+        }
+    };
 
     @Override
     protected void onDestroy() {
@@ -186,20 +222,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-            } else if (s.equals("push")) {
-                Preference pushPref = findPreference("push");
-                if (pushPref == null)
-                    return;
-                pushPref.setEnabled(false);
-                if (mPreferences.getBoolean("push", false)) {
-                    String regid = getRegistrationId(getApplicationContext());
-
-                    if (regid.trim().length() == 0) {
-                        registerInBackground();
-                    }
-                } else {
-                    unregisterInBackground();
                 }
             }
         }
@@ -313,15 +335,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
             @Override
             protected void onPostExecute(String msg) {
+                Log.d(TAG, "register msg:" + msg);
                 CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
                 pushPref.setEnabled(true);
                 if (msg.startsWith("Error :") && !msg.contains("already exists")) {
                     Toast.makeText(getApplicationContext(), "Error occurred while trying to register for push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(false);
+                    mForceChangingPush = true;
+                    pushPref.setOnPreferenceChangeListener(null);
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putBoolean("push", false);
                     editor.commit();
                 }
+                pushPref.setOnPreferenceChangeListener(pushPrefListener);
             }
         }.execute();
     }
@@ -345,15 +371,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
             @Override
             protected void onPostExecute(String msg) {
+                Log.d(TAG, "unregister msg:" + msg);
                 CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
                 pushPref.setEnabled(true);
                 if (msg.startsWith("Error :")) {
                     Toast.makeText(getApplicationContext(), "Error occurred while trying to unregister from push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(true);
+                    pushPref.setOnPreferenceChangeListener(null);
+                    mForceChangingPush = true;
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putBoolean("push", true);
                     editor.commit();
                 }
+                pushPref.setOnPreferenceChangeListener(pushPrefListener);
             }
         }.execute();
     }
