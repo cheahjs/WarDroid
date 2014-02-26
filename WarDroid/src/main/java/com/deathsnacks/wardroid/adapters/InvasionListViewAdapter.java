@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -167,8 +168,11 @@ public class InvasionListViewAdapter extends BaseAdapter {
         if (percentvalue < 0)
             percentvalue = 0;
         holder.bar.setProgress(0);
-        //Rect bounds = holder.bar.getProgressDrawable().getBounds();
-        //holder.bar.getProgressDrawable().setBounds(bounds);
+        Rect bounds = null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
+            bounds = holder.bar.getProgressDrawable().getBounds();
+            holder.bar.getProgressDrawable().setBounds(bounds);
+        }
         if (invasion.getInvadingFaction().contains("Grineer"))
             holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.grineer_corpus_bar));
         else if (invasion.getInvadingFaction().contains("Corpus"))
@@ -179,7 +183,9 @@ public class InvasionListViewAdapter extends BaseAdapter {
             else if (invasion.getDefendingFaction().contains("Grineer"))
                 holder.bar.setProgressDrawable(mActivity.getResources().getDrawable(R.drawable.infestation_grineer_bar));
         }
-        //holder.bar.getProgressDrawable().setBounds(bounds);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
+            holder.bar.getProgressDrawable().setBounds(bounds);
+        }
         holder.bar.setProgress(percentvalue);
         holder.eta.setText(invasion.getEta());
         view.setTag(holder);
