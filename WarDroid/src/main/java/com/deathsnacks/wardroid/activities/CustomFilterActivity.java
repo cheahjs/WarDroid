@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -46,12 +48,12 @@ public class CustomFilterActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filters);
         mList = (ListView) findViewById(R.id.listFilters);
-        View footer = View.inflate(this, R.layout.list_item_custom_footer, null);
-        mList.addFooterView(footer);
+        //View footer = View.inflate(this, R.layout.list_item_custom_footer, null);
+        //mList.addFooterView(footer);
         mList.setAdapter(mAdapter);
         mList.setOnItemClickListener(clickListener);
-        View addFilter = mList.findViewById(R.id.add_new_filter);
-        addFilter.setOnClickListener(addListener);
+        //View addFilter = mList.findViewById(R.id.add_new_filter);
+        //addFilter.setOnClickListener(addListener);
         hideSoftKeyboard();
     }
 
@@ -136,7 +138,43 @@ public class CustomFilterActivity extends SherlockActivity {
                 //NavUtils.navigateUpFromSameTask(this);
                 super.onBackPressed();
                 return true;
+            case R.id.new_filter:
+                AlertDialog alertDialog = new AlertDialog.Builder(CustomFilterActivity.this)
+                        .setTitle("Add new custom filter")
+                        .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Dialog dialog = (Dialog) dialogInterface;
+                                EditText text = (EditText) dialog.findViewById(R.id.filter_text);
+                                mFilters.add(text.getText().toString());
+                                //mAdapter.add(text.getText().toString());
+                                mAdapter.notifyDataSetChanged();
+                                SharedPreferences.Editor editor = mPreferences.edit();
+                                editor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                                        mFilters.toArray(new String[mFilters.size()])));
+                                editor.commit();
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).create();
+                alertDialog.setView(View.inflate(getApplicationContext(), R.layout.dialog_custom_filter, null));
+                alertDialog.show();
+                alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.menu_new, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
