@@ -71,6 +71,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private Boolean mForceUpdate;
     private int mStreamType;
     private boolean mOngoing;
+    private boolean mAllowAlerts;
+    private boolean mAllowInvasions;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -126,6 +128,10 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mEnableLED = mPreferences.getBoolean("light", true);
             mOngoing = !mPreferences.getBoolean("dismissible", false);
 
+            String tempList = mPreferences.getString("alert_or_invasion", "alerts|invasions");
+            mAllowAlerts = tempList.contains("alerts");
+            mAllowInvasions = tempList.contains("invasions");
+
             mAlertSuccess = false;
             mInvasionSuccess = false;
 
@@ -142,6 +148,12 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mForceUpdateTime = 0;
 
             mForceUpdate = intent != null && intent.getBooleanExtra("force", false);
+
+            if (!mAllowAlerts && !mAllowInvasions) {
+                Log.d(TAG, "cancelling alarm since we didn't enable any alerts");
+                mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(1);
+            }
 
             (new RefreshTask()).execute();
             mWakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
@@ -163,14 +175,25 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            doAlerts();
-            doInvasions();
+            if (mAllowAlerts) {
+                doAlerts();
+            }
+            else {
+                mAlertSuccess = true;
+            }
+            if (mAllowInvasions) {
+                doInvasions();
+            }
+            else {
+                mInvasionSuccess = true;
+            }
             return true;
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
-            addNotifications();
+            if (mAllowAlerts || mAllowInvasions)
+                addNotifications();
             mWakeLock.release();
         }
 
@@ -374,10 +397,15 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         int size = mNotifications.size();
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         Log.d(TAG, "dismissible:" + mOngoing);
+        int id_text = R.string.notification_filter_count;
+        if (mAllowAlerts && !mAllowInvasions)
+            id_text = R.string.notification_filter_count_alerts;
+        else if (mAllowInvasions && !mAllowAlerts)
+            id_text = R.string.notification_filter_count_invasions;
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
-                .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
+                .setContentText(String.format(mContext.getString(id_text), mNotifications.size()))
                 .setOngoing(mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");

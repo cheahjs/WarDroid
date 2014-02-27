@@ -63,6 +63,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private int mStreamType;
     private String mAlerts;
     private String mInvasions;
+    private Boolean mAllowAlerts;
+    private Boolean mAllowInvasions;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -141,6 +143,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mEnableLED = mPreferences.getBoolean("light", true);
             mOngoing = !mPreferences.getBoolean("dismissible", false);
 
+            String tempList = mPreferences.getString("alert_or_invasion", "alerts|invasions");
+            mAllowAlerts = tempList.contains("alerts");
+            mAllowInvasions = tempList.contains("invasions");
+
             mAlertSuccess = false;
             mInvasionSuccess = false;
 
@@ -155,9 +161,27 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
             mForceUpdateTime = 0;
-            parseAlerts(alerts);
-            parseInvasions(invasions);
-            addNotifications();
+            if (mAllowAlerts) {
+                parseAlerts(alerts);
+            }
+            else {
+                mAlertSuccess = true;
+            }
+            if (mAllowInvasions) {
+                parseInvasions(invasions);
+            }
+            else {
+                mInvasionSuccess = true;
+            }
+            if (mAllowAlerts || mAllowInvasions)
+                addNotifications();
+            else {
+                if (!mAllowAlerts && !mAllowInvasions) {
+                    Log.d(TAG, "removing gcm notifications since we don't have anything");
+                    mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.cancel(1);
+                }
+            }
         }
     }
 
@@ -259,10 +283,15 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private void addNotifications() {
         int size = mNotifications.size();
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        int id_text = R.string.notification_filter_count;
+        if (mAllowAlerts && !mAllowInvasions)
+            id_text = R.string.notification_filter_count_alerts;
+        else if (mAllowInvasions && !mAllowAlerts)
+            id_text = R.string.notification_filter_count_invasions;
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
-                .setContentText(String.format(mContext.getString(R.string.notification_filter_count), mNotifications.size()))
+                .setContentText(String.format(mContext.getString(id_text), mNotifications.size()))
                 .setOngoing(mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");

@@ -32,6 +32,13 @@
             android:key="alert_enabled"
             android:title="@string/settings_enable_alerts_title"
             android:summary="@string/settings_enable_alerts_summary"/>
+        <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
+            android:key="alert_or_invasion"
+            android:dependency="alert_enabled"
+            android:title="Alert or Invasion notifications"
+            android:entries="@array/filter_type_names"
+            android:entryValues="@array/filter_type_entries"
+            android:defaultValue="alerts|invasions"/>
         <CheckBoxPreference
             android:key="push"
             android:dependency="alert_enabled"

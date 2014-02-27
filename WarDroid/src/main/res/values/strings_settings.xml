@@ -2,8 +2,8 @@
 <resources>
     <string name="settings_name">Settings</string>
     <string name="settings_notifications_title">General</string>
-    <string name="settings_enable_alerts_title">Enable Alert notifications</string>
-    <string name="settings_enable_alerts_summary">This includes invasions. May consume a lot of data.</string>
+    <string name="settings_enable_alerts_title">Enable notifications</string>
+    <string name="settings_enable_alerts_summary">May consume a lot of data.</string>
     <string name="settings_filter_title">Filter Settings</string>
     <string name="settings_enable_filter_title">Enable item filter</string>
     <string name="settings_enable_filters_summary">Item filters will apply to alert/invasion notifications</string>
@@ -179,6 +179,10 @@
         <item>Alerts</item>
         <item>Invasions</item>
     </string-array>
+    <string-array name="filter_type_names">
+        <item>Alerts</item>
+        <item>Invasions</item>
+    </string-array>
 
     <!-- DO NOT EDIT FOR TRANSLATIONS -->
     <string-array name="planet_filter_entries">
@@ -317,6 +321,10 @@
     </string-array>
     <string-array name="window_entries">
         <item>news</item>
+        <item>alerts</item>
+        <item>invasions</item>
+    </string-array>
+    <string-array name="filter_type_entries">
         <item>alerts</item>
         <item>invasions</item>
     </string-array>
