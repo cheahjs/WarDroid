@@ -40,6 +40,9 @@
     <string name="settings_enable_custom">Enable custom item filters</string>
     <string name="settings_custom_filter">Custom item filters</string>
     <string name="settings_hide_expired">Hide expired alerts</string>
+    <string name="settings_app_data">App Data Settings</string>
+    <string name="settings_clear_data_summary">You will lose all settings! (Push notifications have to be manually disabled.)</string>
+    <string name="settings_clear_data_title">Clear all app data</string>
 
     <string-array name="planet_filter_names">
         <item>Mercury</item>

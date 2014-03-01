@@ -32,4 +32,6 @@ If push notifications are enabled, you will still get notifications.</string>
     <string name="reward_contains">reward contains</string>
     <string name="remove_custom">Are you sure you want to remove the filter \"%1$s\"?</string>
     <string name="new_filter">New Filter</string>
+    <string name="clear_data_message">Are you sure you want to clear all app data? You will lose all settings!</string>
+    <string name="clear_data_title">Clear app data</string>
 </resources>

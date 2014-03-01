@@ -1,9 +1,11 @@
 package com.deathsnacks.wardroid.activities;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -58,6 +60,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         mEditor = mPreferences.edit();
         mPreferences.registerOnSharedPreferenceChangeListener(prefChanged);
         addPreferencesFromResource(R.xml.preference);
+
         if (mPreferences.getInt("reward_version", 0) > getResources().getInteger(R.integer.reward_version)) {
             Log.d(TAG, "Updating pref entries.");
             try {
@@ -138,6 +141,38 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             });
         }
+        Preference clearDataPref = findPreference("clear_data");
+        if (clearDataPref != null) {
+            clearDataPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new AlertDialog.Builder(SettingsActivity.this)
+                            .setTitle(getString(R.string.clear_data_title))
+                            .setMessage(getString(R.string.clear_data_message))
+                            .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences.Editor edit = mPreferences.edit();
+                                    edit.clear();
+                                    edit.commit();
+                                    Intent intent = getIntent();
+                                    overridePendingTransition(0, 0);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    finish();
+                                    overridePendingTransition(0, 0);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            }).show();
+                    return false;
+                }
+            });
+        }
     }
 
     Preference.OnPreferenceChangeListener pushPrefListener = new Preference.OnPreferenceChangeListener() {
@@ -156,6 +191,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
                 if (regid.trim().length() == 0) {
                     registerInBackground();
+                } else {
+                    pushPref.setEnabled(true);
                 }
             } else {
                 unregisterInBackground();

@@ -178,4 +178,11 @@
             android:key="volume"
             android:title="@string/settings_volume_title"/>
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_app_data">
+        <Preference android:key="clear_data"
+            android:title="@string/settings_clear_data_title"
+            android:summary="@string/settings_clear_data_summary"/>
+    </PreferenceCategory>
 </PreferenceScreen>
