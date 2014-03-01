@@ -21,6 +21,10 @@
             android:entryValues="@array/window_entries"
             android:key="default_window"
             android:title="@string/settings_default_window_title"/>
+        <CheckBoxPreference
+            android:key="hide_expired"
+            android:title="@string/settings_hide_expired"
+            android:defaultValue="false"/>
         <!--<CheckBoxPreference
             android:key="sale_enabled"
             android:title="Enable Flash Sale notifications"/>-->

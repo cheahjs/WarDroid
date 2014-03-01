@@ -51,6 +51,18 @@ public class AlertsListViewAdapter extends BaseAdapter {
             }
             mAlerts = newList;
         }
+        if (mPreferences.getBoolean("hide_expired", false)) {
+            List<Alert> newList = new ArrayList<Alert>();
+            for (int i = 0; i < mAlerts.size(); i++) {
+                Alert alert = mAlerts.get(i);
+                if (alert.getExpiry().getSec() < (System.currentTimeMillis() / 1000)) {
+                    Log.d(TAG, "marking alert expired. " + alert.getMissionInfo().getLocation());
+                } else {
+                    newList.add(alert);
+                }
+            }
+            mAlerts = newList;
+        }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEmptyView = emptyView;
         if (mAlerts.size() == 0) {
@@ -69,6 +81,18 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 Alert alert = mAlerts.get(i);
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
+                } else {
+                    newList.add(alert);
+                }
+            }
+            mAlerts = newList;
+        }
+        if (mPreferences.getBoolean("hide_expired", false)) {
+            List<Alert> newList = new ArrayList<Alert>();
+            for (int i = 0; i < mAlerts.size(); i++) {
+                Alert alert = mAlerts.get(i);
+                if (alert.getExpiry().getSec() < (System.currentTimeMillis() / 1000)) {
+                    Log.d(TAG, "marking alert expired. " + alert.getMissionInfo().getLocation());
                 } else {
                     newList.add(alert);
                 }
@@ -148,6 +172,13 @@ public class AlertsListViewAdapter extends BaseAdapter {
             format = "%dh %dm %ds";
             holder.duration.setTextColor(Color.parseColor("#10bcc9"));
             if (diff < 0) {
+                if (mPreferences.getBoolean("hide_expired", false)) {
+                    mAlerts.remove(position);
+                    notifyDataSetChanged();
+                    view.setVisibility(View.GONE);
+                    Log.d(TAG, "marking alert expired." + alert.getMissionInfo().getLocation());
+                    return view;
+                }
                 diff = now - expiry;
                 format = mActivity.getString(R.string.alert_expired);
                 holder.duration.setTextColor(Color.parseColor("#d9534f"));
