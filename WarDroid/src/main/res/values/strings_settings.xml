@@ -19,7 +19,7 @@
     <string name="settings_enable_credit_filter_summary">Filter alerts by credits</string>
     <string name="settings_credit_filter_title">Credits</string>
     <string name="settings_vibrate">Vibrate</string>
-    <string name="settings_light">Use LED</string>
+    <string name="settings_light">Enable LED</string>
     <string name="settings_insistent">Alert until acknowledged</string>
     <string name="settings_sound">Sound</string>
     <string name="settings_volume_title">Volume type</string>
@@ -43,6 +43,8 @@
     <string name="settings_app_data">App Data Settings</string>
     <string name="settings_clear_data_summary">You will lose all settings! (Push notifications have to be manually disabled.)</string>
     <string name="settings_clear_data_title">Clear all app data</string>
+    <string name="settings_led_colour">LED colour</string>
+    <string name="settings_led_colour_summary">Not all devices have LEDs and not all devices have support for coloured LEDs.</string>
 
     <string-array name="planet_filter_names">
         <item>Mercury</item>

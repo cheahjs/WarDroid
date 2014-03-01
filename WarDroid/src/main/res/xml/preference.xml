@@ -152,6 +152,12 @@
             android:title="@string/settings_light"
             android:key="light"
             android:defaultValue="true"/>
+        <afzkl.development.colorpickerview.preference.ColorPickerPreference
+            android:dependency="light"
+            android:defaultValue="@android:color/white"
+            android:title="@string/settings_led_colour"
+            android:summary="@string/settings_led_colour_summary"
+            android:key="led_colour"/>
         <CheckBoxPreference
             android:dependency="alert_enabled"
             android:title="@string/settings_insistent"

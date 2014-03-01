@@ -1,1 +1,1 @@
-include ':WarDroid'
+include ':WarDroid', ':colorpickerview'

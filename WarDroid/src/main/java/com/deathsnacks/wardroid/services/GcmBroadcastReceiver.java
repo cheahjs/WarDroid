@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -65,6 +66,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private String mInvasions;
     private Boolean mAllowAlerts;
     private Boolean mAllowInvasions;
+    private int mLedColour;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -141,6 +143,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
+            mLedColour = mPreferences.getInt("led_colour", Color.WHITE);
             mOngoing = !mPreferences.getBoolean("dismissible", false);
 
             String tempList = mPreferences.getString("alert_or_invasion", "alerts|invasions");
@@ -292,7 +295,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(id_text), mNotifications.size()))
-                .setOngoing(mOngoing);
+                .setOngoing(mOngoing)
+                .setAutoCancel();
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -318,7 +322,11 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 mBuilder.setVibrate(new long[]{0, 300});
             }
             if (mEnableLED) {
-                defaults |= Notification.DEFAULT_LIGHTS;
+                if (mLedColour == Color.WHITE)
+                    defaults |= Notification.DEFAULT_LIGHTS;
+                else {
+                    mBuilder.setLights(mLedColour, 300, 700);
+                }
             }
             mBuilder.setSound(
                     Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString())),
