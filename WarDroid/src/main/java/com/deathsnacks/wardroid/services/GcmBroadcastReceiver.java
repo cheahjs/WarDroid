@@ -67,6 +67,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private Boolean mAllowAlerts;
     private Boolean mAllowInvasions;
     private int mLedColour;
+    private boolean mForce;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -74,19 +75,19 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         Log.d(TAG, "GCM BROADCAST RECEIVED!");
         String messageType = gcm.getMessageType(intent);
         if ((messageType != null && messageType.equals(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE))
-                || intent.getBooleanExtra("force", false)) {
+                || intent.getBooleanExtra("mForce", false)) {
             Log.i(TAG, "We've received a gcm message.");
             String alerts = intent.getStringExtra("alerts");
             String invasions = intent.getStringExtra("invasions");
-            boolean force = intent.getBooleanExtra("force", false);
+            mForce = intent.getBooleanExtra("mForce", false);
             Log.d(TAG, "gcm alerts:" + alerts);
             Log.d(TAG, "gcm invasions:" + invasions);
-            if ((alerts == null || invasions == null) && !force) {
+            if ((alerts == null || invasions == null) && !mForce) {
                 Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
             }
             mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (force && (alerts == null || invasions == null)) {
+            if (mForce && (alerts == null || invasions == null)) {
                 Log.d(TAG, "We are forcing, so we are grabbing cached stuff.");
                 alerts = mPreferences.getString("gcm_alerts", "");
                 invasions = mPreferences.getString("gcm_invasions", "");
@@ -95,7 +96,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mInvasions = invasions;
             mContext = context;
             SharedPreferences.Editor editor = mPreferences.edit();
-            if (!force) {
+            if (!mForce) {
                 editor.putString("gcm_alerts", alerts);
                 editor.putString("gcm_invasions", invasions);
             }
@@ -296,7 +297,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(id_text), mNotifications.size()))
                 .setOngoing(mOngoing)
-                .setAutoCancel();
+                .setAutoCancel(!mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -314,7 +315,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         }
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("drawer_position", 1);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         if (mVibrate) {
             int defaults = 0;
@@ -333,8 +335,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     mStreamType);
             mBuilder.setDefaults(defaults);
         } else {
-            if (!mOngoing)
+            if (!mOngoing && !mForce) {
+                Log.d(TAG, "we abandoning this, since we've set dismissible and we aren't forcing");
                 return;
+            }
         }
         Notification notification = mBuilder.build();
         if (mVibrate && mInsistent) {
@@ -351,7 +355,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         } else {
             mNotificationManager.notify(1, notification);
             mForceUpdateTime = mForceUpdateTime - (System.currentTimeMillis() / 1000);
-            Log.d(TAG, "force update time: " + mForceUpdateTime);
+            Log.d(TAG, "mForce update time: " + mForceUpdateTime);
             if (mForceUpdateTime > 0) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     ((AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.ELAPSED_REALTIME,
@@ -362,7 +366,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                             SystemClock.elapsedRealtime() + (mForceUpdateTime * 1000) + 1000, 30 * 1000,
                             pendingForceIntent);
                 }
-                Log.d(TAG, "we've set a force update in " + mForceUpdateTime);
+                Log.d(TAG, "we've set a mForce update in " + mForceUpdateTime);
             }
         }
     }

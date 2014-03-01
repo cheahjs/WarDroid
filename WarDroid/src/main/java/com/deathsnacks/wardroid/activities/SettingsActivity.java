@@ -225,12 +225,13 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                             .setContentText(getString(R.string.notification_starting))
                             .setOngoing(mDismissible);
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("drawer_position", 2);
+                    intent.putExtra("drawer_position", 1);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pendingIntent2);
                     mNotificationManager.notify(1, mBuilder.build());
                     try {
-                        (new PollingAlarmReceiver()).onReceive(getApplicationContext(), null);
+                        (new PollingAlarmReceiver()).onReceive(getApplicationContext(), new Intent().putExtra("force", true));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

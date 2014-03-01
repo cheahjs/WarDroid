@@ -409,7 +409,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(mContext.getString(R.string.notification_title))
                 .setContentText(String.format(mContext.getString(id_text), mNotifications.size()))
-                .setOngoing(mOngoing);
+                .setOngoing(mOngoing)
+                .setAutoCancel(!mOngoing);
         if (!mAlertSuccess || !mInvasionSuccess) {
             //mBuilder.setContentText("Connection error");
             return;
@@ -426,8 +427,9 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             }
         }
         Intent intent = new Intent(mContext, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("drawer_position", 1);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         if (mVibrate) {
             int defaults = 0;
@@ -446,8 +448,10 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     mStreamType);
             mBuilder.setDefaults(defaults);
         } else {
-            if (!mOngoing)
+            if (!mOngoing && !mForceUpdate) {
+                Log.d(TAG, "we abandoning this, since we've set dismissible and we aren't forcing");
                 return;
+            }
         }
         Notification notification = mBuilder.build();
         if (mVibrate && mInsistent) {
@@ -517,7 +521,6 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         if (mPlanetFiltered && !mPlanetFilters.contains(invasion.getRegion()))
             return false;
         if (mTypeFiltered) {
-            Log.d(TAG, invasion.getDefendingType().toLowerCase() + " " + invasion.getInvadingType().toLowerCase());
             if (!mTypeFilters.contains(invasion.getDefendingType().toLowerCase())) {
                 if (!mTypeFilters.contains(invasion.getInvadingType().toLowerCase())) {
                     return false;
