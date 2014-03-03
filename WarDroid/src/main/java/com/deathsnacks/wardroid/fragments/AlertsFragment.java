@@ -32,6 +32,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
+import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -337,6 +338,8 @@ public class AlertsFragment extends SherlockFragment {
                     mAlertView.setAdapter(mAdapter);
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
+                    } else {
+                        (new PollingAlarmReceiver()).onReceive(activity, new Intent().putExtra("force", true));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
