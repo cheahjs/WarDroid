@@ -147,7 +147,10 @@ public class MainActivity extends SherlockFragmentActivity {
                                 ((AlarmManager) getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                                         getApplicationContext(), 0,
                                         new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                                NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                mNotificationManager.cancel(1);
                                 finish();
+                                System.exit(0);
                             }
                         })
                         .setNegativeButton(this.getString(android.R.string.no), new DialogInterface.OnClickListener() {
