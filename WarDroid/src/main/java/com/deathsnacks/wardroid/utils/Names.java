@@ -23,6 +23,9 @@ public class Names {
 
     public static String getName(Activity act, String raw) {
         if (Names == null) {
+            if (act == null || act.getResources() == null) {
+                return raw;
+            }
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.names_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
@@ -41,6 +44,9 @@ public class Names {
 
     public static String getString(Activity act, String raw) {
         if (Strings == null) {
+            if (act == null || act.getResources() == null) {
+                return raw;
+            }
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.strings_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
@@ -59,6 +65,9 @@ public class Names {
 
     public static String getNode(Activity act, String node) {
         if (PlanetNames == null) {
+            if (act == null || act.getResources() == null) {
+                return node;
+            }
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
@@ -77,6 +86,9 @@ public class Names {
 
     public static String getRegion(Activity act, String node) {
         if (PlanetNames == null) {
+            if (act == null || act.getResources() == null) {
+                return "?";
+            }
             Gson gson = (new GsonBuilder().create());
             InputStream rawResource = act.getResources().openRawResource(R.raw.planetnamesregion_12);
             BufferedReader reader = new BufferedReader(new InputStreamReader(rawResource));
@@ -93,7 +105,6 @@ public class Names {
         return PlanetNames.containsKey(node) ? PlanetNames.get(node).split("\\|")[0] : "?";
     }
 
-    //TODO: Switch all these to using strings for localization
     public static String getFaction(String raw) {
         raw = raw.toLowerCase();
         if (raw.contains("grin"))
