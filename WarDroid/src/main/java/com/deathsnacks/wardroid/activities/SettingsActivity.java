@@ -268,6 +268,16 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else if (s.equals("platform") || s.equals("platform_notifications")) {
+                String persist = mPreferences.getString(s, "pc");
+                MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
+                if (!persist.contains("pc") && !persist.contains("ps4")) {
+                    Toast.makeText(SettingsActivity.this, "You must select at least one platform, defaulting to PC.", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = mPreferences.edit();
+                    editor.putString(s, "pc");
+                    editor.commit();
+                    platform.setValue("pc");
+                }
             }
         }
     };
