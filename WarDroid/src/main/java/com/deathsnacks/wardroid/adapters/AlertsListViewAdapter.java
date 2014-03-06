@@ -31,18 +31,24 @@ public class AlertsListViewAdapter extends BaseAdapter {
     private ArrayList<String> mCompletedIds;
     private Activity mActivity;
     private List<Alert> mAlerts;
+    private List<Alert> mOriginal;
     private LayoutInflater mInflater;
     private View mEmptyView;
+    private View mFooterView;
+    private boolean mShowHidden;
 
-    public AlertsListViewAdapter(Activity act, List<Alert> data, View emptyView) {
+    public AlertsListViewAdapter(Activity act, List<Alert> data, View emptyView, boolean showHidden, View footerView) {
         mActivity = act;
+        mShowHidden = showHidden;
+        mFooterView = footerView;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
         mAlerts = data;
+        mOriginal = data;
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mAlerts.size(); i++) {
-                Alert alert = mAlerts.get(i);
+            for (int i = 0; i < mOriginal.size(); i++) {
+                Alert alert = mOriginal.get(i);
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
                 } else {
@@ -51,7 +57,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
             }
             mAlerts = newList;
         }
-        if (mPreferences.getBoolean("hide_expired", false)) {
+        if (!mShowHidden) {
             List<Alert> newList = new ArrayList<Alert>();
             for (int i = 0; i < mAlerts.size(); i++) {
                 Alert alert = mAlerts.get(i);
@@ -67,8 +73,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
         mEmptyView = emptyView;
         if (mAlerts.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
+            //mFooterView.setVisibility(View.GONE);
         } else {
             mEmptyView.setVisibility(View.GONE);
+            //mFooterView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -77,8 +85,8 @@ public class AlertsListViewAdapter extends BaseAdapter {
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mAlerts.size(); i++) {
-                Alert alert = mAlerts.get(i);
+            for (int i = 0; i < mOriginal.size(); i++) {
+                Alert alert = mOriginal.get(i);
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
                 } else {
@@ -87,7 +95,8 @@ public class AlertsListViewAdapter extends BaseAdapter {
             }
             mAlerts = newList;
         }
-        if (mPreferences.getBoolean("hide_expired", false)) {
+        Log.d(TAG, mShowHidden + "");
+        if (!mShowHidden) {
             List<Alert> newList = new ArrayList<Alert>();
             for (int i = 0; i < mAlerts.size(); i++) {
                 Alert alert = mAlerts.get(i);
@@ -101,8 +110,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
         }
         if (mAlerts.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
+            //mFooterView.setVisibility(View.GONE);
         } else {
             mEmptyView.setVisibility(View.GONE);
+            //mFooterView.setVisibility(View.VISIBLE);
         }
         super.notifyDataSetChanged();
     }
@@ -204,5 +215,13 @@ public class AlertsListViewAdapter extends BaseAdapter {
         public TextView rewards;
         public View completed;
         public Alert alert;
+    }
+
+    public boolean getShowHidden() {
+        return mShowHidden;
+    }
+
+    public void setShowHidden(boolean show) {
+        mShowHidden = show;
     }
 }

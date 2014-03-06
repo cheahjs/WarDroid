@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -61,6 +62,7 @@ public class AlertsFragment extends SherlockFragment {
     private AlertsListViewAdapter mAdapter;
     private Handler mHandler;
     private View mNoneView;
+    private View mFooterView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,10 +70,15 @@ public class AlertsFragment extends SherlockFragment {
         setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mNoneView = rootView.findViewById(R.id.alerts_none);
+        mFooterView = View.inflate(getSherlockActivity(), R.layout.list_item_custom_footer, null);
+        TextView footerText = (TextView) mFooterView.findViewById(R.id.footer_text);
+        footerText.setText(R.string.show_expired_alerts);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mAlertView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view.getTag() == null)
+                    return;
                 final Alert alert = ((AlertsListViewAdapter.ViewHolder) view.getTag()).alert;
                 SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 List<String> ids =
@@ -162,6 +169,7 @@ public class AlertsFragment extends SherlockFragment {
         }
     }
 
+    //region Runnables/Anonymous stuff that can't be collapsed
     private final Runnable mTimer = new Runnable() {
         @Override
         public void run() {
@@ -179,6 +187,23 @@ public class AlertsFragment extends SherlockFragment {
             mHandler.postDelayed(this, 60 * 1000);
         }
     };
+
+    private final View.OnClickListener showHiddenListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            TextView textView = (TextView) view;
+            if (mAdapter.getShowHidden()) {
+                mAdapter.setShowHidden(false);
+                mAdapter.notifyDataSetChanged();
+                textView.setText(R.string.show_expired_alerts);
+            } else {
+                mAdapter.setShowHidden(true);
+                mAdapter.notifyDataSetChanged();
+                textView.setText(R.string.hide_expired_alerts);
+            }
+        }
+    };
+    //endregion
 
     @Override
     public void onDestroy() {
@@ -332,9 +357,19 @@ public class AlertsFragment extends SherlockFragment {
             if (activity == null)
                 return;
             showProgress(false);
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             if (success) {
                 try {
-                    mAdapter = new AlertsListViewAdapter(activity, data, mNoneView);
+                    mAdapter = new AlertsListViewAdapter(activity, data, mNoneView, !mPreferences.getBoolean("hide_expired", false)
+                            , mFooterView);
+                    TextView footerText = (TextView) mFooterView.findViewById(R.id.footer_text);
+                    footerText.setText(mPreferences.getBoolean("hide_expired", false) ? R.string.show_expired_alerts :
+                            R.string.hide_expired_alerts);
+                    if (mAlertView.getFooterViewsCount() != 0)
+                        mAlertView.removeFooterView(mFooterView);
+                    mAlertView.addFooterView(mFooterView);
+                    View buttonView = mAlertView.findViewById(R.id.footer_text);
+                    buttonView.setOnClickListener(showHiddenListener);
                     mAlertView.setAdapter(mAdapter);
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
@@ -417,6 +452,7 @@ public class AlertsFragment extends SherlockFragment {
         }
     }
 
+    //region GCM Stuff
     private String getRegistrationId(Context context) {
         return getRegistrationId(context, true);
     }
@@ -520,5 +556,6 @@ public class AlertsFragment extends SherlockFragment {
         if (!response.contains("success:") && !response.contains("already exists"))
             throw new IOException("Failed to send gcm id back to server. " + response);
     }
+    //endregion
 }
 

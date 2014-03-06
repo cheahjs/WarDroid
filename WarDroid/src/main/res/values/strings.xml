@@ -25,8 +25,8 @@
     <string name="alerts_none">There are no alerts at this time.</string>
     <string name="invasion_mark_incomplete">Do you want to mark this invasion as incomplete?</string>
     <string name="alert_mark_incomplete">Do you want to mark this alert as incomplete?</string>
-    <string name="menu_exit">Exit</string><string name="menu_exit_message">Are you sure you want to exit?
-If push notifications are enabled, you will still get notifications.</string>
+    <string name="menu_exit">Exit</string>
+    <string name="menu_exit_message">Are you sure you want to exit? If push notifications are enabled, you will still get notifications.</string>
     <string name="add_new_filter">Add new custom filter</string>
     <string name="settings_custom_filers">Custom Filters</string>
     <string name="reward_contains">reward contains</string>
@@ -34,4 +34,6 @@ If push notifications are enabled, you will still get notifications.</string>
     <string name="new_filter">New Filter</string>
     <string name="clear_data_message">Are you sure you want to clear all app data? You will lose all settings!</string>
     <string name="clear_data_title">Clear app data</string>
+    <string name="show_expired_alerts">Show expired alerts</string>
+    <string name="hide_expired_alerts">Hide expired alerts</string>
 </resources>

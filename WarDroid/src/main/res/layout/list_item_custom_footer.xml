@@ -12,12 +12,11 @@
         android:id="@+id/button_add_new"/>-->
 
     <TextView
-        android:id="@+id/add_new_filter"
-        android:text="@string/add_new_filter"
+        android:id="@+id/footer_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearanceMedium"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:paddingStart="10dip"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"

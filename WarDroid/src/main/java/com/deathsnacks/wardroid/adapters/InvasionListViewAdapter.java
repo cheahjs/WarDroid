@@ -31,6 +31,7 @@ public class InvasionListViewAdapter extends BaseAdapter {
     private SharedPreferences mPreferences;
     private Activity mActivity;
     private List<String> mLines;
+    private List<String> mOriginal;
     private LayoutInflater mInflater;
     private static String TAG = "InvasionListViewAdapter";
     private View mEmptyView;
@@ -41,10 +42,12 @@ public class InvasionListViewAdapter extends BaseAdapter {
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         mLines = data;
         mLines.remove(0);
+        mOriginal = data;
+        mOriginal.remove(0);
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<String> newList = new ArrayList<String>();
-            for (int i = 0; i < mLines.size(); i++) {
-                String line = mLines.get(i);
+            for (int i = 0; i < mOriginal.size(); i++) {
+                String line = mOriginal.get(i);
                 Invasion invasion = new Invasion(line);
                 if (mCompletedIds.contains(invasion.getId())) {
                     Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
@@ -68,8 +71,8 @@ public class InvasionListViewAdapter extends BaseAdapter {
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<String> newList = new ArrayList<String>();
-            for (int i = 0; i < mLines.size(); i++) {
-                String line = mLines.get(i);
+            for (int i = 0; i < mOriginal.size(); i++) {
+                String line = mOriginal.get(i);
                 Invasion invasion = new Invasion(line);
                 if (mCompletedIds.contains(invasion.getId())) {
                     Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
