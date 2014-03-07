@@ -2,6 +2,8 @@
 
     <style name="marginPoint">
         <item name="android:layout_width">900dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 

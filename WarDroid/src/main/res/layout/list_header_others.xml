@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:clickable="false">
+
+    <View
+        android:id="@+id/item_separator"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lvDividerHeight"
+        android:background="@color/lvHeaderDividerColor"
+        />
+
+    <TextView
+        android:text="Test"
+        android:id="@+id/list_header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:height="48dp"
+        android:gravity="bottom|left"
+        android:layout_marginBottom="@dimen/lvSectionDividerMarginTop"
+        style="?android:listSeparatorTextViewStyle"
+        android:textColor="?android:textColorSecondary"
+        android:background="@android:color/transparent"/>
+</RelativeLayout>

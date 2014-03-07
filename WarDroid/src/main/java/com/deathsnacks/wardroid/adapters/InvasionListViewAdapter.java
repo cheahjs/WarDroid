@@ -40,10 +40,9 @@ public class InvasionListViewAdapter extends BaseAdapter {
         mActivity = act;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        data.remove(0);
         mLines = data;
-        mLines.remove(0);
         mOriginal = data;
-        mOriginal.remove(0);
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<String> newList = new ArrayList<String>();
             for (int i = 0; i < mOriginal.size(); i++) {
@@ -59,11 +58,11 @@ public class InvasionListViewAdapter extends BaseAdapter {
         }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEmptyView = emptyView;
-        if (mLines.size() == 0) {
+        /*if (mLines.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
@@ -82,11 +81,11 @@ public class InvasionListViewAdapter extends BaseAdapter {
             }
             mLines = newList;
         }
-        if (mLines.size() == 0) {
+        /*if (mLines.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
-        }
+        }*/
         super.notifyDataSetChanged();
     }
 

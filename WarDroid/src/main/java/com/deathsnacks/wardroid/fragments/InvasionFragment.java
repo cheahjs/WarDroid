@@ -29,6 +29,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
+import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.httpclasses.Invasion;
@@ -46,7 +47,7 @@ public class InvasionFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mInvasionView;
     private InvasionRefresh mTask;
-    private InvasionListViewAdapter mAdapter;
+    private SeparatedListAdapter mAdapter;
     private Handler mHandler;
     private View mNoneView;
 
@@ -60,6 +61,8 @@ public class InvasionFragment extends SherlockFragment {
         mInvasionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view.getTag() == null)
+                    return;
                 final Invasion invasion = ((InvasionListViewAdapter.ViewHolder) view.getTag()).invasion;
                 SharedPreferences mPreferences2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 List<String> ids2 =
@@ -227,6 +230,7 @@ public class InvasionFragment extends SherlockFragment {
         private static final String KEY = "invasion_raw";
         private Activity activity;
         private List<String> data;
+        private List<String> ps4data;
         private boolean error;
 
         public InvasionRefresh(Activity activity) {
@@ -256,6 +260,21 @@ public class InvasionFragment extends SherlockFragment {
                 response = response.trim();
                 data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
                 clearIds();
+                String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
+                String response2;
+                try {
+                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/invasion_raw.txt", preferences, KEY + "_ps4");
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache2.equals("_ded"))
+                        throw ex;
+                    response2 = cache2;
+                    error = true;
+                }
+                response2 = response2.trim();
+                ps4data = new ArrayList<String>(Arrays.asList(response2.split("\\n")));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -293,9 +312,21 @@ public class InvasionFragment extends SherlockFragment {
             if (activity == null)
                 return;
             showProgress(false);
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             if (success) {
                 try {
-                    mAdapter = new InvasionListViewAdapter(activity, data, mNoneView);
+                    mAdapter = new SeparatedListAdapter(activity, mNoneView);
+                    if (mPreferences.getString("platform", "pc").contains("pc")) {
+                        mAdapter.addSection("PC", new InvasionListViewAdapter(activity, data, mNoneView));
+                    }
+                    if (mPreferences.getString("platform", "pc").contains("ps4")) {
+                        mAdapter.addSection("PS4", new InvasionListViewAdapter(activity, ps4data, mNoneView));
+                    }
+                    if (mAdapter.getAdapterCount() == 0) {
+                        mNoneView.setVisibility(View.VISIBLE);
+                    } else {
+                        mNoneView.setVisibility(View.GONE);
+                    }
                     mInvasionView.setAdapter(mAdapter);
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();

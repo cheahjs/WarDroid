@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="drawer_titles">
-        <item>News</item>
+        <item>News (PC)</item>
         <item>Alerts</item>
         <item>Invasions</item>
     </string-array>

@@ -33,6 +33,8 @@
 
     <style name="marginPoint">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
     </style>
 
     <style name="selectableView">

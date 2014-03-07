@@ -21,6 +21,7 @@ public class Alert {
     private int Twitter;
     @Expose
     private _id _id;
+    private boolean pc;
 
     public com.deathsnacks.wardroid.gson.Activation getActivation() {
         return Activation;
@@ -78,4 +79,12 @@ public class Alert {
         this._id = _id;
     }
 
+
+    public boolean isPc() {
+        return pc;
+    }
+
+    public void setPc(boolean pc) {
+        this.pc = pc;
+    }
 }

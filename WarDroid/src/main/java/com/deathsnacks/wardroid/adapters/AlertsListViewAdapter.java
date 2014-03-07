@@ -52,7 +52,13 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
                 } else {
-                    newList.add(alert);
+                    if (alert.isPc()) {
+                        if (mPreferences.getString("platform", "pc").contains("pc"))
+                            newList.add(alert);
+                    } else {
+                        if (mPreferences.getString("platform", "pc").contains("ps4"))
+                            newList.add(alert);
+                    }
                 }
             }
             mAlerts = newList;
@@ -90,12 +96,21 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
                 } else {
-                    newList.add(alert);
+                    if (alert.isPc()) {
+                        if (mPreferences.getString("platform", "pc").contains("pc"))
+                            newList.add(alert);
+                        else
+                            Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
+                    } else {
+                        if (mPreferences.getString("platform", "pc").contains("ps4"))
+                            newList.add(alert);
+                        else
+                            Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
+                    }
                 }
             }
             mAlerts = newList;
         }
-        Log.d(TAG, mShowHidden + "");
         if (!mShowHidden) {
             List<Alert> newList = new ArrayList<Alert>();
             for (int i = 0; i < mAlerts.size(); i++) {
@@ -170,7 +185,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
         String descTxt = String.format("%s | %s (%s)", Names.getString(mActivity, alert.getMissionInfo().getDescText()),
                 Names.getFaction(alert.getMissionInfo().getFaction()),
                 Names.getMissionType(alert.getMissionInfo().getMissionType()));
-        holder.desc.setText(Names.getString(mActivity, descTxt));
+        holder.desc.setText(Names.getString(mActivity, descTxt) + (alert.isPc() ? " (PC)" : " (PS4)"));
         holder.rewards.setText(Utils.getImageSpannable(mActivity, alert.getMissionInfo().getMissionReward().getRewardString()));
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
