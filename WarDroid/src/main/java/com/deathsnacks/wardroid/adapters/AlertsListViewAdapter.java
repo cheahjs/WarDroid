@@ -43,37 +43,37 @@ public class AlertsListViewAdapter extends BaseAdapter {
         mFooterView = footerView;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-        mAlerts = data;
+        mAlerts = new ArrayList<Alert>();
+        mAlerts.addAll(data);
         mOriginal = data;
-        if (mPreferences.getBoolean("hide_completed", false)) {
-            List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mOriginal.size(); i++) {
-                Alert alert = mOriginal.get(i);
+        Log.d(TAG, "alerts size: " + mOriginal.size());
+        List<Alert> newList = new ArrayList<Alert>();
+        for (int i = 0; i < mOriginal.size(); i++) {
+            Alert alert = mOriginal.get(i);
+            if (mPreferences.getBoolean("hide_completed", false)) {
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
-                } else {
-                    if (alert.isPc()) {
-                        if (mPreferences.getString("platform", "pc").contains("pc"))
-                            newList.add(alert);
-                    } else {
-                        if (mPreferences.getString("platform", "pc").contains("ps4"))
-                            newList.add(alert);
-                    }
+                    continue;
                 }
             }
-            mAlerts = newList;
-        }
-        if (!mShowHidden) {
-            List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mAlerts.size(); i++) {
-                Alert alert = mAlerts.get(i);
+            if (alert.isPc()) {
+                if (!mPreferences.getString("platform", "pc").contains("pc")) {
+                    Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            } else {
+                if (!mPreferences.getString("platform", "pc").contains("ps4")) {
+                    Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            }
+            if (!mShowHidden) {
                 if (alert.getExpiry().getSec() < (System.currentTimeMillis() / 1000)) {
                     Log.d(TAG, "marking alert expired. " + alert.getMissionInfo().getLocation());
-                } else {
-                    newList.add(alert);
+                    continue;
                 }
             }
-            mAlerts = newList;
+            newList.add(alert);
         }
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEmptyView = emptyView;
@@ -84,45 +84,44 @@ public class AlertsListViewAdapter extends BaseAdapter {
             mEmptyView.setVisibility(View.GONE);
             //mFooterView.setVisibility(View.VISIBLE);
         }
+        Log.d(TAG, "alerts size: " + mOriginal.size());
     }
 
     @Override
     public void notifyDataSetChanged() {
+        Log.d(TAG, "show hidden:" + mShowHidden);
+        Log.d(TAG, "alerts size: " + mOriginal.size());
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
-        if (mPreferences.getBoolean("hide_completed", false)) {
-            List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mOriginal.size(); i++) {
-                Alert alert = mOriginal.get(i);
+
+        List<Alert> newList = new ArrayList<Alert>();
+        for (int i = 0; i < mOriginal.size(); i++) {
+            Alert alert = mOriginal.get(i);
+            if (mPreferences.getBoolean("hide_completed", false)) {
                 if (mCompletedIds.contains(alert.get_id().get$id())) {
                     Log.d(TAG, "marking alert GONE. " + alert.getMissionInfo().getLocation());
-                } else {
-                    if (alert.isPc()) {
-                        if (mPreferences.getString("platform", "pc").contains("pc"))
-                            newList.add(alert);
-                        else
-                            Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
-                    } else {
-                        if (mPreferences.getString("platform", "pc").contains("ps4"))
-                            newList.add(alert);
-                        else
-                            Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
-                    }
+                    continue;
                 }
             }
-            mAlerts = newList;
-        }
-        if (!mShowHidden) {
-            List<Alert> newList = new ArrayList<Alert>();
-            for (int i = 0; i < mAlerts.size(); i++) {
-                Alert alert = mAlerts.get(i);
+            if (alert.isPc()) {
+                if (!mPreferences.getString("platform", "pc").contains("pc")) {
+                    Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            } else {
+                if (!mPreferences.getString("platform", "pc").contains("ps4")) {
+                    Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            }
+            if (!mShowHidden) {
                 if (alert.getExpiry().getSec() < (System.currentTimeMillis() / 1000)) {
                     Log.d(TAG, "marking alert expired. " + alert.getMissionInfo().getLocation());
-                } else {
-                    newList.add(alert);
+                    continue;
                 }
             }
-            mAlerts = newList;
+            newList.add(alert);
         }
+        mAlerts = newList;
         if (mAlerts.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
             //mFooterView.setVisibility(View.GONE);
