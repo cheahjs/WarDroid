@@ -77,6 +77,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
             }
             newList.add(alert);
         }
+        mAlerts = newList;
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEmptyView = emptyView;
         if (mAlerts.size() == 0) {
