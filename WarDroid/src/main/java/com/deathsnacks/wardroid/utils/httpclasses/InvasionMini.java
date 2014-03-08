@@ -71,8 +71,8 @@ public class InvasionMini {
         return rewards.toArray(new String[rewards.size()]);
     }
 
-    public String getNotificationText() {
-        String base = "Invasion: ";
+    public String getNotificationText(String platform) {
+        String base = "Invasion (" + platform + "): ";
         if (!invadingFaction.equals("Infestation"))
             base += String.format("<b>%s</b> & ", invadingReward);
         base += String.format("<b>%s</b>", defendingReward);

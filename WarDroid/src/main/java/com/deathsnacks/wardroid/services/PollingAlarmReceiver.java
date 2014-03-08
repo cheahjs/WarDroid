@@ -75,6 +75,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private boolean mAllowAlerts;
     private boolean mAllowInvasions;
     private int mLedColour;
+    private boolean mPc;
+    private boolean mPs4;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -148,6 +150,10 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
+            String tempText = mPreferences.getString("platform_notifications", "pc");
+            mPc = tempText.contains("pc");
+            mPs4 = tempText.contains("ps4");
+
             mForceUpdateTime = 0;
 
             mForceUpdate = intent != null && intent.getBooleanExtra("force", false);
@@ -180,12 +186,14 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         protected Boolean doInBackground(Void... params) {
             if (mAllowAlerts) {
                 doAlerts();
+                doAlertsPS4();
             }
             else {
                 mAlertSuccess = true;
             }
             if (mAllowInvasions) {
                 doInvasions();
+                doInvasionsPS4();
             }
             else {
                 mInvasionSuccess = true;
@@ -278,6 +286,10 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 Log.i(TAG, "alert: " + alert.getNode() + " has been completed, ignore");
                 continue;
             }
+            if (!mPc) {
+                 Log.i(TAG, "PC not enabled, aborting.");
+                 continue;
+            }
             if (isAlertFiltered(alert)) {
                 Log.d(TAG, "accepted alert: " + alert.getNode());
                 if (mNew)
@@ -289,7 +301,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                         mForceUpdateTime = alert.getExpiry();
                     }
                 }
-                mNotifications.add(String.format("Alert: <b>%s</b>",
+                mNotifications.add(String.format("Alert (PC): <b>%s</b>",
                         TextUtils.join(" - ", alert.getRewards())));
                 continue;
             }
@@ -297,6 +309,106 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.putString("gcm_alerts", gcmAlerts);
+        mEditor.commit();
+        mAlertSuccess = true;
+    }
+
+    private void doAlertsPS4() {
+        try {
+            URL url = new URL("http://deathsnacks.com/wf/data/ps4/alerts_raw.txt");
+            HttpURLConnection connection = client.open(url);
+            System.setProperty("http.agent", "");
+            connection.setRequestProperty("User-Agent", "WarDroid/Android/");
+            long mod = mHttpPreferences.getLong("alerts_modified_ps4", 0);
+            if (mod != 0) {
+                connection.setIfModifiedSince(mod);
+            }
+            InputStream in = null;
+            try {
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    Log.d(TAG, "we received something other than 201 for alerts ps4: " + connection.getResponseCode());
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
+                        String cache = mHttpPreferences.getString("alerts_cache_ps4", "");
+                        Log.d(TAG, "we received NOT_MODIFIED, processing cache for alerts");
+                        Log.d(TAG, cache);
+                        parseAlertsPS4(cache);
+                    }
+                    return;
+                }
+                in = connection.getInputStream();
+                byte[] response = readAll(in);
+                String resp = new String(response, "UTF-8");
+                parseAlertsPS4(resp);
+                SharedPreferences.Editor mEditor = mHttpPreferences.edit();
+                mEditor.putLong("alerts_modified_ps4", connection.getLastModified());
+                mEditor.putString("alerts_cache_ps4", resp);
+                mEditor.commit();
+            } finally {
+                if (in != null) in.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error occurred during alerts alarm");
+            e.printStackTrace();
+        }
+    }
+
+    private void parseAlertsPS4(String response) {
+        if (response.length() < 15) {
+            mAlertSuccess = true;
+            Log.i(TAG, "Alert response < 15, tagging success and continuing");
+            return;
+        }
+        List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+        Log.d(TAG, mPreferences.getString("alert_completed_ids", ""));
+        String[] rawAlerts = response.split("\\n");
+        Boolean mNew = false;
+        String gcmAlerts = "";
+        for (String rawAlert : rawAlerts) {
+            if (rawAlert.split("\\|").length != 11)
+                continue;
+            Alert alert = new Alert(rawAlert);
+            gcmAlerts += TextUtils.join("|", new String[]{alert.getId(), alert.getNode(), alert.getRegion(),
+                    alert.getMission(), alert.getFaction(), String.valueOf(alert.getActivation()),
+                    String.valueOf(alert.getExpiry()), TextUtils.join(" - ", alert.getRewards())}) + "\n";
+            mNew = false;
+            if (!ids.contains(alert.getId())) {
+                mNew = true;
+                ids.add(alert.getId());
+            }
+            Log.d(TAG, "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
+                    + " - new: " + mNew);
+            if (alert.getExpiry() < System.currentTimeMillis() / 1000) {
+                Log.d(TAG, "alert: " + alert.getNode() + " has expired, ignore");
+                continue;
+            }
+            if (completedIds.contains(alert.getId())) {
+                Log.i(TAG, "alert: " + alert.getNode() + " has been completed, ignore");
+                continue;
+            }
+            if (!mPs4) {
+                Log.i(TAG, "PS4 not enabled, aborting.");
+                continue;
+            }
+            if (isAlertFiltered(alert)) {
+                Log.d(TAG, "accepted alert: " + alert.getNode());
+                if (mNew)
+                    mVibrate = true;
+                if (mForceUpdateTime == 0)
+                    mForceUpdateTime = alert.getExpiry();
+                else {
+                    if (alert.getExpiry() < mForceUpdateTime) {
+                        mForceUpdateTime = alert.getExpiry();
+                    }
+                }
+                mNotifications.add(String.format("Alert (PS4): <b>%s</b>",
+                        TextUtils.join(" - ", alert.getRewards())));
+                continue;
+            }
+        }
+        SharedPreferences.Editor mEditor = mPreferences.edit();
+        mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.putString("gcm_alerts_ps4", gcmAlerts);
         mEditor.commit();
         mAlertSuccess = true;
     }
@@ -371,18 +483,110 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 Log.i(TAG, "invasion: " + invasion.getNode() + " has been marked completed, ignore");
                 continue;
             }
-            String[] rewards = invasion.getRewards();
+            if (!mPc) {
+                Log.i(TAG, "PC not enabled, aborting.");
+                continue;
+            }
             if (isInvasionFiltered(invasion)) {
-                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText());
+                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText("PC"));
                 if (mNew)
                     mVibrate = true;
-                mNotifications.add(invasion.getNotificationText());
+                mNotifications.add(invasion.getNotificationText("PC"));
                 continue;
             }
         }
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
         mEditor.putString("gcm_invasions", gcmInvasions);
+        mEditor.commit();
+        mInvasionSuccess = true;
+    }
+
+    private void doInvasionsPS4() {
+        try {
+            URL url = new URL("http://deathsnacks.com/wf/data/ps4/invasion_mini.txt");
+            HttpURLConnection connection = client.open(url);
+            System.setProperty("http.agent", "");
+            connection.setRequestProperty("User-Agent", "WarDroid/Android/");
+            long mod = mHttpPreferences.getLong("invasion_modified_ps4", 0);
+            if (mod != 0) {
+                connection.setIfModifiedSince(mod);
+            }
+            InputStream in = null;
+            try {
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    Log.d(TAG, "we received something other than 201 for invasions: " + connection.getResponseCode());
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED || mForceUpdate) {
+                        String cache = mHttpPreferences.getString("invasion_cache_ps4", "");
+                        Log.d(TAG, "we received NOT_MODIFIED, processing cache for invasion");
+                        Log.d(TAG, cache);
+                        parseInvasionsPS4(cache);
+                    }
+                    return;
+                }
+                in = connection.getInputStream();
+                byte[] response = readAll(in);
+                String resp = new String(response, "UTF-8");
+                parseInvasionsPS4(resp);
+                SharedPreferences.Editor mEditor = mHttpPreferences.edit();
+                mEditor.putLong("invasion_modified_ps4", connection.getLastModified());
+                mEditor.putString("invasion_cache_ps4", resp);
+                mEditor.commit();
+            } finally {
+                if (in != null) in.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error occurred during invasions alarm");
+            e.printStackTrace();
+        }
+    }
+
+    private void parseInvasionsPS4(String response) {
+        Log.d(TAG, response.length() + "");
+        if (response.length() < 15) {
+            mInvasionSuccess = true;
+            Log.i(TAG, "Invasion response < 15, tagging success and continuing");
+            return;
+        }
+        List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        Log.d(TAG, mPreferences.getString("invasion_completed_ids", ""));
+        String[] rawInvasions = response.split("\\n");
+        String gcmInvasions = "";
+        Boolean mNew = false;
+        for (String rawInvasion : rawInvasions) {
+            if (rawInvasion.split("\\|").length != 11)
+                continue;
+            InvasionMini invasion = new InvasionMini(rawInvasion);
+            gcmInvasions += TextUtils.join("|", new String[]{invasion.getId(), invasion.getNode(), invasion.getRegion(),
+                    invasion.getInvadingFaction(), invasion.getInvadingType(), invasion.getInvadingReward(),
+                    invasion.getDefendingFaction(), invasion.getDefendingType(), invasion.getDefendingReward()}) + "\n";
+            mNew = false;
+            if (!ids.contains(invasion.getId())) {
+                mNew = true;
+                ids.add(invasion.getId());
+            }
+            Log.d(TAG, "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
+                    + " - new: " + mNew);
+            if (completedIds.contains(invasion.getId())) {
+                Log.i(TAG, "invasion: " + invasion.getNode() + " has been marked completed, ignore");
+                continue;
+            }
+            if (!mPs4) {
+                Log.i(TAG, "PS4 not enabled, aborting.");
+                continue;
+            }
+            if (isInvasionFiltered(invasion)) {
+                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText("PS4"));
+                if (mNew)
+                    mVibrate = true;
+                mNotifications.add(invasion.getNotificationText("PS4"));
+                continue;
+            }
+        }
+        SharedPreferences.Editor mEditor = mPreferences.edit();
+        mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.putString("gcm_invasions_ps4", gcmInvasions);
         mEditor.commit();
         mInvasionSuccess = true;
     }

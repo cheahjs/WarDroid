@@ -271,10 +271,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             }
             String[] rewards = invasion.getRewards();
             if (isInvasionFiltered(invasion)) {
-                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText());
+                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText("PC"));
                 if (mNew)
                     mVibrate = true;
-                mNotifications.add(invasion.getNotificationText());
+                mNotifications.add(invasion.getNotificationText("PC"));
                 continue;
             }
         }
