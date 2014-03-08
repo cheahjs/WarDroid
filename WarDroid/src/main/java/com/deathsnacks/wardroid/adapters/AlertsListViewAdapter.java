@@ -154,6 +154,8 @@ public class AlertsListViewAdapter extends BaseAdapter {
             holder.rewards = (TextView) view.findViewById(R.id.alert_rewards);
         } else {
             holder = (ViewHolder) view.getTag();
+            if (holder == null)
+                return view;
         }
         view.setVisibility(View.VISIBLE);
         view.setEnabled(true);
