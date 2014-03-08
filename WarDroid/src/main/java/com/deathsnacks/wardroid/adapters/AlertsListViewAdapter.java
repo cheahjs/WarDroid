@@ -153,8 +153,14 @@ public class AlertsListViewAdapter extends BaseAdapter {
             holder.rewards = (TextView) view.findViewById(R.id.alert_rewards);
         } else {
             holder = (ViewHolder) view.getTag();
-            if (holder == null)
-                return view;
+            if (holder == null) {
+                holder = new ViewHolder();
+                holder.node = (TextView) view.findViewById(R.id.alert_title);
+                holder.completed = view.findViewById(R.id.alert_completed);
+                holder.desc = (TextView) view.findViewById(R.id.alert_desc);
+                holder.duration = (TextView) view.findViewById(R.id.alert_duration);
+                holder.rewards = (TextView) view.findViewById(R.id.alert_rewards);
+            }
         }
         view.setVisibility(View.VISIBLE);
         view.setEnabled(true);
