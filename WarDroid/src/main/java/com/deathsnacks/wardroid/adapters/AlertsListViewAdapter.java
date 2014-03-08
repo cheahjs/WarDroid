@@ -36,8 +36,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
     private View mEmptyView;
     private View mFooterView;
     private boolean mShowHidden;
+    private boolean mUpdate;
 
     public AlertsListViewAdapter(Activity act, List<Alert> data, View emptyView, boolean showHidden, View footerView) {
+        mUpdate = false;
         mActivity = act;
         mShowHidden = showHidden;
         mFooterView = footerView;
@@ -133,7 +135,12 @@ public class AlertsListViewAdapter extends BaseAdapter {
     }
 
     public void notifyDataSetChangedLight() {
-        super.notifyDataSetChanged();
+        if (mUpdate) {
+            notifyDataSetChanged();
+            mUpdate = false;
+        } else {
+            super.notifyDataSetChanged();
+        }
     }
 
     public int getCount() {
@@ -178,8 +185,7 @@ public class AlertsListViewAdapter extends BaseAdapter {
         holder.alert = alert;
         if (mCompletedIds.contains(alert.get_id().get$id())) {
             if (mPreferences.getBoolean("hide_completed", false)) {
-                mAlerts.remove(position);
-                notifyDataSetChanged();
+                mUpdate = true;
                 view.setVisibility(View.GONE);
                 Log.d(TAG, "marking alert GONE." + alert.getMissionInfo().getLocation());
                 return view;
@@ -205,11 +211,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
             format = "%dh %dm %ds";
             holder.duration.setTextColor(Color.parseColor("#10bcc9"));
             if (diff < 0) {
-                if (mPreferences.getBoolean("hide_expired", false)) {
-                    mAlerts.remove(position);
-                    notifyDataSetChanged();
+                if (!mShowHidden) {
+                    mUpdate = true;
                     view.setVisibility(View.GONE);
-                    Log.d(TAG, "marking alert expired." + alert.getMissionInfo().getLocation());
+                    Log.d(TAG, "marking alert expired. " + alert.getMissionInfo().getLocation());
                     return view;
                 }
                 diff = now - expiry;

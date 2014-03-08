@@ -73,8 +73,6 @@ public class AlertsFragment extends SherlockFragment {
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mNoneView = rootView.findViewById(R.id.alerts_none);
         mFooterView = View.inflate(getSherlockActivity(), R.layout.list_item_custom_footer, null);
-        TextView footerText = (TextView) mFooterView.findViewById(R.id.footer_text);
-        footerText.setText(R.string.show_expired_alerts);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mAlertView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -141,6 +139,12 @@ public class AlertsFragment extends SherlockFragment {
                 }
             }
         });
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        TextView footerText = (TextView) mFooterView.findViewById(R.id.footer_text);
+        footerText.setText(R.string.hide_expired_alerts);
+        mAlertView.addFooterView(mFooterView);
+        View buttonView = mAlertView.findViewById(R.id.footer_text);
+        buttonView.setOnClickListener(showHiddenListener);
         mHandler = new Handler();
         setHasOptionsMenu(true);
         return rootView;
@@ -409,14 +413,6 @@ public class AlertsFragment extends SherlockFragment {
                     Log.d(TAG, merged.size() + " - size of merged array");
                     mAdapter = new AlertsListViewAdapter(activity, merged, mNoneView, !mPreferences.getBoolean("hide_expired", false)
                             , mFooterView);
-                    TextView footerText = (TextView) mFooterView.findViewById(R.id.footer_text);
-                    footerText.setText(mPreferences.getBoolean("hide_expired", false) ? R.string.show_expired_alerts :
-                            R.string.hide_expired_alerts);
-                    if (mAlertView.getFooterViewsCount() != 0)
-                        mAlertView.removeFooterView(mFooterView);
-                    mAlertView.addFooterView(mFooterView);
-                    View buttonView = mAlertView.findViewById(R.id.footer_text);
-                    buttonView.setOnClickListener(showHiddenListener);
                     mAlertView.setAdapter(mAdapter);
                     if (error) {
                         Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
