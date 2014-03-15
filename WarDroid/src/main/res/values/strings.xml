@@ -36,4 +36,5 @@
     <string name="clear_data_title">Clear app data</string>
     <string name="show_expired_alerts">Show/Hide expired alerts</string>
     <string name="hide_expired_alerts">Show/Hide expired alerts</string>
+    <string name="toggle_all">Toggle All</string>
 </resources>

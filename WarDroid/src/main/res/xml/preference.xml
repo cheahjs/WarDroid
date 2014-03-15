@@ -15,7 +15,8 @@
             android:title="PC or PS4"
             android:entries="@array/platform_names"
             android:entryValues="@array/platform_entries"
-            android:defaultValue="pc"/>
+            android:defaultValue="pc"
+            toggleAll="false"/>
         <CheckBoxPreference
             android:key="hide_completed"
             android:title="@string/settings_hide_completed_title"
@@ -48,14 +49,16 @@
             android:dependency="alert_enabled"
             android:entries="@array/platform_names"
             android:entryValues="@array/platform_entries"
-            android:defaultValue="pc"/>
+            android:defaultValue="pc"
+            toggleAll="false"/>
         <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:key="alert_or_invasion"
             android:dependency="alert_enabled"
             android:title="Alert or Invasion notifications"
             android:entries="@array/filter_type_names"
             android:entryValues="@array/filter_type_entries"
-            android:defaultValue="alerts|invasions"/>
+            android:defaultValue="alerts|invasions"
+            toggleAll="false"/>
         <CheckBoxPreference
             android:key="push"
             android:dependency="alert_enabled"
