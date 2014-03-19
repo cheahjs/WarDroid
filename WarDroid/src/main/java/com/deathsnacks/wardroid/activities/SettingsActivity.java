@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.services.NotificationsUpdateReceiver;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
@@ -64,29 +65,29 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         if (mPreferences.getInt("reward_version", 0) > getResources().getInteger(R.integer.reward_version)) {
             Log.d(TAG, "Updating pref entries.");
             try {
-                MultiSelectListPreference aura = (MultiSelectListPreference) findPreference("aura_filters");
+                MultiSelectListPreference aura = (MultiSelectListPreference) findPreference(Constants.PREF_AURA_FILTERS);
                 aura.setEntryValues(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_entries", "")));
                 aura.setEntries((PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_entries", ""))));
-                MultiSelectListPreference bp = (MultiSelectListPreference) findPreference("bp_filters");
+                MultiSelectListPreference bp = (MultiSelectListPreference) findPreference(Constants.PREF_BP_FILTERS);
                 bp.setEntryValues(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_entries", "")));
                 bp.setEntries((PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_entries", ""))));
-                MultiSelectListPreference mod = (MultiSelectListPreference) findPreference("mod_filters");
+                MultiSelectListPreference mod = (MultiSelectListPreference) findPreference(Constants.PREF_MOD_FILTERS);
                 mod.setEntryValues(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_entries", "")));
                 mod.setEntries((PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_entries", ""))));
-                MultiSelectListPreference misc = (MultiSelectListPreference) findPreference("resource_filters");
+                MultiSelectListPreference misc = (MultiSelectListPreference) findPreference(Constants.PREF_RESOURCE_FILTERS);
                 misc.setEntryValues(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("misc_entries", "")));
                 misc.setEntries((PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("misc_entries", ""))));
-                MultiSelectListPreference planet = (MultiSelectListPreference) findPreference("planet_filters");
+                MultiSelectListPreference planet = (MultiSelectListPreference) findPreference(Constants.PREF_PLANET_FILTERS);
                 planet.setEntryValues(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("planet_entries", "")));
                 planet.setEntries((PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("planet_entries", ""))));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        Preference cred = findPreference("credit_filter");
+        Preference cred = findPreference(Constants.PREF_CREDIT_FILTER);
         if (cred != null)
             try {
-                cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt("credit_filter", 0)));
+                cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -117,7 +118,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             });
         }
-        Preference pushPref = findPreference("push");
+        Preference pushPref = findPreference(Constants.PREF_PUSH);
         if (pushPref != null) {
             pushPref.setOnPreferenceChangeListener(pushPrefListener);
             if (!checkPlayServices()) {
@@ -212,8 +213,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
             Log.d(TAG, "changed pref: " + s);
-            if (s.equals("alert_enabled")) {
-                if (sharedPreferences.getBoolean("alert_enabled", false)) {
+            if (s.equals(Constants.PREF_ALERT_ENABLED)) {
+                if (sharedPreferences.getBoolean(Constants.PREF_ALERT_ENABLED, false)) {
                     Log.d(TAG, "starting alarm since pref was changed");
                     boolean mDismissible = !sharedPreferences.getBoolean("dismissible", false);
                     Intent alarmIntent = new Intent(getApplicationContext(), PollingAlarmReceiver.class);
@@ -235,7 +236,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (!mPreferences.getBoolean("push", false)) {
+                    if (!mPreferences.getBoolean(Constants.PREF_PUSH, false)) {
                         ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                                 SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
                     }
@@ -248,10 +249,10 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                             getApplicationContext(), 0,
                             new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
-            } else if (s.equals("credit_filter")) {
-                Preference cred = findPreference("credit_filter");
+            } else if (s.equals(Constants.PREF_CREDIT_FILTER)) {
+                Preference cred = findPreference(Constants.PREF_CREDIT_FILTER);
                 if (cred != null)
-                    cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt("credit_filter", 0)));
+                    cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0)));
             } else if (s.equals("sound")) {
                 Preference uriPref = findPreference("sound");
                 if (uriPref == null)
@@ -268,7 +269,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (s.equals("platform") || s.equals("platform_notifications")) {
+            } else if (s.equals("platform") || s.equals(Constants.PREF_PLATFORM_NOTIFICATIONS)) {
                 String persist = mPreferences.getString(s, "pc");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
                 if (!persist.contains("pc") && !persist.contains("ps4")) {
@@ -391,7 +392,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             @Override
             protected void onPostExecute(String msg) {
                 Log.d(TAG, "register msg:" + msg);
-                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference(Constants.PREF_PUSH);
                 pushPref.setEnabled(true);
                 if (msg.startsWith("Error :") && !msg.contains("already exists")) {
                     Toast.makeText(getApplicationContext(), "Error occurred while trying to register for push notifications.", Toast.LENGTH_LONG).show();
@@ -399,7 +400,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     mForceChangingPush = true;
                     pushPref.setOnPreferenceChangeListener(null);
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    editor.putBoolean("push", false);
+                    editor.putBoolean(Constants.PREF_PUSH, false);
                     editor.commit();
                 }
                 pushPref.setOnPreferenceChangeListener(pushPrefListener);
@@ -427,7 +428,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             @Override
             protected void onPostExecute(String msg) {
                 Log.d(TAG, "unregister msg:" + msg);
-                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference("push");
+                CheckBoxPreference pushPref = (CheckBoxPreference) findPreference(Constants.PREF_PUSH);
                 pushPref.setEnabled(true);
                 if (msg.startsWith("Error :")) {
                     Toast.makeText(getApplicationContext(), "Error occurred while trying to unregister from push notifications.", Toast.LENGTH_LONG).show();
@@ -435,7 +436,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     pushPref.setOnPreferenceChangeListener(null);
                     mForceChangingPush = true;
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    editor.putBoolean("push", true);
+                    editor.putBoolean(Constants.PREF_PUSH, true);
                     editor.commit();
                 }
                 pushPref.setOnPreferenceChangeListener(pushPrefListener);

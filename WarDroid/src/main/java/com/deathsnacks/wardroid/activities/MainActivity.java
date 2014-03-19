@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
@@ -69,13 +70,13 @@ public class MainActivity extends SherlockFragmentActivity {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (savedInstanceState == null) {
             Log.d(TAG, "no saved instance state");
-            if (mPreferences.getBoolean("alert_enabled", false)) {
+            if (mPreferences.getBoolean(Constants.PREF_ALERT_ENABLED, false)) {
                 Log.d(TAG, "starting alarm");
                 Intent alarmIntent = new Intent(this, PollingAlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if (pendingIntent != null) {
                     try {
-                        SharedPreferences httpPrefs = getSharedPreferences("polling", MODE_PRIVATE);
+                        SharedPreferences httpPrefs = getSharedPreferences(Constants.SHARED_PREF_POLLING, MODE_PRIVATE);
                         SharedPreferences.Editor edit = httpPrefs.edit();
                         edit.clear();
                         edit.commit();
@@ -94,7 +95,7 @@ public class MainActivity extends SherlockFragmentActivity {
                         mBuilder.setContentIntent(pendingIntent2);
                         mNotificationManager.notify(1, mBuilder.build());
                         (new PollingAlarmReceiver()).onReceive(this.getApplicationContext(), new Intent().putExtra("force", true));
-                        if (!mPreferences.getBoolean("push", false)) {
+                        if (!mPreferences.getBoolean(Constants.PREF_PUSH, false)) {
                             ((AlarmManager) getSystemService(ALARM_SERVICE)).setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                                     SystemClock.elapsedRealtime(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
                         }

@@ -20,6 +20,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.MainActivity;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -95,27 +96,27 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             if ((alerts == null || invasions == null) && (alertsPs4 != null && invasionsPs4 != null)) {
                 Log.i(TAG, "PS4 update, grabbing PC cache");
                 mPcUpdate = false;
-                alerts = mPreferences.getString("gcm_alerts", "");
-                invasions = mPreferences.getString("gcm_invasions", "");
+                alerts = mPreferences.getString(Constants.PREF_GCM_ALERTS, "");
+                invasions = mPreferences.getString(Constants.PREF_GCM_INVASIONS, "");
             } else if ((alerts != null && invasions != null) && (alertsPs4 == null || invasionsPs4 == null)) {
                 Log.i(TAG, "PC update, grabbing PS4 cache");
-                alertsPs4 = mPreferences.getString("gcm_alerts_ps4", "");
-                invasionsPs4 = mPreferences.getString("gcm_invasions_ps4", "");
+                alertsPs4 = mPreferences.getString(Constants.PREF_GCM_ALERTS_PS4, "");
+                invasionsPs4 = mPreferences.getString(Constants.PREF_GCM_INVASIONS_PS4, "");
                 mPcUpdate = true;
             }
             if ((alerts == null || invasions == null) && (alertsPs4 == null || invasionsPs4 == null) && !mForce) {
                 Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
             }
-            String platformPref = mPreferences.getString("platform_notifications", "pc");
+            String platformPref = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc");
             mPc = platformPref.contains("pc");
             mPs4 = platformPref.contains("ps4");
             if (mForce && (alerts == null || invasions == null) && (alertsPs4 == null || invasionsPs4 == null)) {
                 Log.d(TAG, "We are forcing, so we are grabbing cached stuff.");
-                alerts = mPreferences.getString("gcm_alerts", "");
-                invasions = mPreferences.getString("gcm_invasions", "");
-                alertsPs4 = mPreferences.getString("gcm_alerts_ps4", "");
-                invasionsPs4 = mPreferences.getString("gcm_invasions_ps4", "");
+                alerts = mPreferences.getString(Constants.PREF_GCM_ALERTS, "");
+                invasions = mPreferences.getString(Constants.PREF_GCM_INVASIONS, "");
+                alertsPs4 = mPreferences.getString(Constants.PREF_GCM_ALERTS_PS4, "");
+                invasionsPs4 = mPreferences.getString(Constants.PREF_GCM_INVASIONS_PS4, "");
             }
             mAlerts = alerts;
             mInvasions = invasions;
@@ -125,50 +126,50 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             SharedPreferences.Editor editor = mPreferences.edit();
             if (!mForce) {
                 if (mPcUpdate) {
-                    editor.putString("gcm_alerts", alerts);
-                    editor.putString("gcm_invasions", invasions);
+                    editor.putString(Constants.PREF_GCM_ALERTS, alerts);
+                    editor.putString(Constants.PREF_GCM_INVASIONS, invasions);
                 } else {
-                    editor.putString("gcm_alerts_ps4", alertsPs4);
-                    editor.putString("gcm_invasions_ps4", invasionsPs4);
+                    editor.putString(Constants.PREF_GCM_ALERTS_PS4, alertsPs4);
+                    editor.putString(Constants.PREF_GCM_INVASIONS_PS4, invasionsPs4);
                 }
             }
             mVibrate = false;
             mNotifications = new ArrayList<String>();
-            if (!mPreferences.getBoolean("alert_enabled", false) || !mPreferences.getBoolean("push", false)) {
+            if (!mPreferences.getBoolean(Constants.PREF_ALERT_ENABLED, false) || !mPreferences.getBoolean(Constants.PREF_PUSH, false)) {
                 Log.i(TAG, "Aborting notification update since we don't have any of these enabled.");
                 return;
             }
             ArrayList<String> aura = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_AURA_FILTERS, ""))));
             ArrayList<String> bp = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_BP_FILTERS, ""))));
             ArrayList<String> mod = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_MOD_FILTERS, ""))));
             ArrayList<String> resource = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("resource_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_RESOURCE_FILTERS, ""))));
             mItemFilters = new ArrayList<String>();
             mItemFilters.addAll(aura);
             mItemFilters.addAll(bp);
             mItemFilters.addAll(mod);
             mItemFilters.addAll(resource);
-            mItemFiltered = mPreferences.getBoolean("filter_enabled", false);
+            mItemFiltered = mPreferences.getBoolean(Constants.PREF_FILTER_ENABLED, false);
 
             mCustomFilters = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("custom_filters", ""))));
-            mCustomFilered = mPreferences.getBoolean("custom_enabled", false);
-            Log.d(TAG, mPreferences.getString("custom_filters", ""));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
+            mCustomFilered = mPreferences.getBoolean(Constants.PREF_CUSTOM_ENABLED, false);
+            Log.d(TAG, mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""));
             Log.d(TAG, mCustomFilered+"");
 
 
-            mPlanetFiltered = mPreferences.getBoolean("planet_enabled", false);
+            mPlanetFiltered = mPreferences.getBoolean(Constants.PREF_PLANET_ENABLED, false);
             mPlanetFilters = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("planet_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_PLANET_FILTERS, ""))));
 
-            mCreditFiltered = mPreferences.getBoolean("credit_enabled", false);
-            mCreditFilter = mPreferences.getInt("credit_filter", 0);
+            mCreditFiltered = mPreferences.getBoolean(Constants.PREF_CREDIT_ENABLED, false);
+            mCreditFilter = mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0);
 
-            mTypeFiltered = mPreferences.getBoolean("type_enabled", false);
-            String lowerCase = mPreferences.getString("type_filters", "").toLowerCase();
+            mTypeFiltered = mPreferences.getBoolean(Constants.PREF_TYPE_ENABLED, false);
+            String lowerCase = mPreferences.getString(Constants.PREF_TYPE_FILTERS, "").toLowerCase();
             mTypeFilters = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(lowerCase)));
             Log.d(TAG, lowerCase);

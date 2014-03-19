@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
@@ -43,7 +44,7 @@ public class CustomFilterActivity extends SherlockActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mFilters = new ArrayList<String>(Arrays.asList(
-                PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("custom_filters", ""))));
+                PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mFilters);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filters);
@@ -80,7 +81,7 @@ public class CustomFilterActivity extends SherlockActivity {
                                 mFilters.remove(filter);
                                 //mAdapter.remove(filter);
                                 SharedPreferences.Editor mEditor = mPreferences.edit();
-                                mEditor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                                mEditor.putString(Constants.PREF_CUSTOM_FILTERS, PreferenceUtils.toPersistedPreferenceValue(
                                         mFilters.toArray(new String[mFilters.size()])));
                                 mEditor.commit();
                                 mAdapter.notifyDataSetChanged();
@@ -111,7 +112,7 @@ public class CustomFilterActivity extends SherlockActivity {
                             //mAdapter.add(text.getText().toString());
                             mAdapter.notifyDataSetChanged();
                             SharedPreferences.Editor editor = mPreferences.edit();
-                            editor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                            editor.putString(Constants.PREF_CUSTOM_FILTERS, PreferenceUtils.toPersistedPreferenceValue(
                                     mFilters.toArray(new String[mFilters.size()])));
                             editor.commit();
                             dialogInterface.cancel();
@@ -150,7 +151,7 @@ public class CustomFilterActivity extends SherlockActivity {
                                 //mAdapter.add(text.getText().toString());
                                 mAdapter.notifyDataSetChanged();
                                 SharedPreferences.Editor editor = mPreferences.edit();
-                                editor.putString("custom_filters", PreferenceUtils.toPersistedPreferenceValue(
+                                editor.putString(Constants.PREF_CUSTOM_FILTERS, PreferenceUtils.toPersistedPreferenceValue(
                                         mFilters.toArray(new String[mFilters.size()])));
                                 editor.commit();
                                 dialogInterface.cancel();

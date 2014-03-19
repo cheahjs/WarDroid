@@ -26,7 +26,7 @@ public class NotificationsUpdateReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "We are now forcing an update of notifications, because expiry and stuff.");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (preferences.getBoolean("push", false))
+        if (preferences.getBoolean(Constants.PREF_PUSH, false))
             (new GcmBroadcastReceiver()).onReceive(context, intent.putExtra("force", true));
         else
             (new PollingAlarmReceiver()).onReceive(context, intent.putExtra("force", true));

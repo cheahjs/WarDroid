@@ -22,6 +22,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.MainActivity;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -82,47 +83,47 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mContext = context;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        mHttpPreferences = context.getSharedPreferences("polling", Context.MODE_PRIVATE);
+        mHttpPreferences = context.getSharedPreferences(Constants.SHARED_PREF_POLLING, Context.MODE_PRIVATE);
         client = new OkHttpClient();
         mVibrate = false;
         mNotifications = new ArrayList<String>();
         Log.d(TAG, "Received broadcast for alarm, starting polling.");
-        if (mPreferences.getBoolean("push", false) && intent != null) {
+        if (mPreferences.getBoolean(Constants.PREF_PUSH, false) && intent != null) {
             Log.i(TAG, "We are abandoning the alarm, since push is on and this isn't forced.");
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                     context, 0, new Intent(context, PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
         }
-        if (mPreferences.getBoolean("alert_enabled", false)) {
+        if (mPreferences.getBoolean(Constants.PREF_ALERT_ENABLED, false)) {
             ArrayList<String> aura = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_AURA_FILTERS, ""))));
             ArrayList<String> bp = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_BP_FILTERS, ""))));
             ArrayList<String> mod = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_MOD_FILTERS, ""))));
             ArrayList<String> resource = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("resource_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_RESOURCE_FILTERS, ""))));
             mItemFilters = new ArrayList<String>();
             mItemFilters.addAll(aura);
             mItemFilters.addAll(bp);
             mItemFilters.addAll(mod);
             mItemFilters.addAll(resource);
-            mItemFiltered = mPreferences.getBoolean("filter_enabled", false);
+            mItemFiltered = mPreferences.getBoolean(Constants.PREF_FILTER_ENABLED, false);
 
             mCustomFilters = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("custom_filters", ""))));
-            mCustomFilered = mPreferences.getBoolean("custom_enabled", false);
-            Log.d(TAG, mPreferences.getString("custom_filters", ""));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
+            mCustomFilered = mPreferences.getBoolean(Constants.PREF_CUSTOM_ENABLED, false);
+            Log.d(TAG, mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""));
             Log.d(TAG, mCustomFilered+"");
 
-            mPlanetFiltered = mPreferences.getBoolean("planet_enabled", false);
+            mPlanetFiltered = mPreferences.getBoolean(Constants.PREF_PLANET_ENABLED, false);
             mPlanetFilters = new ArrayList<String>(Arrays.asList(
-                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("planet_filters", ""))));
+                    PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_PLANET_FILTERS, ""))));
 
-            mCreditFiltered = mPreferences.getBoolean("credit_enabled", false);
-            mCreditFilter = mPreferences.getInt("credit_filter", 0);
+            mCreditFiltered = mPreferences.getBoolean(Constants.PREF_CREDIT_ENABLED, false);
+            mCreditFilter = mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0);
 
-            mTypeFiltered = mPreferences.getBoolean("type_enabled", false);
-            String lowerCase = mPreferences.getString("type_filters", "").toLowerCase();
+            mTypeFiltered = mPreferences.getBoolean(Constants.PREF_TYPE_ENABLED, false);
+            String lowerCase = mPreferences.getString(Constants.PREF_TYPE_FILTERS, "").toLowerCase();
             mTypeFilters = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(lowerCase)));
             Log.d(TAG, lowerCase);
@@ -150,7 +151,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
-            String tempText = mPreferences.getString("platform_notifications", "pc");
+            String tempText = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc");
             mPc = tempText.contains("pc");
             mPs4 = tempText.contains("ps4");
 
@@ -308,7 +309,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-        mEditor.putString("gcm_alerts", gcmAlerts);
+        mEditor.putString(Constants.PREF_GCM_ALERTS, gcmAlerts);
         mEditor.commit();
         mAlertSuccess = true;
     }
@@ -408,7 +409,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-        mEditor.putString("gcm_alerts_ps4", gcmAlerts);
+        mEditor.putString(Constants.PREF_GCM_ALERTS_PS4, gcmAlerts);
         mEditor.commit();
         mAlertSuccess = true;
     }
@@ -497,7 +498,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-        mEditor.putString("gcm_invasions", gcmInvasions);
+        mEditor.putString(Constants.PREF_GCM_INVASIONS, gcmInvasions);
         mEditor.commit();
         mInvasionSuccess = true;
     }
@@ -586,7 +587,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         }
         SharedPreferences.Editor mEditor = mPreferences.edit();
         mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
-        mEditor.putString("gcm_invasions_ps4", gcmInvasions);
+        mEditor.putString(Constants.PREF_GCM_INVASIONS_PS4, gcmInvasions);
         mEditor.commit();
         mInvasionSuccess = true;
     }

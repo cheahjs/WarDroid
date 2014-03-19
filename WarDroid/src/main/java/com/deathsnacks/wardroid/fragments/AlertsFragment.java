@@ -239,7 +239,7 @@ public class AlertsFragment extends SherlockFragment {
             mUpdateTask = new UpdateTask(getActivity());
             mUpdateTask.execute();
         }
-        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("push", false)) {
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_PUSH, false)) {
             if (getRegistrationId(getSherlockActivity()).length() == 0)
             {
                 Log.i(TAG, "Push is enabled, and we just got an empty registration id, registering again.");
