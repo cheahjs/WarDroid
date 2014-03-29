@@ -400,6 +400,9 @@ public class AlertsFragment extends SherlockFragment {
                 for (Alert alert : data) {
                     nowids.add(alert.get_id().get$id());
                 }
+                for (Alert alert : ps4data) {
+                    nowids.add(alert.get_id().get$id());
+                }
                 for (String id : ids) {
                     if (nowids.contains(id)) {
                         newids.add(id);

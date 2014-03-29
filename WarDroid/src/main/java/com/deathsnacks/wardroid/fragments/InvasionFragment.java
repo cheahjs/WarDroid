@@ -333,6 +333,9 @@ public class InvasionFragment extends SherlockFragment {
                 for (int i = 1; i < data.size(); i++) {
                     nowids.add(data.get(i).split("\\|")[0]);
                 }
+                for (int i = 1; i < ps4data.size(); i++) {
+                    nowids.add(ps4data.get(i).split("\\|")[0]);
+                }
                 for (String id : ids) {
                     if (nowids.contains(id)) {
                         newids.add(id);
