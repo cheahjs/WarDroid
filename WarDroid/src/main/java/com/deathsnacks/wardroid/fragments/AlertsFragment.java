@@ -29,6 +29,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
@@ -65,11 +66,12 @@ public class AlertsFragment extends SherlockFragment {
     private Handler mHandler;
     private View mNoneView;
     private View mFooterView;
+    private boolean mUpdate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
-        setRetainInstance(true);
+        //setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mNoneView = rootView.findViewById(R.id.alerts_none);
         mFooterView = View.inflate(getSherlockActivity(), R.layout.list_item_custom_footer, null);
@@ -147,7 +149,30 @@ public class AlertsFragment extends SherlockFragment {
         buttonView.setOnClickListener(showHiddenListener);
         mHandler = new Handler();
         setHasOptionsMenu(true);
+        mUpdate = true;
+        if (savedInstanceState != null) {
+            String alerts = savedInstanceState.getString("alerts");
+            if (alerts != null) {
+                mUpdate = false;
+                Type collectionType = new TypeToken<List<Alert>>() {
+                }.getType();
+                List<Alert> data = (new GsonBuilder().create()).fromJson(alerts, collectionType);
+                mAdapter = new AlertsListViewAdapter(getSherlockActivity(), data, mNoneView, savedInstanceState.getBoolean("alerts_hidden"), mFooterView);
+                mAlertView.setAdapter(mAdapter);
+                mAlertView.onRestoreInstanceState(savedInstanceState.getParcelable("alert_lv"));
+            }
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mAdapter == null)
+            return;
+        outState.putParcelable("alert_lv", mAlertView.onSaveInstanceState());
+        outState.putString("alerts", mAdapter.getOriginalValues());
+        outState.putBoolean("alerts_hidden", mAdapter.getShowHidden());
     }
 
     @Override
@@ -234,7 +259,10 @@ public class AlertsFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        refresh(true);
+        Log.d(TAG, "onStart was called.");
+        if (mUpdate)
+            refresh(true);
+        mUpdate = true;
         if (mUpdateTask == null) {
             mUpdateTask = new UpdateTask(getActivity());
             mUpdateTask.execute();
@@ -248,7 +276,6 @@ public class AlertsFragment extends SherlockFragment {
         }
         super.onStart();
     }
-
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final Boolean show) {
@@ -411,7 +438,10 @@ public class AlertsFragment extends SherlockFragment {
                                 }
                             });
                     Log.d(TAG, merged.size() + " - size of merged array");
-                    mAdapter = new AlertsListViewAdapter(activity, merged, mNoneView, !mPreferences.getBoolean("hide_expired", false)
+                    boolean hidden = !mPreferences.getBoolean("hide_expired", false);
+                    if (mAdapter != null)
+                        hidden = mAdapter.getShowHidden();
+                    mAdapter = new AlertsListViewAdapter(activity, merged, mNoneView, hidden
                             , mFooterView);
                     mAlertView.setAdapter(mAdapter);
                     if (error) {

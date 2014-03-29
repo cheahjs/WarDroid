@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,11 +51,11 @@ public class InvasionFragment extends SherlockFragment {
     private SeparatedListAdapter mAdapter;
     private Handler mHandler;
     private View mNoneView;
+    private boolean mUpdate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_invasions, container, false);
-        setRetainInstance(true);
         mNoneView = rootView.findViewById(R.id.invasions_none);
         mRefreshView = rootView.findViewById(R.id.invasion_refresh);
         mInvasionView = (ListView) rootView.findViewById(R.id.list_invasions);
@@ -121,7 +122,44 @@ public class InvasionFragment extends SherlockFragment {
         });
         mHandler = new Handler();
         setHasOptionsMenu(true);
+        mUpdate = true;
+        if (savedInstanceState != null) {
+            String pc = savedInstanceState.getString("invasions_pc");
+            String ps4 = savedInstanceState.getString("invasions_ps4");
+            if (pc != null || ps4 != null) {
+                Log.d(TAG, "saved instance");
+                mUpdate = false;
+                mAdapter = new SeparatedListAdapter(getSherlockActivity(), mNoneView);
+                if (pc != null) {
+                    mAdapter.addSection("PC", new InvasionListViewAdapter(getSherlockActivity(), new ArrayList<String>(Arrays.asList(pc.split("\\n"))), mNoneView, false));
+                }
+                if (ps4 != null) {
+                    mAdapter.addSection("PS4", new InvasionListViewAdapter(getSherlockActivity(), new ArrayList<String>(Arrays.asList(ps4.split("\\n"))), mNoneView, false));
+                }
+                if (mAdapter.getAdapterCount() == 0) {
+                    mNoneView.setVisibility(View.VISIBLE);
+                } else {
+                    mNoneView.setVisibility(View.GONE);
+                }
+                mInvasionView.setAdapter(mAdapter);
+                mInvasionView.onRestoreInstanceState(savedInstanceState.getParcelable("invasion_lv"));
+            }
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mAdapter == null)
+            return;
+        outState.putParcelable("invasion_lv", mInvasionView.onSaveInstanceState());
+        InvasionListViewAdapter pc = (InvasionListViewAdapter) mAdapter.getSectionAdapter("PC");
+        InvasionListViewAdapter ps4 = (InvasionListViewAdapter) mAdapter.getSectionAdapter("PS4");
+        if (pc != null)
+            outState.putString("invasions_pc", pc.getOriginalValues());
+        if (ps4 != null)
+            outState.putString("invasions_ps4", ps4.getOriginalValues());
     }
 
     @Override
@@ -179,7 +217,9 @@ public class InvasionFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        refresh(true);
+        if (mUpdate)
+            refresh(true);
+        mUpdate = true;
         super.onStart();
     }
 

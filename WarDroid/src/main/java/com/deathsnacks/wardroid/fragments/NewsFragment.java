@@ -30,6 +30,7 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.NewsListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,11 +47,11 @@ public class NewsFragment extends SherlockFragment {
     private NewsRefresh mTask;
     private NewsListViewAdapter mAdapter;
     private Handler mHandler;
+    private boolean mUpdate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
-        setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.news_refresh);
         mNewsView = (ListView) rootView.findViewById(R.id.list_news);
         mHandler = new Handler();
@@ -63,7 +64,27 @@ public class NewsFragment extends SherlockFragment {
             }
         });
         setHasOptionsMenu(true);
+        mUpdate = true;
+        if (savedInstanceState != null) {
+            String news = savedInstanceState.getString("news");
+            if (news != null) {
+                mUpdate = false;
+                Log.d(TAG, "saved instance");
+                mAdapter = new NewsListViewAdapter(getActivity(),  new ArrayList<String>(Arrays.asList(news.split("\\n"))));
+                mNewsView.setAdapter(mAdapter);
+                mNewsView.onRestoreInstanceState(savedInstanceState.getParcelable("news_lv"));
+            }
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mAdapter == null)
+            return;
+        outState.putParcelable("news_lv", mNewsView.onSaveInstanceState());
+        outState.putString("news", mAdapter.getOriginalValues());
     }
 
     @Override
@@ -123,7 +144,9 @@ public class NewsFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        refresh(true);
+        if (mUpdate)
+            refresh(true);
+        mUpdate = true;
         super.onStart();
     }
 

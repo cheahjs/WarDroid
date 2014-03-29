@@ -2,6 +2,7 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
+import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
 import java.util.List;
 
@@ -25,6 +27,10 @@ public class NewsListViewAdapter extends BaseAdapter {
         mActivity = act;
         mLines = data;
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public String getOriginalValues() {
+        return TextUtils.join("\n", mLines);
     }
 
     public int getCount() {

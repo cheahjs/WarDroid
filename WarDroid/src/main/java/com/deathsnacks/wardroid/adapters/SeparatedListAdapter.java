@@ -39,6 +39,15 @@ public class SeparatedListAdapter extends BaseAdapter {
         this.sections.put(section, adapter);
     }
 
+    public BaseAdapter getSectionAdapter(String section){
+        for (Object section2 : this.sections.keySet()) {
+            if (section2.equals(section)) {
+                return sections.get(section2);
+            }
+        }
+        return null;
+    }
+
     public Object getItem(int position) {
         for (Object section : this.sections.keySet()) {
             Adapter adapter = sections.get(section);

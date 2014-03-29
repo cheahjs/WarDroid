@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,16 +38,23 @@ public class InvasionListViewAdapter extends BaseAdapter {
     private View mEmptyView;
 
     public InvasionListViewAdapter(Activity act, List<String> data, View emptyView) {
+        this(act, data, emptyView, true);
+    }
+
+    public InvasionListViewAdapter(Activity act, List<String> data, View emptyView, boolean remove) {
         mActivity = act;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(act);
         mCompletedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
-        data.remove(0);
+        if (remove)
+            data.remove(0);
         mLines = data;
         mOriginal = data;
         if (mPreferences.getBoolean("hide_completed", false)) {
             List<String> newList = new ArrayList<String>();
             for (int i = 0; i < mOriginal.size(); i++) {
                 String line = mOriginal.get(i);
+                if (line.split("\\|").length < 18)
+                    continue;
                 Invasion invasion = new Invasion(line);
                 if (mCompletedIds.contains(invasion.getId())) {
                     Log.d(TAG, "marking invasion GONE. " + invasion.getNode());
@@ -63,6 +71,10 @@ public class InvasionListViewAdapter extends BaseAdapter {
         } else {
             mEmptyView.setVisibility(View.GONE);
         }*/
+    }
+
+    public String getOriginalValues() {
+        return TextUtils.join("\n", mOriginal);
     }
 
     @Override
