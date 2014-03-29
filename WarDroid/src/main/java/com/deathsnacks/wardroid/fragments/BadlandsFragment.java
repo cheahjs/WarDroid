@@ -19,7 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.adapters.SaleListViewAdapter;
+import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
 
 import java.util.ArrayList;
@@ -29,11 +29,11 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class SalesFragment extends SherlockFragment {
+public class BadlandsFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mAlertView;
     private SaleRefresh mTask;
-    private SaleListViewAdapter mAdapter;
+    private BadlandsListViewAdapter mAdapter;
     private Handler mHandler;
 
     @Override
@@ -180,7 +180,7 @@ public class SalesFragment extends SherlockFragment {
             showProgress(false);
             if (success) {
                 try {
-                    mAdapter = new SaleListViewAdapter(activity, data);
+                    mAdapter = new BadlandsListViewAdapter(activity, data);
                     mAlertView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();

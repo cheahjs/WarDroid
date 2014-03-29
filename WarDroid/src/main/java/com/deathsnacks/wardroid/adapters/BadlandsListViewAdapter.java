@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Admin on 25/01/14.
  */
-public class SaleListViewAdapter extends BaseAdapter {
+public class BadlandsListViewAdapter extends BaseAdapter {
     private Activity mActivity;
     private List<String> mSales;
     private LayoutInflater mInflater;
 
-    public SaleListViewAdapter(Activity act, List<String> data) {
+    public BadlandsListViewAdapter(Activity act, List<String> data) {
         mActivity = act;
         mSales = data;
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
