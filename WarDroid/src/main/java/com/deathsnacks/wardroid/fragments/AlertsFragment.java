@@ -260,19 +260,23 @@ public class AlertsFragment extends SherlockFragment {
     @Override
     public void onStart() {
         Log.d(TAG, "onStart was called.");
-        if (mUpdate)
+        if (mUpdate) {
             refresh(true);
+            if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_PUSH, false)) {
+                if (getRegistrationId(getSherlockActivity()).length() == 0)
+                {
+                    Log.i(TAG, "Push is enabled, and we just got an empty registration id, registering again.");
+                    registerInBackground();
+                } else {
+                    Log.i(TAG, "Push is enabled, and we just want to register again, registering again.");
+                    registerInBackground();
+                }
+            }
+        }
         mUpdate = true;
         if (mUpdateTask == null) {
             mUpdateTask = new UpdateTask(getActivity());
             mUpdateTask.execute();
-        }
-        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_PUSH, false)) {
-            if (getRegistrationId(getSherlockActivity()).length() == 0)
-            {
-                Log.i(TAG, "Push is enabled, and we just got an empty registration id, registering again.");
-                registerInBackground();
-            }
         }
         super.onStart();
     }
