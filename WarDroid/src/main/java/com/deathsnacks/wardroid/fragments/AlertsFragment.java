@@ -594,9 +594,9 @@ public class AlertsFragment extends SherlockFragment {
     }
 
     private void registerInBackground() {
-        new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            protected String doInBackground(Void... params) {
+            protected Void doInBackground(Void... params) {
                 String msg = "";
                 try {
                     GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getActivity());
@@ -606,17 +606,17 @@ public class AlertsFragment extends SherlockFragment {
                     sendRegistrationIdToBackend(regid);
 
                     storeRegistrationId(getActivity(), regid);
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     //if we fail and attempt to register again, we get the same id, so no problem.
                     msg = "Error :" + ex.getMessage();
                     ex.printStackTrace();
                     Log.e(TAG, ex.getMessage());
                 }
-                return msg;
+                return null;
             }
 
             @Override
-            protected void onPostExecute(String msg) {
+            protected void onPostExecute(Void voi) {
             }
         }.execute();
     }
