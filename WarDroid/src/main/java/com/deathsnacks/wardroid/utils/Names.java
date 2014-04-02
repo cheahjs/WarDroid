@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Admin on 26/01/14.
@@ -39,7 +41,25 @@ public class Names {
                 e.printStackTrace();
             }
         }
-        return Names.containsKey(raw) ? Names.get(raw) : raw;
+        return Names.containsKey(raw) ? Names.get(raw) : getBruteName(raw);
+    }
+
+    public static String getBruteName(String raw) {
+        String[] parts = raw.split("/");
+        String last = parts[parts.length - 1];
+        Iterator it = Names.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry) it.next();
+            String[] parts2 = pairs.getKey().toString().split("/");
+            String last2 = parts2[parts2.length - 1];
+            if (last.equals(last2))
+            {
+                String value = pairs.getValue().toString();
+                Names.put(raw, value);
+                return value;
+            }
+        }
+        return last;
     }
 
     public static String getString(Activity act, String raw) {
@@ -60,7 +80,13 @@ public class Names {
                 e.printStackTrace();
             }
         }
-        return Strings.containsKey(raw) ? Strings.get(raw) : raw;
+        return Strings.containsKey(raw) ? Strings.get(raw) : getRawString(raw);
+    }
+
+    public static String getRawString(String raw) {
+        String[] parts = raw.split("/");
+        String last = parts[parts.length - 1];
+        return last;
     }
 
     public static String getNode(Activity act, String node) {
