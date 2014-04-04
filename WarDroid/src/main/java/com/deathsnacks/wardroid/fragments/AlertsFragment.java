@@ -88,8 +88,7 @@ public class AlertsFragment extends SherlockFragment {
                                 .fromPersistedPreferenceValue(mPreferences2.getString("alert_completed_ids", ""))));
                 if (ids.contains(alert.get_id().get$id())) {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
-                                    Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
+                            .setTitle(alert.getMissionInfo().getLocation())
                             .setMessage(getActivity().getString(R.string.alert_mark_incomplete))
                             .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
@@ -114,8 +113,7 @@ public class AlertsFragment extends SherlockFragment {
                             }).show();
                 } else {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(String.format("%s (%s)", Names.getNode(getActivity(), alert.getMissionInfo().getLocation()),
-                                    Names.getRegion(getActivity(), alert.getMissionInfo().getLocation())))
+                            .setTitle(alert.getMissionInfo().getLocation())
                             .setMessage(getActivity().getString(R.string.alert_mark_complete))
                             .setPositiveButton(getActivity().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
@@ -349,7 +347,7 @@ public class AlertsFragment extends SherlockFragment {
                 String cache = preferences.getString(KEY + "_cache", "_ded");
                 String response;
                 try {
-                    response = Http.get("http://deathsnacks.com/wf/data/last15alerts.json", preferences, KEY);
+                    response = Http.get("http://deathsnacks.com/wf/data/last15alerts_localized.json", preferences, KEY);
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
@@ -372,7 +370,7 @@ public class AlertsFragment extends SherlockFragment {
                 String cache2 = preferences.getString(KEY + "_ps4" + "_cache", "_ded");
                 String ps4response;
                 try {
-                    ps4response = Http.get("http://deathsnacks.com/wf/data/ps4/last15alerts.json", preferences, KEY + "_ps4");
+                    ps4response = Http.get("http://deathsnacks.com/wf/data/ps4/last15alerts_localized.json", preferences, KEY + "_ps4");
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();

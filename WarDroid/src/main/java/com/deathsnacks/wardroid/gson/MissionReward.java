@@ -57,19 +57,19 @@ public class MissionReward {
         if (credits > 0)
             rtn += NumberFormat.getIntegerInstance().format(credits) + "*c";
         if (countedItems.size() > 0) {
-            String rawtxt = "";
+            String rawtxt;
             CountedItem item = countedItems.get(0);
             if (item.getItemCount() == 1) {
-                rawtxt = Names.getName(null, item.getItemType());
+                rawtxt = item.getItemType();
             } else {
-                rawtxt = item.getItemCount() + " " + Names.getName(null, item.getItemType());
+                rawtxt = item.getItemCount() + " " + item.getItemType();
             }
             rtn += " - " + rawtxt;
         }
         if (items.size() > 0) {
-            String rawtxt = "";
+            String rawtxt;
             String item = items.get(0);
-            rawtxt = Names.getName(null, item);
+            rawtxt = item;
             rtn += " - " + rawtxt;
         }
         return rtn;

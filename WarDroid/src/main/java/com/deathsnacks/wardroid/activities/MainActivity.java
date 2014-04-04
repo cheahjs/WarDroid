@@ -175,9 +175,6 @@ public class MainActivity extends SherlockFragmentActivity {
         @Override
         protected Void doInBackground(Void... params) {
             //preload string data
-            Names.getName(mActivity, "a");
-            Names.getNode(mActivity, "a");
-            Names.getString(mActivity, "a");
             return null;
         }
 

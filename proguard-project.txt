@@ -1,6 +1,4 @@
-# This is a configuration file for ProGuard.
-# http://proguard.sourceforge.net/index.html#manual/usage.html
-
+-libraryjars libs
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -verbose
@@ -9,6 +7,9 @@
 # through the ProGuard optimize and preverify steps (and performs some
 # of these optimizations on its own).
 -dontoptimize
+#-optimizationpasses 2
+#-optimizations !field/removal/writeonly,!field/marking/private,!class/merging/*,!code/allocation/variable
+#-keepattributes SourceFile, SourceDir, LineNumberTable, LocalVariableTable, LocalVariableTypeTable
 -dontpreverify
 # Note that if you want to enable optimization, you cannot just
 # include optimization flags in your own project configuration file;

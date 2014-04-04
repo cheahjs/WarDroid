@@ -201,12 +201,10 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 holder.completed.setVisibility(View.VISIBLE);
             }
         }
-        holder.node.setText(String.format("%s (%s)", Names.getNode(mActivity, alert.getMissionInfo().getLocation()),
-                Names.getRegion(mActivity, alert.getMissionInfo().getLocation())));
-        String descTxt = String.format("%s | %s (%s)", Names.getString(mActivity, alert.getMissionInfo().getDescText()),
-                Names.getFaction(alert.getMissionInfo().getFaction()),
-                Names.getMissionType(alert.getMissionInfo().getMissionType()));
-        holder.desc.setText(Names.getString(mActivity, descTxt) + (alert.isPc() ? " (PC)" : " (PS4)"));
+        holder.node.setText(alert.getMissionInfo().getLocation());
+        String descTxt = String.format("%s | %s (%s)", alert.getMissionInfo().getDescText(),
+                alert.getMissionInfo().getFaction(), alert.getMissionInfo().getMissionType());
+        holder.desc.setText(descTxt + (alert.isPc() ? " (PC)" : " (PS4)"));
         holder.rewards.setText(Utils.getImageSpannable(mActivity, alert.getMissionInfo().getMissionReward().getRewardString()));
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();
