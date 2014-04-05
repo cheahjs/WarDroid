@@ -5,4 +5,4 @@
     android:gravity="center_vertical"
     android:textSize="16sp"
     android:height="48dp"
-    android:text="Test"/>
+    android:text="Test" />

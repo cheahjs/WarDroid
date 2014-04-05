@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/invasion_refresh"
         android:visibility="gone"
@@ -15,11 +16,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true">
-        <ProgressBar style="?android:attr/progressBarStyleLarge"
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp" />
     </LinearLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:visibility="gone"
         android:id="@+id/invasions_none"
@@ -41,8 +45,9 @@
             android:textStyle="italic"
             android:id="@+id/invasion_none_text"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:gravity="center" />
     </LinearLayout>
+
     <ListView
         style="@style/marginPoint"
         android:layout_height="wrap_content"

@@ -318,16 +318,16 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
     /**
      * Gets the current registration ID for application on GCM service.
-     * <p>
+     * <p/>
      * If result is empty, the app needs to register.
      *
      * @return registration ID, or empty string if there is no existing
-     *         registration ID.
+     * registration ID.
      */
     private String getRegistrationId(Context context, boolean versionCheck) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString("gcm_reg_id", "");
-        Log.d(TAG, "regId="+ registrationId);
+        Log.d(TAG, "regId=" + registrationId);
         if (registrationId.trim().length() == 0) {
             Log.i(TAG, "Registration not found.");
             return "";

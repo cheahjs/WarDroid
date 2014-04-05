@@ -158,7 +158,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
             mCustomFilered = mPreferences.getBoolean(Constants.PREF_CUSTOM_ENABLED, false);
             Log.d(TAG, mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""));
-            Log.d(TAG, mCustomFilered+"");
+            Log.d(TAG, mCustomFilered + "");
 
 
             mPlanetFiltered = mPreferences.getBoolean(Constants.PREF_PLANET_ENABLED, false);
@@ -201,15 +201,13 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             if (mAllowAlerts) {
                 parseAlerts(alerts);
                 parseAlertsPS4(alertsPs4);
-            }
-            else {
+            } else {
                 mAlertSuccess = true;
             }
             if (mAllowInvasions) {
                 parseInvasions(invasions);
                 parseInvasionsPS4(invasionsPs4);
-            }
-            else {
+            } else {
                 mInvasionSuccess = true;
             }
             if (mAllowAlerts || mAllowInvasions)

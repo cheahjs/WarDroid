@@ -1,20 +1,5 @@
 package com.deathsnacks.wardroid.utils;
 
-import android.app.Activity;
-
-import com.deathsnacks.wardroid.R;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * Created by Admin on 26/01/14.
  */

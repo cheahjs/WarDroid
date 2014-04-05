@@ -14,13 +14,10 @@ import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.gson.Alert;
-import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.Utils;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

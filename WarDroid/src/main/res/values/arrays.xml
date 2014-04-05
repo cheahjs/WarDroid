@@ -31,7 +31,8 @@
         <item>Sniper Scavenger</item>
         <item>Speed Holster</item>
         <item>Sprint Boost</item>
-        <item>Steel Charge</item></string-array>
+        <item>Steel Charge</item>
+    </string-array>
     <string-array name="bp_filter_names">
         <item>Aura Trinity Helmet</item>
         <item>Aurora Frost Helmet</item>
@@ -182,7 +183,8 @@
         <item>Sniper Scavenger</item>
         <item>Speed Holster</item>
         <item>Sprint Boost</item>
-        <item>Steel Charge</item></string-array>
+        <item>Steel Charge</item>
+    </string-array>
     <string-array name="bp_filter_entries">
         <item>Aura Trinity Helmet</item>
         <item>Aurora Frost Helmet</item>

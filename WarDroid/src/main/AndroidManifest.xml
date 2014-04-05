@@ -2,15 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deathsnacks.wardroid"
     android:versionCode="36"
-    android:versionName="2.4.6" >
+    android:versionName="2.4.6">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--All the GCM permissions below-->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.deathsnacks.wardroid.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="com.deathsnacks.wardroid.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -18,12 +18,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:name=".utils.GlobalApplication">
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:configChanges="orientation"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,6 +56,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.SettingsActivity" />
         </activity>
+
         <receiver android:name=".services.PollingAlarmReceiver" />
         <receiver android:name=".services.NotificationsUpdateReceiver" />
         <receiver
@@ -62,6 +66,6 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.deathsnacks.wardroid" />
             </intent-filter>
-            </receiver>
+        </receiver>
     </application>
 </manifest>

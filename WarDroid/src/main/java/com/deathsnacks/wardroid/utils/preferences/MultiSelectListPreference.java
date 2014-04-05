@@ -59,7 +59,7 @@ public class MultiSelectListPreference extends ListPreference {
         enableToggle = true;
         for (int i = 0; i < attrs.getAttributeCount(); i++) {
             String attr = attrs.getAttributeName(i);
-            String val  = attrs.getAttributeValue(i);
+            String val = attrs.getAttributeValue(i);
             if (attr.equalsIgnoreCase("toggleAll")) {
                 if (val.equalsIgnoreCase("false"))
                     enableToggle = false;
@@ -98,7 +98,7 @@ public class MultiSelectListPreference extends ListPreference {
                                         boolean isChecked) {
                         if (enableToggle) {
                             if (which == 0) {
-                                ListView list = ((AlertDialog)dialog).getListView();
+                                ListView list = ((AlertDialog) dialog).getListView();
                                 for (int i = 1; i < list.getCount(); i++) {
                                     list.setItemChecked(i, isChecked);
                                     checkedEntryIndexes[i] = isChecked;

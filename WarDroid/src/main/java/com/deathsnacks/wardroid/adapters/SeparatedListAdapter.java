@@ -1,7 +1,6 @@
 package com.deathsnacks.wardroid.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.AbsListView;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
@@ -39,7 +37,7 @@ public class SeparatedListAdapter extends BaseAdapter {
         this.sections.put(section, adapter);
     }
 
-    public BaseAdapter getSectionAdapter(String section){
+    public BaseAdapter getSectionAdapter(String section) {
         for (Object section2 : this.sections.keySet()) {
             if (section2.equals(section)) {
                 return sections.get(section2);
@@ -133,7 +131,9 @@ public class SeparatedListAdapter extends BaseAdapter {
             int size = adapter.getCount() + 1;
 
             // check if position inside this section
-            if (position == 0) {return getHeaderView(sectionnum, convertView, parent);}
+            if (position == 0) {
+                return getHeaderView(sectionnum, convertView, parent);
+            }
             if (position < size) {
                 return adapter.getView(position - 1, convertView, parent);
             }

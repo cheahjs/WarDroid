@@ -113,7 +113,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
             mCustomFilered = mPreferences.getBoolean(Constants.PREF_CUSTOM_ENABLED, false);
             Log.d(TAG, mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""));
-            Log.d(TAG, mCustomFilered+"");
+            Log.d(TAG, mCustomFilered + "");
 
             mPlanetFiltered = mPreferences.getBoolean(Constants.PREF_PLANET_ENABLED, false);
             mPlanetFilters = new ArrayList<String>(Arrays.asList(
@@ -188,15 +188,13 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             if (mAllowAlerts) {
                 doAlerts();
                 doAlertsPS4();
-            }
-            else {
+            } else {
                 mAlertSuccess = true;
             }
             if (mAllowInvasions) {
                 doInvasions();
                 doInvasionsPS4();
-            }
-            else {
+            } else {
                 mInvasionSuccess = true;
             }
             return true;
@@ -288,8 +286,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 continue;
             }
             if (!mPc) {
-                 Log.i(TAG, "PC not enabled, aborting.");
-                 continue;
+                Log.i(TAG, "PC not enabled, aborting.");
+                continue;
             }
             if (isAlertFiltered(alert)) {
                 Log.d(TAG, "accepted alert: " + alert.getNode());

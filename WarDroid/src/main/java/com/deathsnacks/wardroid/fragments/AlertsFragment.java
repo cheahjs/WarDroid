@@ -31,15 +31,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
 import com.deathsnacks.wardroid.gson.Alert;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
-import com.deathsnacks.wardroid.utils.Names;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -262,8 +258,7 @@ public class AlertsFragment extends SherlockFragment {
             refresh(true);
             try {
                 if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_PUSH, false)) {
-                    if (getRegistrationId(getSherlockActivity()).length() == 0)
-                    {
+                    if (getRegistrationId(getSherlockActivity()).length() == 0) {
                         Log.i(TAG, "Push is enabled, and we just got an empty registration id, registering again.");
                         registerInBackground();
                     } else {
@@ -542,16 +537,16 @@ public class AlertsFragment extends SherlockFragment {
 
     /**
      * Gets the current registration ID for application on GCM service.
-     * <p>
+     * <p/>
      * If result is empty, the app needs to register.
      *
      * @return registration ID, or empty string if there is no existing
-     *         registration ID.
+     * registration ID.
      */
     private String getRegistrationId(Context context, boolean versionCheck) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString("gcm_reg_id", "");
-        Log.d(TAG, "regId="+ registrationId);
+        Log.d(TAG, "regId=" + registrationId);
         if (registrationId.trim().length() == 0) {
             Log.i(TAG, "Registration not found.");
             return "";

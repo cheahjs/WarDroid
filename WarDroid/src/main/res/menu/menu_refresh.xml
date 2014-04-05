@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/refresh"
+    <item
+        android:id="@+id/refresh"
         android:icon="@drawable/ic_action_refresh"
         android:title="@string/refresh"
-        android:showAsAction="ifRoom"/>
-    <item android:id="@+id/settings"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings"
         android:icon="@drawable/ic_action_settings"
         android:title="@string/settings"
-        android:showAsAction="ifRoom"/>
-    <item android:id="@+id/exit"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/exit"
         android:icon="@drawable/ic_action_cancel"
         android:title="@string/menu_exit"
-        android:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom" />
     <!--<item android:id="@+id/about"
         android:icon="@drawable/ic_action_about"
         android:title="@string/about"

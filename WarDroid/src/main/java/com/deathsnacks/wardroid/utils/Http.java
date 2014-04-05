@@ -1,7 +1,6 @@
 package com.deathsnacks.wardroid.utils;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;

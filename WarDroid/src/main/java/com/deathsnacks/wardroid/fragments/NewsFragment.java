@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +26,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.activities.SettingsActivity;
 import com.deathsnacks.wardroid.adapters.NewsListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
-import com.deathsnacks.wardroid.utils.PreferenceUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +67,7 @@ public class NewsFragment extends SherlockFragment {
             if (news != null) {
                 mUpdate = false;
                 Log.d(TAG, "saved instance");
-                mAdapter = new NewsListViewAdapter(getActivity(),  new ArrayList<String>(Arrays.asList(news.split("\\n"))));
+                mAdapter = new NewsListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(news.split("\\n"))));
                 mNewsView.setAdapter(mAdapter);
                 mNewsView.onRestoreInstanceState(savedInstanceState.getParcelable("news_lv"));
             }

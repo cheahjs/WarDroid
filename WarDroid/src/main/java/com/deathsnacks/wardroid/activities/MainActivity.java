@@ -32,7 +32,6 @@ import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.services.NotificationsUpdateReceiver;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
-import com.deathsnacks.wardroid.utils.Names;
 
 import java.util.ArrayList;
 

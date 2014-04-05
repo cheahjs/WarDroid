@@ -1,7 +1,6 @@
 
 package com.deathsnacks.wardroid.gson;
 
-import com.deathsnacks.wardroid.utils.Names;
 import com.google.gson.annotations.Expose;
 
 import java.text.NumberFormat;

@@ -14,7 +14,7 @@
         android:textColor="?android:textColorPrimary"
         android:typeface="sans"
         android:textSize="15sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <!-- Alert completed -->
     <TextView
@@ -27,7 +27,7 @@
         android:textSize="12sp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/alert_title"
-        android:layout_alignBaseline="@id/alert_title"/>
+        android:layout_alignBaseline="@id/alert_title" />
 
     <!-- Alert Description -->
     <TextView
@@ -52,7 +52,7 @@
         android:layout_marginRight="5dp"
         android:textSize="11sp"
         android:textColor="#10bcc9"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <!-- Rewards -->
     <TextView
@@ -66,5 +66,5 @@
         android:layout_marginRight="5dp"
         android:textSize="12sp"
         android:textColor="?android:textColorPrimary"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 </RelativeLayout>

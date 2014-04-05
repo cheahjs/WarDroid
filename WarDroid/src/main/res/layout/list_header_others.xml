@@ -10,8 +10,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/lvDividerHeight"
-        android:background="@color/lvHeaderDividerColor"
-        />
+        android:background="@color/lvHeaderDividerColor" />
 
     <TextView
         android:text="Test"
@@ -23,5 +22,5 @@
         android:layout_marginBottom="@dimen/lvSectionDividerMarginTop"
         style="?android:listSeparatorTextViewStyle"
         android:textColor="?android:textColorSecondary"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent" />
 </RelativeLayout>

@@ -1,21 +1,13 @@
 package com.deathsnacks.wardroid.services;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
 
 import com.deathsnacks.wardroid.Constants;
-import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.activities.MainActivity;
 
 /**
  * Created by Admin on 22/02/14.
