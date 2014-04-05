@@ -31,8 +31,8 @@ import java.util.List;
  */
 public class BadlandsFragment extends SherlockFragment {
     private View mRefreshView;
-    private ListView mAlertView;
-    private SaleRefresh mTask;
+    private ListView mListView;
+    private BadlandsRefresh mTask;
     private BadlandsListViewAdapter mAdapter;
     private Handler mHandler;
 
@@ -41,7 +41,7 @@ public class BadlandsFragment extends SherlockFragment {
         View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
         setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
-        mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
+        mListView = (ListView) rootView.findViewById(R.id.list_alerts);
         mHandler = new Handler();
         setHasOptionsMenu(true);
         return rootView;
@@ -66,7 +66,7 @@ public class BadlandsFragment extends SherlockFragment {
     private void refresh(Boolean show) {
         showProgress(show);
         if (mTask == null) {
-            mTask = new SaleRefresh(getActivity());
+            mTask = new BadlandsRefresh(getActivity());
             mTask.execute();
         }
     }
@@ -134,29 +134,29 @@ public class BadlandsFragment extends SherlockFragment {
                         }
                     });
 
-            mAlertView.setVisibility(View.VISIBLE);
-            mAlertView.animate()
+            mListView.setVisibility(View.VISIBLE);
+            mListView.animate()
                     .setDuration(shortAnimTime)
                     .alpha(show ? 0 : 1)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
+                            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
                         }
                     });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mRefreshView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mAlertView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
-    public class SaleRefresh extends AsyncTask<Void, Void, Boolean> {
+    public class BadlandsRefresh extends AsyncTask<Void, Void, Boolean> {
         private Activity activity;
         private List<String> data;
 
-        public SaleRefresh(Activity activity) {
+        public BadlandsRefresh(Activity activity) {
             this.activity = activity;
         }
 
@@ -181,7 +181,7 @@ public class BadlandsFragment extends SherlockFragment {
             if (success) {
                 try {
                     mAdapter = new BadlandsListViewAdapter(activity, data);
-                    mAlertView.setAdapter(mAdapter);
+                    mListView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
