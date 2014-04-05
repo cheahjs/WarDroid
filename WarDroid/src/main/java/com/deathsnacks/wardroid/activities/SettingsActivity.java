@@ -10,9 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -21,6 +18,8 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+
+import com.deathsnacks.wardroid.utils.UnifiedPreferenceUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,7 +37,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 
 /**
  * Created by Admin on 30/01/14.
@@ -84,40 +82,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 e.printStackTrace();
             }
         }
-        Preference cred = findPreference(Constants.PREF_CREDIT_FILTER);
-        if (cred != null)
-            try {
-                cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        Preference uriPref = findPreference("sound");
-        if (uriPref != null) {
-            try {
-                Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
-                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
-                String name = ringtone.getTitle(getApplicationContext());
-                if (mPreferences.getString("sound", "") == "") {
-                    uriPref.setSummary("None");
-                } else {
-                    uriPref.setSummary(name);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        ListPreference volumeType = (ListPreference) findPreference("volume");
-        if (volumeType != null) {
-            volumeType.setSummary(volumeType.getEntry());
-            volumeType.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    ListPreference pref = (ListPreference) preference;
-                    preference.setSummary(pref.getEntries()[pref.findIndexOfValue(o.toString())]);
-                    return true;
-                }
-            });
-        }
         Preference pushPref = findPreference(Constants.PREF_PUSH);
         if (pushPref != null) {
             pushPref.setOnPreferenceChangeListener(pushPrefListener);
@@ -129,18 +93,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         Preference customPref = findPreference("custom_button");
         if (customPref != null) {
             customPref.setIntent(new Intent(getApplicationContext(), CustomFilterActivity.class));
-        }
-        ListPreference defaultWindow = (ListPreference) findPreference("default_window");
-        if (defaultWindow != null) {
-            defaultWindow.setSummary(defaultWindow.getEntry());
-            defaultWindow.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    ListPreference pref = (ListPreference) preference;
-                    preference.setSummary(pref.getEntries()[pref.findIndexOfValue(o.toString())]);
-                    return true;
-                }
-            });
         }
         Preference clearDataPref = findPreference("clear_data");
         if (clearDataPref != null) {
@@ -174,6 +126,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 }
             });
         }
+        UnifiedPreferenceUtils.bindAllPreferenceSummariesToValues(getPreferenceScreen());
     }
 
     Preference.OnPreferenceChangeListener pushPrefListener = new Preference.OnPreferenceChangeListener() {
@@ -249,26 +202,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                             getApplicationContext(), 0,
                             new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
-            } else if (s.equals(Constants.PREF_CREDIT_FILTER)) {
-                Preference cred = findPreference(Constants.PREF_CREDIT_FILTER);
-                if (cred != null)
-                    cred.setSummary(NumberFormat.getIntegerInstance().format(mPreferences.getInt(Constants.PREF_CREDIT_FILTER, 0)));
-            } else if (s.equals("sound")) {
-                Preference uriPref = findPreference("sound");
-                if (uriPref == null)
-                    return;
-                try {
-                    Uri ringtoneUri = Uri.parse(mPreferences.getString("sound", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
-                    Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
-                    String name = ringtone.getTitle(getApplicationContext());
-                    if (mPreferences.getString("sound", "") == "") {
-                        uriPref.setSummary("None");
-                    } else {
-                        uriPref.setSummary(name);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else if (s.equals("platform") || s.equals(Constants.PREF_PLATFORM_NOTIFICATIONS)) {
                 String persist = mPreferences.getString(s, "pc");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
@@ -280,6 +213,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     platform.setValue("pc");
                 }
             }
+            Preference preference = findPreference(s);
+
         }
     };
 
@@ -482,4 +417,44 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         if (!response.contains("removed:") && !response.contains("doesn't exist"))
             throw new IOException("Failed to remove gcm id from the server. " + response);
     }
+
+    /*public static class GeneralFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle paramBundle) {
+            super.onCreate(paramBundle);
+            addPreferencesFromResource(R.xml.pref_general);
+        }
+    }
+
+    public static class NotificationFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle paramBundle) {
+            super.onCreate(paramBundle);
+            addPreferencesFromResource(R.xml.pref_notification_settings);
+        }
+    }
+
+    public static class FilterFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle paramBundle) {
+            super.onCreate(paramBundle);
+            addPreferencesFromResource(R.xml.pref_filters);
+        }
+    }
+
+    public static class NotificationOptionsFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle paramBundle) {
+            super.onCreate(paramBundle);
+            addPreferencesFromResource(R.xml.pref_notification_options);
+        }
+    }
+
+    public static class AppDataFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle paramBundle) {
+            super.onCreate(paramBundle);
+            addPreferencesFromResource(R.xml.pref_appdata);
+        }
+    }*/
 }

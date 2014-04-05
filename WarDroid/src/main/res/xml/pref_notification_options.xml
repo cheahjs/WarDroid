@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:dependency="alert_enabled"
+        android:title="@string/settings_vibrate"
+        android:key="vibrate"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:dependency="alert_enabled"
+        android:title="@string/settings_light"
+        android:key="light"
+        android:defaultValue="true" />
+    <afzkl.development.colorpickerview.preference.ColorPickerPreference
+        android:dependency="light"
+        android:defaultValue="@android:color/white"
+        android:title="@string/settings_led_colour"
+        android:summary="@string/settings_led_colour_summary"
+        android:key="led_colour" />
+    <CheckBoxPreference
+        android:dependency="alert_enabled"
+        android:title="@string/settings_insistent"
+        android:key="insistent"
+        android:defaultValue="false" />
+    <CheckBoxPreference
+        android:dependency="alert_enabled"
+        android:title="@string/setting_dismiss_title"
+        android:summary="@string/setting_dismiss_summary"
+        android:key="dismissible"
+        android:defaultValue="false" />
+    <RingtonePreference
+        android:dependency="alert_enabled"
+        android:showDefault="true"
+        android:showSilent="true"
+        android:ringtoneType="alarm|notification"
+        android:title="@string/settings_sound"
+        android:key="sound" />
+    <ListPreference
+        android:dependency="alert_enabled"
+        android:defaultValue="notification"
+        android:entries="@array/volume_names"
+        android:entryValues="@array/volume_entries"
+        android:key="volume"
+        android:title="@string/settings_volume_title" />
+</PreferenceScreen>

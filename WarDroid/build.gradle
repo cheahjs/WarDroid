@@ -13,12 +13,12 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.+'
     compile files('libs/gson-2.2.4.jar')
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile files('libs/okhttp-1.2.1-jar-with-dependencies.jar')
     compile 'com.google.android.gms:play-services:4.2.+'
     compile project(':colorpickerview')
+    compile 'com.android.support:support-v4:19.+'
 }
 
 android {
@@ -40,8 +40,8 @@ android {
     }
 
     buildTypes {
-       release {
-           signingConfig signingConfigs.release
-       }
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }

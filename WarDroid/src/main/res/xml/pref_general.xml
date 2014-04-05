@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
+        android:key="platform"
+        android:title="PC or PS4"
+        android:entries="@array/platform_names"
+        android:entryValues="@array/platform_entries"
+        android:defaultValue="pc"
+        toggleAll="false" />
+    <CheckBoxPreference
+        android:key="hide_completed"
+        android:title="@string/settings_hide_completed_title"
+        android:defaultValue="false"
+        android:summary="@string/settings_hide_completed_summary" />
+    <ListPreference
+        android:defaultValue="news"
+        android:entries="@array/window_names"
+        android:entryValues="@array/window_entries"
+        android:key="default_window"
+        android:title="@string/settings_default_window_title" />
+    <CheckBoxPreference
+        android:key="hide_expired"
+        android:title="@string/settings_hide_expired"
+        android:defaultValue="false" />
+</PreferenceScreen>
