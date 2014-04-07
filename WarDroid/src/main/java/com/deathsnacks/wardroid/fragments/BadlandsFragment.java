@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,17 +32,17 @@ import java.util.List;
  */
 public class BadlandsFragment extends SherlockFragment {
     private View mRefreshView;
-    private ListView mListView;
+    private ExpandableListView mListView;
     private BadlandsRefresh mTask;
     private BadlandsListViewAdapter mAdapter;
     private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_alerts, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_badlands, container, false);
         setRetainInstance(true);
-        mRefreshView = rootView.findViewById(R.id.alert_refresh);
-        mListView = (ListView) rootView.findViewById(R.id.list_alerts);
+        mRefreshView = rootView.findViewById(R.id.refresh);
+        mListView = (ExpandableListView) rootView.findViewById(R.id.list);
         mHandler = new Handler();
         setHasOptionsMenu(true);
         return rootView;
@@ -112,7 +113,7 @@ public class BadlandsFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        refresh(true);
+        //refresh(true);
         super.onStart();
     }
 

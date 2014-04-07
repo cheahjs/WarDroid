@@ -1,5 +1,5 @@
 
-package com.deathsnacks.wardroid.gson;
+package com.deathsnacks.wardroid.gson.alert;
 
 import com.google.gson.annotations.Expose;
 
@@ -56,20 +56,24 @@ public class MissionReward {
         if (credits > 0)
             rtn += NumberFormat.getIntegerInstance().format(credits) + "*c";
         if (countedItems.size() > 0) {
-            String rawtxt;
-            CountedItem item = countedItems.get(0);
-            if (item.getItemCount() == 1) {
-                rawtxt = item.getItemType();
-            } else {
-                rawtxt = item.getItemCount() + " " + item.getItemType();
+            for (int i = 0; i < countedItems.size(); i++) {
+                String rawtxt;
+                CountedItem item = countedItems.get(i);
+                if (item.getItemCount() == 1) {
+                    rawtxt = item.getItemType();
+                } else {
+                    rawtxt = item.getItemCount() + " " + item.getItemType();
+                }
+                rtn += " - " + rawtxt;
             }
-            rtn += " - " + rawtxt;
         }
         if (items.size() > 0) {
-            String rawtxt;
-            String item = items.get(0);
-            rawtxt = item;
-            rtn += " - " + rawtxt;
+            for (int i = 0; i < items.size(); i++) {
+                String rawtxt;
+                String item = items.get(i);
+                rawtxt = item;
+                rtn += " - " + rawtxt;
+            }
         }
         return rtn;
     }

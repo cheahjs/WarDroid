@@ -32,7 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
-import com.deathsnacks.wardroid.gson.Alert;
+import com.deathsnacks.wardroid.gson.alert.Alert;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -567,9 +567,9 @@ public class AlertsFragment extends SherlockFragment {
      * @return Application's {@code SharedPreferences}.
      */
     private SharedPreferences getGCMPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the regID in your app is up to you.
-        return getSherlockActivity().getSharedPreferences("gcm", Context.MODE_PRIVATE);
+        if (context == null)
+            return null;
+        return context.getSharedPreferences("gcm", Context.MODE_PRIVATE);
     }
 
     /**
@@ -615,7 +615,13 @@ public class AlertsFragment extends SherlockFragment {
     }
 
     private void storeRegistrationId(Context context, String regId) {
+        if (context == null) {
+            return;
+        }
         final SharedPreferences prefs = getGCMPreferences(context);
+        if (prefs == null) {
+            return;
+        }
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
         Log.i(TAG, "regId=" + regId);

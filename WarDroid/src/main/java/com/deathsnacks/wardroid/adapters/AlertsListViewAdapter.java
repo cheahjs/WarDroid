@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
-import com.deathsnacks.wardroid.gson.Alert;
+import com.deathsnacks.wardroid.gson.alert.Alert;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.Utils;
 import com.google.gson.GsonBuilder;

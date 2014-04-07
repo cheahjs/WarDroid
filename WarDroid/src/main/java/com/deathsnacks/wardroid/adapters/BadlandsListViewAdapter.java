@@ -16,17 +16,17 @@ import java.util.List;
  */
 public class BadlandsListViewAdapter extends BaseAdapter {
     private Activity mActivity;
-    private List<String> mSales;
+    private List<String> mBadlands;
     private LayoutInflater mInflater;
 
     public BadlandsListViewAdapter(Activity act, List<String> data) {
         mActivity = act;
-        mSales = data;
+        mBadlands = data;
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
-        return mSales.size();
+        return mBadlands.size();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -34,7 +34,7 @@ public class BadlandsListViewAdapter extends BaseAdapter {
         if (view == null)
             view = mInflater.inflate(R.layout.list_item_alert, null);
 
-        String sale = mSales.get(position);
+        String sale = mBadlands.get(position);
         return view;
     }
 

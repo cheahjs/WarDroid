@@ -1,5 +1,5 @@
 
-package com.deathsnacks.wardroid.gson;
+package com.deathsnacks.wardroid.gson.alert;
 
 
 import com.google.gson.annotations.Expose;
@@ -8,26 +8,26 @@ import com.google.gson.annotations.Expose;
 public class Alert {
 
     @Expose
-    private com.deathsnacks.wardroid.gson.Activation Activation;
+    private com.deathsnacks.wardroid.gson.alert.Activation Activation;
     @Expose
     private int AllowReplay;
     @Expose
-    private com.deathsnacks.wardroid.gson.Expiry Expiry;
+    private com.deathsnacks.wardroid.gson.alert.Expiry Expiry;
     @Expose
     private boolean ForceUnlock;
     @Expose
-    private com.deathsnacks.wardroid.gson.MissionInfo MissionInfo;
+    private com.deathsnacks.wardroid.gson.alert.MissionInfo MissionInfo;
     @Expose
     private int Twitter;
     @Expose
     private _id _id;
     private boolean pc;
 
-    public com.deathsnacks.wardroid.gson.Activation getActivation() {
+    public com.deathsnacks.wardroid.gson.alert.Activation getActivation() {
         return Activation;
     }
 
-    public void setActivation(com.deathsnacks.wardroid.gson.Activation Activation) {
+    public void setActivation(com.deathsnacks.wardroid.gson.alert.Activation Activation) {
         this.Activation = Activation;
     }
 
@@ -39,11 +39,11 @@ public class Alert {
         this.AllowReplay = AllowReplay;
     }
 
-    public com.deathsnacks.wardroid.gson.Expiry getExpiry() {
+    public com.deathsnacks.wardroid.gson.alert.Expiry getExpiry() {
         return Expiry;
     }
 
-    public void setExpiry(com.deathsnacks.wardroid.gson.Expiry Expiry) {
+    public void setExpiry(com.deathsnacks.wardroid.gson.alert.Expiry Expiry) {
         this.Expiry = Expiry;
     }
 
@@ -55,11 +55,11 @@ public class Alert {
         this.ForceUnlock = ForceUnlock;
     }
 
-    public com.deathsnacks.wardroid.gson.MissionInfo getMissionInfo() {
+    public com.deathsnacks.wardroid.gson.alert.MissionInfo getMissionInfo() {
         return MissionInfo;
     }
 
-    public void setMissionInfo(com.deathsnacks.wardroid.gson.MissionInfo MissionInfo) {
+    public void setMissionInfo(com.deathsnacks.wardroid.gson.alert.MissionInfo MissionInfo) {
         this.MissionInfo = MissionInfo;
     }
 

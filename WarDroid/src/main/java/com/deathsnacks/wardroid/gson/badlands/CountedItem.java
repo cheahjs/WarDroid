@@ -1,4 +1,4 @@
-package com.deathsnacks.wardroid.gson;
+package com.deathsnacks.wardroid.gson.badlands;
 
 /**
  * Created by Admin on 27/01/14.

@@ -42,7 +42,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            runProguard true
+            runProguard false
             proguardFile file('../proguard-project.txt')
         }
     }

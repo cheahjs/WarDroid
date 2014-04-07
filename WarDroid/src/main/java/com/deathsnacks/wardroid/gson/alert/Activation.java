@@ -1,5 +1,5 @@
 
-package com.deathsnacks.wardroid.gson;
+package com.deathsnacks.wardroid.gson.alert;
 
 
 import com.google.gson.annotations.Expose;

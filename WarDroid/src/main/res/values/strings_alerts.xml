@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="show_expired_alerts">Show/Hide expired alerts</string>
+    <string name="hide_expired_alerts">Show/Hide expired alerts</string>
+    <string name="alert_starting">Starting: %1$dh %2$dm %3$ds</string>
+    <string name="alert_expired">EXPIRED - %1$dh %2$dm %3$ds</string>
+    <string name="alert_mark_complete">Do you want to mark this alert as completed?</string>
+    <string name="alerts_none">There are no alerts at this time.</string>
+    <string name="alert_mark_incomplete">Do you want to mark this alert as incomplete?</string>
+</resources>

@@ -13,18 +13,13 @@
     <string name="notification_filter_count">%d filtered alerts/invasions</string>
     <string name="notification_filter_count_invasions">%d filtered invasions</string>
     <string name="notification_filter_count_alerts">%d filtered alerts</string>
-    <string name="alert_starting">Starting: %1$dh %2$dm %3$ds</string>
-    <string name="alert_expired">EXPIRED - %1$dh %2$dm %3$ds</string>
-    <string name="alert_mark_complete">Do you want to mark this alert as completed?</string>
     <string name="invasion_mark_complete">Do you want to mark this invasion as completed?</string>
     <string name="notification_more">+%1$s more</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="invasions_none">There are no invasions at this time.</string>
     <string name="completed">✓</string>
-    <string name="alerts_none">There are no alerts at this time.</string>
     <string name="invasion_mark_incomplete">Do you want to mark this invasion as incomplete?</string>
-    <string name="alert_mark_incomplete">Do you want to mark this alert as incomplete?</string>
     <string name="menu_exit">Exit</string>
     <string name="menu_exit_message">Are you sure you want to exit? If push notifications are enabled, you will still get notifications.</string>
     <string name="add_new_filter">Add new custom filter</string>
@@ -34,7 +29,7 @@
     <string name="new_filter">New Filter</string>
     <string name="clear_data_message">Are you sure you want to clear all app data? You will lose all settings!</string>
     <string name="clear_data_title">Clear app data</string>
-    <string name="show_expired_alerts">Show/Hide expired alerts</string>
-    <string name="hide_expired_alerts">Show/Hide expired alerts</string>
+
     <string name="toggle_all">Toggle All</string>
+    <string name="badlands_none">There are no badland nodes at the moment.</string>
 </resources>

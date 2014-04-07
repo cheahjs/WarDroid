@@ -28,6 +28,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
+import com.deathsnacks.wardroid.fragments.BadlandsFragment;
 import com.deathsnacks.wardroid.fragments.InvasionFragment;
 import com.deathsnacks.wardroid.fragments.NewsFragment;
 import com.deathsnacks.wardroid.services.NotificationsUpdateReceiver;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 public class MainActivity extends SherlockFragmentActivity {
     private static final String TAG = "MainActivity";
     private ActionBar mActionBar;
-    private String[] mDrawerTitles = new String[]{"", "News", "Alerts", "Invasions"};
+    private String[] mDrawerTitles;
     private SharedPreferences mPreferences;
     private ViewPager mPager;
     private FragmentManager mFragmentManager;
@@ -64,6 +65,7 @@ public class MainActivity extends SherlockFragmentActivity {
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[0]), NewsFragment.class, null);
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[1]), AlertsFragment.class, null);
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[2]), InvasionFragment.class, null);
+        //mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[3]), BadlandsFragment.class, null);
 
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -114,6 +116,8 @@ public class MainActivity extends SherlockFragmentActivity {
                     startPos = 1;
                 else if (defaultValue.equals("invasions"))
                     startPos = 2;
+                /*else if (defaultValue.equals("badlands"))
+                    startPos = 3;*/
             }
             mActionBar.setSelectedNavigationItem(startPos);
         } else {
