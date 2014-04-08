@@ -6,14 +6,14 @@
     <string name="settings_enable_alerts_summary">May consume a lot of data.</string>
     <string name="settings_filter_title">Filter Settings</string>
     <string name="settings_enable_filter_title">Enable item filter</string>
-    <string name="settings_enable_filters_summary">Item filters will apply to alert/invasion notifications</string>
+    <string name="settings_enable_filters_summary">Exclude alerts that do not have the selected items if enabled.</string>
     <string name="settings_aura">Auras</string>
     <string name="settings_blueprints">Blueprints</string>
     <string name="settings_mods">Mods</string>
     <string name="settings_resources">Resources</string>
     <string name="settings_planet_filter_title">Planets</string>
     <string name="settings_enable_planet_filter_title">Enable planet filter</string>
-    <string name="settings_enable_planet_filter_summary">Filter alerts by planet</string>
+    <string name="settings_enable_planet_filter_summary">Exclude alerts that do not have the selected planets.</string>
     <string name="settings_notification_settings_title">Notification Options</string>
     <string name="settings_enable_credit_filter_title">Enable credit filter</string>
     <string name="settings_enable_credit_filter_summary">Filter alerts by credits</string>
@@ -24,7 +24,7 @@
     <string name="settings_sound">Sound</string>
     <string name="settings_volume_title">Volume type</string>
     <string name="settings_type_title">Enable game type filter</string>
-    <string name="settings_type_summary">Filters alerts by their game type</string>
+    <string name="settings_type_summary">Exclude alerts that do not have the selected game types.</string>
     <string name="settings_type_filter_title">Game types</string>
     <string name="settings_empty_title">Icon when no alerts</string>
     <string name="settings_empty_summary">Show notification icon when there is no filtered alerts.</string>
