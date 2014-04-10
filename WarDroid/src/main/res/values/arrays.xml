@@ -141,7 +141,7 @@
         <item>News</item>
         <item>Alerts</item>
         <item>Invasions</item>
-        <!--<item>Badlands</item>-->
+        <item>Dark Sectors</item>
     </string-array>
     <string-array name="filter_type_names">
         <item>Alerts</item>
@@ -294,7 +294,7 @@
         <item>news</item>
         <item>alerts</item>
         <item>invasions</item>
-        <!--<item>badlands</item>-->
+        <item>Dark Sectors</item>
     </string-array>
     <string-array name="filter_type_entries">
         <item>alerts</item>
