@@ -9,6 +9,7 @@
         <item>Saturn</item>
         <item>Uranus</item>
         <item>Neptune</item>
+        <item>Phobos</item>
         <item>Pluto</item>
         <item>Ceres</item>
         <item>Eris</item>
@@ -133,6 +134,7 @@
         <item>Interception</item>
         <item>Mobile Defense</item>
         <item>Rescue</item>
+        <item>Retrieval</item>
         <item>Sabotage</item>
         <item>Spy</item>
         <item>Survival</item>
@@ -162,6 +164,7 @@
         <item>Saturn</item>
         <item>Uranus</item>
         <item>Neptune</item>
+        <item>Phobos</item>
         <item>Pluto</item>
         <item>Ceres</item>
         <item>Eris</item>
@@ -286,6 +289,7 @@
         <item>Interception</item>
         <item>Mobile Defense</item>
         <item>Rescue</item>
+        <item>Retrieval</item>
         <item>Sabotage</item>
         <item>Spy</item>
         <item>Survival</item>
