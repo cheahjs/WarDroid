@@ -129,6 +129,7 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());
+        outState.putLong("time", System.currentTimeMillis());
     }
 
     @Override

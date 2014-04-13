@@ -123,6 +123,7 @@ public class InvasionFragment extends SherlockFragment {
         if (savedInstanceState != null) {
             String pc = savedInstanceState.getString("invasions_pc");
             String ps4 = savedInstanceState.getString("invasions_ps4");
+            long time = savedInstanceState.getLong("time");
             if (pc != null || ps4 != null) {
                 Log.d(TAG, "saved instance");
                 mUpdate = false;
@@ -140,6 +141,9 @@ public class InvasionFragment extends SherlockFragment {
                 }
                 mInvasionView.setAdapter(mAdapter);
                 mInvasionView.onRestoreInstanceState(savedInstanceState.getParcelable("invasion_lv"));
+                if (System.currentTimeMillis() - time > 120) {
+                    refresh(false);
+                }
             }
         }
         return rootView;
@@ -157,6 +161,7 @@ public class InvasionFragment extends SherlockFragment {
             outState.putString("invasions_pc", pc.getOriginalValues());
         if (ps4 != null)
             outState.putString("invasions_ps4", ps4.getOriginalValues());
+        outState.putLong("time", System.currentTimeMillis());
     }
 
     @Override

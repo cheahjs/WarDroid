@@ -146,6 +146,7 @@ public class AlertsFragment extends SherlockFragment {
         mUpdate = true;
         if (savedInstanceState != null) {
             String alerts = savedInstanceState.getString("alerts");
+            long time = savedInstanceState.getLong("time");
             if (alerts != null) {
                 mUpdate = false;
                 Type collectionType = new TypeToken<List<Alert>>() {
@@ -154,6 +155,9 @@ public class AlertsFragment extends SherlockFragment {
                 mAdapter = new AlertsListViewAdapter(getSherlockActivity(), data, mNoneView, savedInstanceState.getBoolean("alerts_hidden"), mFooterView);
                 mAlertView.setAdapter(mAdapter);
                 mAlertView.onRestoreInstanceState(savedInstanceState.getParcelable("alert_lv"));
+                if (System.currentTimeMillis() - time > 120) {
+                    refresh(false);
+                }
             }
         }
         return rootView;
@@ -167,6 +171,7 @@ public class AlertsFragment extends SherlockFragment {
         outState.putParcelable("alert_lv", mAlertView.onSaveInstanceState());
         outState.putString("alerts", mAdapter.getOriginalValues());
         outState.putBoolean("alerts_hidden", mAdapter.getShowHidden());
+        outState.putLong("time", System.currentTimeMillis());
     }
 
     @Override

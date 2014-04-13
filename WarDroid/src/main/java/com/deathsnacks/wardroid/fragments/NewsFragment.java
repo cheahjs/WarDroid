@@ -64,12 +64,16 @@ public class NewsFragment extends SherlockFragment {
         mUpdate = true;
         if (savedInstanceState != null) {
             String news = savedInstanceState.getString("news");
+            long time = savedInstanceState.getLong("time");
             if (news != null) {
                 mUpdate = false;
                 Log.d(TAG, "saved instance");
                 mAdapter = new NewsListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(news.split("\\n"))));
                 mNewsView.setAdapter(mAdapter);
                 mNewsView.onRestoreInstanceState(savedInstanceState.getParcelable("news_lv"));
+                if (System.currentTimeMillis() - time > 120) {
+                    refresh(false);
+                }
             }
         }
         return rootView;
@@ -82,6 +86,7 @@ public class NewsFragment extends SherlockFragment {
             return;
         outState.putParcelable("news_lv", mNewsView.onSaveInstanceState());
         outState.putString("news", mAdapter.getOriginalValues());
+        outState.putLong("time", System.currentTimeMillis());
     }
 
     @Override
