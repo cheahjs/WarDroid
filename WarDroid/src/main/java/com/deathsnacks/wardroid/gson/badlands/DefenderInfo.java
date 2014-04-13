@@ -61,6 +61,7 @@ public class DefenderInfo {
     @SerializedName("StrengthRemaining")
     @Expose
     private Integer strengthRemaining;
+    private int MissionBattlePay;
 
     public Integer getBattlePayReserve() {
         return battlePayReserve;
@@ -204,5 +205,13 @@ public class DefenderInfo {
 
     public void setTaxChangeAllowedTime(TaxChangeAllowedTime taxChangeAllowedTime) {
         TaxChangeAllowedTime = taxChangeAllowedTime;
+    }
+
+    public int getMissionBattlePay() {
+        return MissionBattlePay;
+    }
+
+    public void setMissionBattlePay(int missionBattlePay) {
+        MissionBattlePay = missionBattlePay;
     }
 }

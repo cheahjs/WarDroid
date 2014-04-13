@@ -58,6 +58,8 @@ public class AttackerInfo {
     @SerializedName("MissionInfo")
     @Expose
     private MissionInfo missionInfo;
+    private int MissionBattlePay;
+    private int BattlePayReserve;
 
     public Integer getCreditsTaxRate() {
         return creditsTaxRate;
@@ -193,5 +195,21 @@ public class AttackerInfo {
 
     public void setTaxChangeAllowedTime(TaxChangeAllowedTime taxChangeAllowedTime) {
         TaxChangeAllowedTime = taxChangeAllowedTime;
+    }
+
+    public int getMissionBattlePay() {
+        return MissionBattlePay;
+    }
+
+    public void setMissionBattlePay(int missionBattlePay) {
+        MissionBattlePay = missionBattlePay;
+    }
+
+    public int getBattlePayReserve() {
+        return BattlePayReserve;
+    }
+
+    public void setBattlePayReserve(int battlePayReserve) {
+        BattlePayReserve = battlePayReserve;
     }
 }
