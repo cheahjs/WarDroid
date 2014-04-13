@@ -20,6 +20,8 @@ public class DefenderInfo {
     @SerializedName("DeploymentActivationTime")
     @Expose
     private DeploymentActivationTime deploymentActivationTime;
+    @Expose
+    private com.deathsnacks.wardroid.gson.badlands.TaxChangeAllowedTime TaxChangeAllowedTime;
     @SerializedName("HealRate")
     @Expose
     private Double healRate;
@@ -196,4 +198,11 @@ public class DefenderInfo {
         this.strengthRemaining = strengthRemaining;
     }
 
+    public TaxChangeAllowedTime getTaxChangeAllowedTime() {
+        return TaxChangeAllowedTime;
+    }
+
+    public void setTaxChangeAllowedTime(TaxChangeAllowedTime taxChangeAllowedTime) {
+        TaxChangeAllowedTime = taxChangeAllowedTime;
+    }
 }

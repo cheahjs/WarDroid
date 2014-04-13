@@ -20,6 +20,8 @@ public class AttackerInfo {
     @SerializedName("MemberItemsTaxRate")
     @Expose
     private Integer memberItemsTaxRate;
+    @Expose
+    private com.deathsnacks.wardroid.gson.badlands.TaxChangeAllowedTime TaxChangeAllowedTime;
     @SerializedName("IsAlliance")
     @Expose
     private Boolean isAlliance;
@@ -185,4 +187,11 @@ public class AttackerInfo {
         this.missionInfo = missionInfo;
     }
 
+    public TaxChangeAllowedTime getTaxChangeAllowedTime() {
+        return TaxChangeAllowedTime;
+    }
+
+    public void setTaxChangeAllowedTime(TaxChangeAllowedTime taxChangeAllowedTime) {
+        TaxChangeAllowedTime = taxChangeAllowedTime;
+    }
 }

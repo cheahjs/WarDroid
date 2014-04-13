@@ -65,7 +65,7 @@ public class MainActivity extends SherlockFragmentActivity {
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[0]), NewsFragment.class, null);
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[1]), AlertsFragment.class, null);
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[2]), InvasionFragment.class, null);
-        //mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[3]), BadlandsFragment.class, null);
+        mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[3]), BadlandsFragment.class, null);
 
         (new PreloadData(this)).execute();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -116,8 +116,8 @@ public class MainActivity extends SherlockFragmentActivity {
                     startPos = 1;
                 else if (defaultValue.equals("invasions"))
                     startPos = 2;
-                /*else if (defaultValue.equals("badlands"))
-                    startPos = 3;*/
+                else if (defaultValue.equals("badlands"))
+                    startPos = 3;
             }
             mActionBar.setSelectedNavigationItem(startPos);
         } else {

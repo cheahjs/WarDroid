@@ -181,8 +181,8 @@ public class BadlandsFragment extends SherlockFragment {
             showProgress(false);
             if (success) {
                 try {
-                    mAdapter = new BadlandsListViewAdapter(activity, data);
-                    mListView.setAdapter(mAdapter);
+                    //mAdapter = new BadlandsListViewAdapter(activity, data);
+                    //mListView.setAdapter(mAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
