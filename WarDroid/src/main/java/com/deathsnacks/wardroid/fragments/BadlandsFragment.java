@@ -4,6 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,10 +24,18 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
+import com.deathsnacks.wardroid.gson.badlands.BadlandNode;
+import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -40,7 +51,6 @@ public class BadlandsFragment extends SherlockFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_badlands, container, false);
-        setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.refresh);
         mListView = (ExpandableListView) rootView.findViewById(R.id.list);
         mHandler = new Handler();
@@ -113,7 +123,7 @@ public class BadlandsFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        //refresh(true);
+        refresh(true);
         super.onStart();
     }
 
@@ -154,18 +164,38 @@ public class BadlandsFragment extends SherlockFragment {
     }
 
     public class BadlandsRefresh extends AsyncTask<Void, Void, Boolean> {
+        private static final String KEY = "BADLANDS";
         private Activity activity;
-        private List<String> data;
+        private List<BadlandNode> data;
+        private boolean error;
 
         public BadlandsRefresh(Activity activity) {
             this.activity = activity;
+            error = false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (activity == null)
+                return false;
             try {
-                String response = Http.get("http://deathsnacks.com/wf/data/flashsales_raw.txt");
-                data = response.length() > 2 ? Arrays.asList(response.split("\\n")) : new ArrayList<String>();
+                SharedPreferences preferences = activity.getSharedPreferences(KEY, Context.MODE_PRIVATE);
+                String cache = preferences.getString(KEY + "_cache", "_ded");
+                String response;
+                try {
+                    response = Http.get("http://deathsnacks.com/wf/data/currentbadlands_2.json", preferences, KEY);
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache.equals("_ded"))
+                        throw ex;
+                    response = cache;
+                    error = true;
+                }
+                Type collectionType = new TypeToken<List<BadlandNode>>() {
+                }.getType();
+                data = (new GsonBuilder().create()).fromJson(response, collectionType);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -180,11 +210,19 @@ public class BadlandsFragment extends SherlockFragment {
                 return;
             showProgress(false);
             if (success) {
-                try {
-                    //mAdapter = new BadlandsListViewAdapter(activity, data);
-                    //mListView.setAdapter(mAdapter);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                Collections.sort(data,
+                        new Comparator<BadlandNode>() {
+                            @Override
+                            public int compare(BadlandNode bl1, BadlandNode bl2) {
+                                String a = bl1.getNodeRegionName() + bl1.getNode();
+                                String b = bl2.getNodeRegionName() + bl2.getNode();
+                                return a.compareTo(b);
+                            }
+                        });
+                mAdapter = new BadlandsListViewAdapter(activity, data);
+                mListView.setAdapter(mAdapter);
+                if (error) {
+                    Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(activity.getApplicationContext(), R.string.error_error_occurred, Toast.LENGTH_SHORT).show();

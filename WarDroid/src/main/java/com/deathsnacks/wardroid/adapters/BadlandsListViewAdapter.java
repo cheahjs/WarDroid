@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.gson.badlands.BadlandNode;
@@ -27,17 +29,61 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public int getCount() {
-        return mBadlands.size();
-    }
+    @Override
+    public View getChildView(int groupPos, int childPos, boolean isLastChild, View view, ViewGroup viewGroup) {
+        GroupViewHolder holder;
+        if (view == null) {
+            view = mInflater.inflate(R.layout.list_parent_badlands, null);
+            holder = new GroupViewHolder();
+            holder.node = (TextView) view.findViewById(R.id.bl_node);
+            holder.status = (TextView) view.findViewById(R.id.conflict_status);
+        } else {
+            holder = (GroupViewHolder) view.getTag();
+            if (holder == null) {
+                holder = new GroupViewHolder();
+                holder.node = (TextView) view.findViewById(R.id.bl_node);
+                holder.status = (TextView) view.findViewById(R.id.conflict_status);
+            }
+        }
+        //holder.status.setVisibility(View.GONE);
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        BadlandNode node = mBadlands.get(groupPos);
+        holder.node.setText(node.getNodeDisplayName() + " (" + node.getNodeRegionName() + ")");
+        view.setTag(holder);
+        return view;
     }
 
     @Override
-    public View getChildView(int i, int i2, boolean b, View view, ViewGroup viewGroup) {
-        return null;
+    public View getGroupView(int groupPos, boolean isExpanded, View view, ViewGroup viewGroup) {
+        GroupViewHolder holder;
+        if (view == null) {
+            view = mInflater.inflate(R.layout.list_parent_badlands, null);
+            holder = new GroupViewHolder();
+            holder.node = (TextView) view.findViewById(R.id.bl_node);
+            holder.status = (TextView) view.findViewById(R.id.conflict_status);
+            holder.expand = (ImageView) view.findViewById(R.id.ic_expand);
+            holder.collapse = (ImageView) view.findViewById(R.id.ic_collapse);
+        } else {
+            holder = (GroupViewHolder) view.getTag();
+            if (holder == null) {
+                holder = new GroupViewHolder();
+                holder.node = (TextView) view.findViewById(R.id.bl_node);
+                holder.status = (TextView) view.findViewById(R.id.conflict_status);
+            }
+        }
+        //holder.status.setVisibility(View.GONE);
+        if (isExpanded) {
+            holder.expand.setVisibility(View.GONE);
+            holder.collapse.setVisibility(View.VISIBLE);
+        } else {
+            holder.expand.setVisibility(View.VISIBLE);
+            holder.collapse.setVisibility(View.GONE);
+        }
+
+        BadlandNode node = mBadlands.get(groupPos);
+        holder.node.setText(node.getNodeDisplayName() + " (" + node.getNodeRegionName() + ")");
+        view.setTag(holder);
+        return view;
     }
 
     @Override
@@ -47,12 +93,12 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return 0;
+        return mBadlands.size();
     }
 
     @Override
-    public int getChildrenCount(int i) {
-        return 0;
+    public int getChildrenCount(int groupPos) {
+        return 1;
     }
 
     @Override
@@ -67,12 +113,12 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
     public long getChildId(int i, int i2) {
-        return 0;
+        return i2;
     }
 
     @Override
@@ -80,17 +126,10 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    @Override
-    public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        return null;
-    }
-
-
-    public Object getItem(int position) {
-        return position;
-    }
-
-    public long getItemId(int position) {
-        return position;
+    public class GroupViewHolder {
+        public TextView node;
+        public TextView status;
+        public ImageView expand;
+        public ImageView collapse;
     }
 }

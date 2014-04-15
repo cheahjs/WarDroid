@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:padding="5dip"
+    android:id="@+id/badlands_parent">
+
+    <TextView
+        android:id="@+id/bl_node"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terminus (Mercury)"
+        android:textColor="?android:textColorPrimary"
+        android:typeface="sans"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/icon_holder"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_expand"
+            android:id="@+id/ic_expand"
+            android:visibility="visible"
+            android:layout_gravity="center_vertical" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_collapse"
+            android:id="@+id/ic_collapse"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UNDER CONFLICT"
+        android:id="@+id/conflict_status"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/icon_holder"
+        android:layout_marginLeft="5dp"/>
+</RelativeLayout>
