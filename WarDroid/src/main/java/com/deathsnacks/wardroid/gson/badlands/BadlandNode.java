@@ -33,6 +33,7 @@ public class BadlandNode {
     @SerializedName("NodeRegionName")
     @Expose
     private String nodeRegionName;
+    private String NodeGameType;
 
     public com.deathsnacks.wardroid.gson.badlands._id get_id() {
         return _id;
@@ -98,4 +99,11 @@ public class BadlandNode {
         this.nodeRegionName = nodeRegionName;
     }
 
+    public String getNodeGameType() {
+        return NodeGameType;
+    }
+
+    public void setNodeGameType(String nodeGameType) {
+        NodeGameType = nodeGameType;
+    }
 }

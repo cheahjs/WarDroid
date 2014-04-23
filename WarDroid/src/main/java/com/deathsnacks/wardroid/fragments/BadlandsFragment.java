@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,11 +43,13 @@ import java.util.List;
  * Created by Admin on 23/01/14.
  */
 public class BadlandsFragment extends SherlockFragment {
+    private static final String TAG = "BadlandsFragment";
     private View mRefreshView;
     private ExpandableListView mListView;
     private BadlandsRefresh mTask;
     private BadlandsListViewAdapter mAdapter;
     private Handler mHandler;
+    private boolean mUpdate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +58,35 @@ public class BadlandsFragment extends SherlockFragment {
         mListView = (ExpandableListView) rootView.findViewById(R.id.list);
         mHandler = new Handler();
         setHasOptionsMenu(true);
+        mUpdate = true;
+        if (savedInstanceState != null) {
+            String bl = savedInstanceState.getString("bl");
+            long time = savedInstanceState.getLong("time");
+            if (bl != null) {
+                mUpdate = false;
+                Log.d(TAG, "saved instance");
+                Type collectionType = new TypeToken<List<BadlandNode>>() {
+                }.getType();
+                List<BadlandNode> data = (new GsonBuilder().create()).fromJson(bl, collectionType);
+                mAdapter = new BadlandsListViewAdapter(getActivity(), data);
+                mListView.setAdapter(mAdapter);
+                mListView.onRestoreInstanceState(savedInstanceState.getParcelable("bl_lv"));
+                if (System.currentTimeMillis() - time > 120) {
+                    refresh(false);
+                }
+            }
+        }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mAdapter == null)
+            return;
+        outState.putParcelable("bl_lv", mListView.onSaveInstanceState());
+        outState.putString("bl", mAdapter.getOriginalValues());
+        outState.putLong("time", System.currentTimeMillis());
     }
 
     @Override
@@ -123,7 +154,9 @@ public class BadlandsFragment extends SherlockFragment {
 
     @Override
     public void onStart() {
-        refresh(true);
+        if (mUpdate)
+            refresh(true);
+        mUpdate = true;
         super.onStart();
     }
 

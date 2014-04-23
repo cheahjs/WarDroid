@@ -8,17 +8,6 @@
     android:padding="5dip"
     android:id="@+id/badlands_parent">
 
-    <TextView
-        android:id="@+id/bl_node"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Terminus (Mercury)"
-        android:textColor="?android:textColorPrimary"
-        android:typeface="sans"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_centerVertical="true"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,12 +30,41 @@
             android:visibility="gone"/>
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="UNDER CONFLICT"
-        android:id="@+id/conflict_status"
+        android:orientation="vertical"
+        android:id="@+id/bl_status_container"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/icon_holder"
-        android:layout_marginLeft="5dp"/>
+        android:layout_toLeftOf="@+id/icon_holder">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UNDER CONFLICT"
+            android:id="@+id/conflict_status"
+            android:layout_gravity="right"/>
+        <TextView
+            android:id="@+id/conflict_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5:45"
+            android:textSize="11sp"
+            android:textColor="@android:color/secondary_text_light"
+            android:textAlignment="gravity"
+            android:layout_gravity="right" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bl_node"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terminus (Mercury)"
+        android:textColor="?android:textColorPrimary"
+        android:typeface="sans"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/bl_status_container"
+        android:layout_alignParentLeft="true"/>
+
 </RelativeLayout>
