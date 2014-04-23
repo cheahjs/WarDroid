@@ -59,7 +59,7 @@ public class MainActivity extends SherlockFragmentActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setOffscreenPageLimit(2);
+        mPager.setOffscreenPageLimit(3);
         mFragmentManager = getSupportFragmentManager();
         mPagerAdapter = new TabsAdapter(this, mPager);
         mPagerAdapter.addTab(mActionBar.newTab().setText(mDrawerTitles[0]), NewsFragment.class, null);
