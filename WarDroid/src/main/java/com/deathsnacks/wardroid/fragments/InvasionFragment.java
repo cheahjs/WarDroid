@@ -301,7 +301,6 @@ public class InvasionFragment extends SherlockFragment {
                 }
                 response = response.trim();
                 data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
-                clearIds();
                 String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
                 String response2;
                 try {
@@ -317,6 +316,7 @@ public class InvasionFragment extends SherlockFragment {
                 }
                 response2 = response2.trim();
                 ps4data = new ArrayList<String>(Arrays.asList(response2.split("\\n")));
+                clearIds();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
