@@ -127,7 +127,7 @@ public class BadlandsFragment extends SherlockFragment {
         @Override
         public void run() {
             refresh(false);
-            mHandler.postDelayed(this, 60 * 1000);
+            mHandler.postDelayed(this, 5 * 60 * 1000);
         }
     };
 
