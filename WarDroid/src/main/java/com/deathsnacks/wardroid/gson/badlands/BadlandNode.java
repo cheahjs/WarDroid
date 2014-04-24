@@ -34,6 +34,7 @@ public class BadlandNode {
     @Expose
     private String nodeRegionName;
     private String NodeGameType;
+    private ConflictExpiration PostConflictCooldown;
 
     public com.deathsnacks.wardroid.gson.badlands._id get_id() {
         return _id;
@@ -105,5 +106,9 @@ public class BadlandNode {
 
     public void setNodeGameType(String nodeGameType) {
         NodeGameType = nodeGameType;
+    }
+
+    public ConflictExpiration getPostConflictCooldown() {
+        return PostConflictCooldown;
     }
 }
