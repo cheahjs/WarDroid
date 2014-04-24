@@ -118,6 +118,7 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
             //we are in conflict/deploying, start showing things
             holder.attacking_holder.container.setVisibility(View.VISIBLE);
             holder.attacking_holder.battlepay.setVisibility(View.VISIBLE);
+            holder.defending_holder.battlepay.setVisibility(View.VISIBLE);
             holder.attacking_holder.name.setText(Html.fromHtml("<u>" + TextUtils.htmlEncode(node.getAttackerInfo().getName()) + "</u>"));
             motd = node.getAttackerInfo().getMOTD();
             if (TextUtils.isEmpty(motd))
