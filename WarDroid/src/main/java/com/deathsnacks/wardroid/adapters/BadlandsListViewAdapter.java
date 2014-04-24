@@ -179,8 +179,16 @@ public class BadlandsListViewAdapter extends BaseExpandableListAdapter {
         holder.node.setText(node.getNodeDisplayName() + " (" + node.getNodeRegionName() + ")" + " [" + node.getNodeGameType() + "]");
         if (node.getAttackerInfo() == null || (node.getConflictExpiration() != null
                 && node.getConflictExpiration().getSec() < System.currentTimeMillis()/1000)) {
-            holder.status.setText("");
-            holder.time.setVisibility(View.GONE);
+            if (node.getPostConflictCooldown() != null && node.getPostConflictCooldown().getSec() > System.currentTimeMillis()/1000) {
+                holder.time.setVisibility(View.VISIBLE);
+                String time_format = mActivity.getString(R.string.bl_armistice_time);
+                long diff = node.getPostConflictCooldown().getSec() - System.currentTimeMillis()/1000;
+                holder.time.setText(String.format(time_format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
+                holder.status.setText(R.string.armistice);
+            } else {
+                holder.status.setText("");
+                holder.time.setVisibility(View.GONE);
+            }
         } else {
             holder.time.setVisibility(View.VISIBLE);
             if (node.getAttackerInfo().getDeploymentActivationTime().getSec() > System.currentTimeMillis()/1000) {

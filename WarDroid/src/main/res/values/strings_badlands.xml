@@ -6,6 +6,8 @@
     <string name="battle_pay">Battle Pay: &lt;b>%1$,dcr&lt;/b>(&lt;b>%2$d&lt;/b>)</string>
     <string name="in_conflict">CONFLICT</string>
     <string name="deploying">ATTACK DEPLOYING</string>
+    <string name="armistice">ARMISTICE</string>
     <string name="bl_deploying_time">Deployment: %1$dh %2$dm %3$ds</string>
     <string name="bl_expiration_time">Ending: %1$dh %2$dm %3$ds</string>
+    <string name="bl_armistice_time">Peace: %1$dh %2$dm %3$ds</string>
 </resources>
