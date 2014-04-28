@@ -49,11 +49,10 @@
             android:gravity="center" />
     </LinearLayout>
 
-    <ExpandableListView
+    <ListView
         style="@style/marginPoint"
         android:layout_height="wrap_content"
         android:id="@+id/list"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:groupIndicator="@null"/>
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

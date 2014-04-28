@@ -11,10 +11,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
 import com.deathsnacks.wardroid.gson.badlands.BadlandNode;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,7 +48,7 @@ import java.util.List;
 public class BadlandsFragment extends SherlockFragment {
     private static final String TAG = "BadlandsFragment";
     private View mRefreshView;
-    private ExpandableListView mListView;
+    private ListView mListView;
     private BadlandsRefresh mTask;
     private BadlandsListViewAdapter mAdapter;
     private Handler mHandler;
@@ -55,10 +58,18 @@ public class BadlandsFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_badlands, container, false);
         mRefreshView = rootView.findViewById(R.id.refresh);
-        mListView = (ExpandableListView) rootView.findViewById(R.id.list);
+        mListView = (ListView) rootView.findViewById(R.id.list);
         mHandler = new Handler();
         setHasOptionsMenu(true);
         mUpdate = true;
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view.getTag() == null)
+                    return;
+                showDialog(((BadlandsListViewAdapter.GroupViewHolder)view.getTag()).bl_node);
+            }
+        });
         if (savedInstanceState != null) {
             String bl = savedInstanceState.getString("bl");
             long time = savedInstanceState.getLong("time");
@@ -77,6 +88,15 @@ public class BadlandsFragment extends SherlockFragment {
             }
         }
         return rootView;
+    }
+
+    private void showDialog(BadlandNode node) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        BadlandDialogFragment blDialog = new BadlandDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("node", (new Gson()).toJson(node));
+        blDialog.setArguments(bundle);
+        blDialog.show(fm, "dialog");
     }
 
     @Override

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:padding="15dip"
+    android:id="@+id/badlands_child">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="false"
+                android:id="@+id/badlands_defender_container"
+                android:baselineAligned="false"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Occupant"
+                    android:textStyle="bold"
+                    android:id="@+id/defending_name"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Message Over Here"
+                    android:id="@+id/defending_message"
+                    android:layout_marginTop="5dip"
+                    android:layout_marginBottom="5dip"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Public Credits/Resource Tribute: "
+                    android:id="@+id/defending_public_tax"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Member Credits/Resource Tribute: "
+                    android:id="@+id/defending_member_tax"
+                    android:layout_marginBottom="5dip"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Battle Pay: 5,000cr (5)"
+                    android:id="@+id/defending_battlepay"
+                    android:layout_marginBottom="5dip"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/defender_health_bar_layout">
+
+                    <ProgressBar
+                        android:progressDrawable="@drawable/health_bar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progress="50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/defender_health_bar"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="50.00%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary"
+                        android:shadowColor="@android:color/white"
+                        android:shadowRadius="1"
+                        android:shadowDy="1"
+                        android:shadowDx="1"
+                        android:id="@+id/defender_health" />
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/badlands_defender_container"
+                android:id="@+id/badlands_attacker_container"
+                android:baselineAligned="false"
+                android:gravity="center"
+                android:layout_marginTop="10dp">
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:background="#999"
+                    android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Occupant"
+                    android:textStyle="bold"
+                    android:id="@+id/attacking_name"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Message Over Here"
+                    android:id="@+id/attacking_message"
+                    android:layout_marginTop="5dip"
+                    android:layout_marginBottom="5dip"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Public Credits/Resource Tribute:"
+                    android:id="@+id/attacking_public_tax"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Member Credits/Resource Tribute:"
+                    android:id="@+id/attacking_member_tax"
+                    android:layout_marginBottom="5dip"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Battle Pay: 5,000cr (5)"
+                    android:id="@+id/attacking_battlepay"
+                    android:layout_marginBottom="5dip"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/attacker_health_bar_layout">
+
+                    <ProgressBar
+                        android:progressDrawable="@drawable/health_bar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progress="50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/attacker_health_bar"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="50.00%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary"
+                        android:shadowColor="@android:color/white"
+                        android:shadowRadius="1"
+                        android:shadowDy="1"
+                        android:shadowDx="1"
+                        android:id="@+id/attacker_health" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
