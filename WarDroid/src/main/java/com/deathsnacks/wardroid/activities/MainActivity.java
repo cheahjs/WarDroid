@@ -119,9 +119,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 else if (defaultValue.equals("badlands"))
                     startPos = 3;
             }
+            if (startPos == -1) {
+                startPos = 0;
+            }
             mActionBar.setSelectedNavigationItem(startPos);
         } else {
-            mActionBar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
+            int curtab = savedInstanceState.getInt("tab", 0);
+            if (curtab == -1) {
+                curtab = 0;
+            }
+            mActionBar.setSelectedNavigationItem(curtab);
         }
     }
 
