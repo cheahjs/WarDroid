@@ -4,7 +4,7 @@
     <string name="settings_notifications_title">General</string>
     <string name="settings_enable_alerts_title">Enable notifications</string>
     <string name="settings_enable_alerts_summary">May consume a lot of data.</string>
-    <string name="settings_filter_title">Filter Settings</string>
+    <string name="settings_filter_title">Notification Filter Settings</string>
     <string name="settings_enable_filter_title">Enable item filter</string>
     <string name="settings_enable_filters_summary">Exclude alerts that do not have the selected items if enabled.</string>
     <string name="settings_aura">Auras</string>
