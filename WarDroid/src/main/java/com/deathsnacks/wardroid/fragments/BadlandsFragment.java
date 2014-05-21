@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
+import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.gson.badlands.BadlandNode;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
@@ -50,7 +52,7 @@ public class BadlandsFragment extends SherlockFragment {
     private View mRefreshView;
     private ListView mListView;
     private BadlandsRefresh mTask;
-    private BadlandsListViewAdapter mAdapter;
+    private /*BadlandsListViewAdapter*/SeparatedListAdapter mAdapter;
     private Handler mHandler;
     private boolean mUpdate;
 
@@ -71,18 +73,26 @@ public class BadlandsFragment extends SherlockFragment {
             }
         });
         if (savedInstanceState != null) {
-            String bl = savedInstanceState.getString("bl");
+            String pc = savedInstanceState.getString("bl_pc");
+            String ps4 = savedInstanceState.getString("bl_ps4");
             long time = savedInstanceState.getLong("time");
-            if (bl != null) {
+            if (pc != null || ps4 != null) {
                 mUpdate = false;
                 Log.d(TAG, "saved instance");
                 Type collectionType = new TypeToken<List<BadlandNode>>() {
                 }.getType();
-                List<BadlandNode> data = (new GsonBuilder().create()).fromJson(bl, collectionType);
-                mAdapter = new BadlandsListViewAdapter(getActivity(), data);
+                mAdapter = new SeparatedListAdapter(getSherlockActivity(), null);
+                if (pc != null) {
+                    List<BadlandNode> data = (new GsonBuilder().create()).fromJson(pc, collectionType);
+                    mAdapter.addSection("PC", new BadlandsListViewAdapter(getSherlockActivity(), data));
+                }
+                if (ps4 != null) {
+                    List<BadlandNode> data = (new GsonBuilder().create()).fromJson(ps4, collectionType);
+                    mAdapter.addSection("PS4", new BadlandsListViewAdapter(getSherlockActivity(), data));
+                }
                 mListView.setAdapter(mAdapter);
                 mListView.onRestoreInstanceState(savedInstanceState.getParcelable("bl_lv"));
-                if (System.currentTimeMillis() - time > 120) {
+                if (System.currentTimeMillis() - time > 120 * 1000) {
                     refresh(false);
                 }
             }
@@ -105,7 +115,12 @@ public class BadlandsFragment extends SherlockFragment {
         if (mAdapter == null)
             return;
         outState.putParcelable("bl_lv", mListView.onSaveInstanceState());
-        outState.putString("bl", mAdapter.getOriginalValues());
+        BadlandsListViewAdapter pc = (BadlandsListViewAdapter) mAdapter.getSectionAdapter("PC");
+        BadlandsListViewAdapter ps4 = (BadlandsListViewAdapter) mAdapter.getSectionAdapter("PS4");
+        if (pc != null)
+            outState.putString("bl_pc", pc.getOriginalValues());
+        if (ps4 != null)
+            outState.putString("bl_ps4", ps4.getOriginalValues());
         outState.putLong("time", System.currentTimeMillis());
     }
 
@@ -220,6 +235,7 @@ public class BadlandsFragment extends SherlockFragment {
         private static final String KEY = "BADLANDS";
         private Activity activity;
         private List<BadlandNode> data;
+        private List<BadlandNode> data_ps4;
         private boolean error;
 
         public BadlandsRefresh(Activity activity) {
@@ -249,6 +265,20 @@ public class BadlandsFragment extends SherlockFragment {
                 Type collectionType = new TypeToken<List<BadlandNode>>() {
                 }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);
+                String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
+                String response2;
+                try {
+                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/currentbadlands_2.json", preferences, KEY);
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache.equals("_ded"))
+                        throw ex;
+                    response2 = cache;
+                    error = true;
+                }
+                data_ps4 = (new GsonBuilder().create()).fromJson(response2, collectionType);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -262,17 +292,33 @@ public class BadlandsFragment extends SherlockFragment {
             if (activity == null)
                 return;
             showProgress(false);
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             if (success) {
-                Collections.sort(data,
-                        new Comparator<BadlandNode>() {
-                            @Override
-                            public int compare(BadlandNode bl1, BadlandNode bl2) {
-                                String a = bl1.getNodeRegionName() + bl1.getNode();
-                                String b = bl2.getNodeRegionName() + bl2.getNode();
-                                return a.compareTo(b);
-                            }
-                        });
-                mAdapter = new BadlandsListViewAdapter(activity, data);
+                mAdapter = new SeparatedListAdapter(activity, null);
+                if (mPreferences.getString("platform", "pc").contains("pc")) {
+                    Collections.sort(data,
+                            new Comparator<BadlandNode>() {
+                                @Override
+                                public int compare(BadlandNode bl1, BadlandNode bl2) {
+                                    String a = bl1.getNodeRegionName() + bl1.getNode();
+                                    String b = bl2.getNodeRegionName() + bl2.getNode();
+                                    return a.compareTo(b);
+                                }
+                            });
+                    mAdapter.addSection("PC", new BadlandsListViewAdapter(activity, data));
+                }
+                if (mPreferences.getString("platform", "pc").contains("ps4")) {
+                    Collections.sort(data_ps4,
+                            new Comparator<BadlandNode>() {
+                                @Override
+                                public int compare(BadlandNode bl1, BadlandNode bl2) {
+                                    String a = bl1.getNodeRegionName() + bl1.getNode();
+                                    String b = bl2.getNodeRegionName() + bl2.getNode();
+                                    return a.compareTo(b);
+                                }
+                            });
+                    mAdapter.addSection("PS4", new BadlandsListViewAdapter(activity, data_ps4));
+                }
                 mListView.setAdapter(mAdapter);
                 if (error) {
                     Toast.makeText(activity, R.string.error_error_occurred, Toast.LENGTH_SHORT).show();

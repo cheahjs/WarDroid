@@ -2,6 +2,8 @@ package com.deathsnacks.wardroid.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -64,6 +66,7 @@ public class BadlandsListViewAdapter extends BaseAdapter {
             holder.status = (TextView) view.findViewById(R.id.conflict_status);
             holder.time = (TextView) view.findViewById(R.id.conflict_duration);
             holder.mode = (TextView) view.findViewById(R.id.bl_mode);
+            holder.default_color = holder.status.getCurrentTextColor();
         } else {
             holder = (GroupViewHolder) view.getTag();
             if (holder == null) {
@@ -72,9 +75,10 @@ public class BadlandsListViewAdapter extends BaseAdapter {
                 holder.status = (TextView) view.findViewById(R.id.conflict_status);
                 holder.time = (TextView) view.findViewById(R.id.conflict_duration);
                 holder.mode = (TextView) view.findViewById(R.id.bl_mode);
+                holder.default_color = holder.status.getCurrentTextColor();
             }
         }
-
+        holder.status.setTextColor(holder.default_color);
         BadlandNode node = mBadlands.get(i);
         holder.node.setText(node.getNodeDisplayName() + " (" + node.getNodeRegionName() + ")");
         holder.mode.setText(node.getNodeGameType());
@@ -102,6 +106,7 @@ public class BadlandsListViewAdapter extends BaseAdapter {
                 long diff = node.getConflictExpiration().getSec() - System.currentTimeMillis()/1000;
                 holder.time.setText(String.format(time_format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
                 holder.status.setText(R.string.in_conflict);
+                holder.status.setTextColor(ColorStateList.valueOf(Color.parseColor("#d9534f")));
             }
         }
         holder.bl_node = node;
@@ -121,5 +126,6 @@ public class BadlandsListViewAdapter extends BaseAdapter {
         public ImageView collapse;
         public TextView time;
         public BadlandNode bl_node;
+        public int default_color;
     }
 }

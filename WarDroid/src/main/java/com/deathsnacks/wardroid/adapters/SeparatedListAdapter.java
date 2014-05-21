@@ -83,10 +83,12 @@ public class SeparatedListAdapter extends BaseAdapter {
         for (BaseAdapter adapter : this.sections.values())
             adapter.notifyDataSetChanged();
         super.notifyDataSetChanged();
-        if (getAdapterCount() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            emptyView.setVisibility(View.GONE);
+        if (emptyView != null) {
+            if (getAdapterCount() == 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
         }
     }
 
