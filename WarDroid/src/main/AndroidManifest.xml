@@ -67,5 +67,12 @@
                 <category android:name="com.deathsnacks.wardroid" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".services.UpdateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:path="com.deathsnacks.wardroid"
+                    android:scheme="package" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
