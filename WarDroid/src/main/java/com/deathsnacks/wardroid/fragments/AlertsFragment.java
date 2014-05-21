@@ -155,7 +155,7 @@ public class AlertsFragment extends SherlockFragment {
                 mAdapter = new AlertsListViewAdapter(getSherlockActivity(), data, mNoneView, savedInstanceState.getBoolean("alerts_hidden"), mFooterView);
                 mAlertView.setAdapter(mAdapter);
                 mAlertView.onRestoreInstanceState(savedInstanceState.getParcelable("alert_lv"));
-                if (System.currentTimeMillis() - time > 120) {
+                if (System.currentTimeMillis() - time > 120 * 1000) {
                     refresh(false);
                 }
             }

@@ -71,7 +71,7 @@ public class NewsFragment extends SherlockFragment {
                 mAdapter = new NewsListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(news.split("\\n"))));
                 mNewsView.setAdapter(mAdapter);
                 mNewsView.onRestoreInstanceState(savedInstanceState.getParcelable("news_lv"));
-                if (System.currentTimeMillis() - time > 120) {
+                if (System.currentTimeMillis() - time > 120 * 1000) {
                     refresh(false);
                 }
             }

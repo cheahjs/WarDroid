@@ -141,7 +141,7 @@ public class InvasionFragment extends SherlockFragment {
                 }
                 mInvasionView.setAdapter(mAdapter);
                 mInvasionView.onRestoreInstanceState(savedInstanceState.getParcelable("invasion_lv"));
-                if (System.currentTimeMillis() - time > 120) {
+                if (System.currentTimeMillis() - time > 120 * 1000) {
                     refresh(false);
                 }
             }
