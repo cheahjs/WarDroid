@@ -151,7 +151,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
-            String tempText = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc");
+            String tempText = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc|ps4");
             mPc = tempText.contains("pc");
             mPs4 = tempText.contains("ps4");
 

@@ -433,7 +433,7 @@ public class AlertsFragment extends SherlockFragment {
             if (success) {
                 try {
                     List<Alert> merged = new ArrayList<Alert>();
-                    String pref = mPreferences.getString("platform", "pc");
+                    String pref = mPreferences.getString("platform", "pc|ps4");
                     if (pref.contains("pc"))
                         merged.addAll(data);
                     if (pref.contains("ps4"))

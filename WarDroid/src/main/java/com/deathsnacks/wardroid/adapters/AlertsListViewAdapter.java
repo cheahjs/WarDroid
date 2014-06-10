@@ -59,12 +59,12 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 }
             }
             if (alert.isPc()) {
-                if (!mPreferences.getString("platform", "pc").contains("pc")) {
+                if (!mPreferences.getString("platform", "pc|ps4").contains("pc")) {
                     Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
             } else {
-                if (!mPreferences.getString("platform", "pc").contains("ps4")) {
+                if (!mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
                     Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
@@ -110,12 +110,12 @@ public class AlertsListViewAdapter extends BaseAdapter {
                 }
             }
             if (alert.isPc()) {
-                if (!mPreferences.getString("platform", "pc").contains("pc")) {
+                if (!mPreferences.getString("platform", "pc|ps4").contains("pc")) {
                     Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
             } else {
-                if (!mPreferences.getString("platform", "pc").contains("ps4")) {
+                if (!mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
                     Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
                     continue;
                 }

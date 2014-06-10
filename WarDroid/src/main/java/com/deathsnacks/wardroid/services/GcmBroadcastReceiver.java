@@ -108,7 +108,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
             }
-            String platformPref = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc");
+            String platformPref = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc|ps4");
             mPc = platformPref.contains("pc");
             mPs4 = platformPref.contains("ps4");
             if (mForce && (alerts == null || invasions == null) && (alertsPs4 == null || invasionsPs4 == null)) {

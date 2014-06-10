@@ -361,10 +361,10 @@ public class InvasionFragment extends SherlockFragment {
             if (success) {
                 try {
                     mAdapter = new SeparatedListAdapter(activity, mNoneView);
-                    if (mPreferences.getString("platform", "pc").contains("pc")) {
+                    if (mPreferences.getString("platform", "pc|ps4").contains("pc")) {
                         mAdapter.addSection("PC", new InvasionListViewAdapter(activity, data, mNoneView));
                     }
-                    if (mPreferences.getString("platform", "pc").contains("ps4")) {
+                    if (mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
                         mAdapter.addSection("PS4", new InvasionListViewAdapter(activity, ps4data, mNoneView));
                     }
                     if (mAdapter.getAdapterCount() == 0) {

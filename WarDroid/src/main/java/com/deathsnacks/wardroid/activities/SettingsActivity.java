@@ -203,14 +203,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                             new Intent(getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("platform") || s.equals(Constants.PREF_PLATFORM_NOTIFICATIONS)) {
-                String persist = mPreferences.getString(s, "pc");
+                String persist = mPreferences.getString(s, "pc|ps4");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
                 if (!persist.contains("pc") && !persist.contains("ps4")) {
-                    Toast.makeText(SettingsActivity.this, "You must select at least one platform, defaulting to PC.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "You must select at least one platform, defaulting to PC and PS4.", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    editor.putString(s, "pc");
+                    editor.putString(s, "pc|ps4");
                     editor.commit();
-                    platform.setValue("pc");
+                    platform.setValue("pc|ps4");
                 }
             }
             Preference preference = findPreference(s);

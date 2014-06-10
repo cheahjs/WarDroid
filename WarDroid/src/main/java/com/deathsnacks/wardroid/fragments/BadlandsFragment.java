@@ -295,7 +295,7 @@ public class BadlandsFragment extends SherlockFragment {
             SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             if (success) {
                 mAdapter = new SeparatedListAdapter(activity, null);
-                if (mPreferences.getString("platform", "pc").contains("pc")) {
+                if (mPreferences.getString("platform", "pc|ps4").contains("pc")) {
                     Collections.sort(data,
                             new Comparator<BadlandNode>() {
                                 @Override
@@ -307,7 +307,7 @@ public class BadlandsFragment extends SherlockFragment {
                             });
                     mAdapter.addSection("PC", new BadlandsListViewAdapter(activity, data));
                 }
-                if (mPreferences.getString("platform", "pc").contains("ps4")) {
+                if (mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
                     Collections.sort(data_ps4,
                             new Comparator<BadlandNode>() {
                                 @Override
