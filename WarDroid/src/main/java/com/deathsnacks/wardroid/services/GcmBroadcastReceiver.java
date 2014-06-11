@@ -539,6 +539,11 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 if (mItemFiltered) {
                     if (mItemFilters.contains(reward.replace(" Blueprint", "")))
                         return true;
+                    if (reward.contains("Arcane ")) {
+                        if (isArcaneFiltered(reward)) {
+                            return true;
+                        }
+                    }
                 }
                 if (mCustomFilered) {
                     for (String filter : mCustomFilters) {
@@ -587,6 +592,15 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    private Boolean isArcaneFiltered(String raw) {
+        String name = raw.split(" ")[1];
+        for (String filter : mItemFilters) {
+            if (filter.contains(name) && filter.contains("Helmet"))
+                return true;
         }
         return false;
     }
