@@ -459,7 +459,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         }
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("drawer_position", 1);
-        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         if (mVibrate) {
