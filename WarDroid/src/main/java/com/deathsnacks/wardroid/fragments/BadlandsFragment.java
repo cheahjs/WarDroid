@@ -268,7 +268,7 @@ public class BadlandsFragment extends Fragment {
                 String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
                 String response2;
                 try {
-                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/currentbadlands_2.json", preferences, KEY);
+                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/currentbadlands_2.json", preferences, KEY + "_ps4");
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
