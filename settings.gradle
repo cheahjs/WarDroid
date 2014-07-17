@@ -1,1 +1,1 @@
-include ':WarDroid', ':colorpickerview'
+include ':WarDroid', ':libs:colorpickerview', ':libs:android-support-v4-preferencefragment'

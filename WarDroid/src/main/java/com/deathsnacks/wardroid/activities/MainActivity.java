@@ -19,12 +19,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.fragments.AlertsFragment;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 /**
  * Created by Admin on 23/01/14.
  */
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
     private ActionBar mActionBar;
     private String[] mDrawerTitles;
@@ -145,6 +145,7 @@ public class MainActivity extends SherlockFragmentActivity {
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                //getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsActivity()).commit();
                 return true;
             case R.id.exit:
                 new AlertDialog.Builder(this)
@@ -201,7 +202,7 @@ public class MainActivity extends SherlockFragmentActivity {
     public static class TabsAdapter extends FragmentPagerAdapter
             implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
         private final Context mContext;
-        private final SherlockFragmentActivity mActivity;
+        private final ActionBarActivity mActivity;
         private final ActionBar mActionBar;
         private final ViewPager mViewPager;
         private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
@@ -216,7 +217,7 @@ public class MainActivity extends SherlockFragmentActivity {
             }
         }
 
-        public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
+        public TabsAdapter(ActionBarActivity activity, ViewPager pager) {
             super(activity.getSupportFragmentManager());
             mContext = activity;
             mActivity = activity;

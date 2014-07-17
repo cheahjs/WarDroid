@@ -12,9 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,10 +26,6 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
 import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class BadlandsFragment extends SherlockFragment {
+public class BadlandsFragment extends Fragment {
     private static final String TAG = "BadlandsFragment";
     private View mRefreshView;
     private ListView mListView;
@@ -81,14 +81,14 @@ public class BadlandsFragment extends SherlockFragment {
                 Log.d(TAG, "saved instance");
                 Type collectionType = new TypeToken<List<BadlandNode>>() {
                 }.getType();
-                mAdapter = new SeparatedListAdapter(getSherlockActivity(), null);
+                mAdapter = new SeparatedListAdapter(getActivity(), null);
                 if (pc != null) {
                     List<BadlandNode> data = (new GsonBuilder().create()).fromJson(pc, collectionType);
-                    mAdapter.addSection("PC", new BadlandsListViewAdapter(getSherlockActivity(), data));
+                    mAdapter.addSection("PC", new BadlandsListViewAdapter(getActivity(), data));
                 }
                 if (ps4 != null) {
                     List<BadlandNode> data = (new GsonBuilder().create()).fromJson(ps4, collectionType);
-                    mAdapter.addSection("PS4", new BadlandsListViewAdapter(getSherlockActivity(), data));
+                    mAdapter.addSection("PS4", new BadlandsListViewAdapter(getActivity(), data));
                 }
                 mListView.setAdapter(mAdapter);
                 mListView.onRestoreInstanceState(savedInstanceState.getParcelable("bl_lv"));

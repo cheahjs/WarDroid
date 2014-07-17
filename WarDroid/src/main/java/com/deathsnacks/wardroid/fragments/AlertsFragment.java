@@ -16,8 +16,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,10 +29,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
@@ -51,7 +51,7 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class AlertsFragment extends SherlockFragment {
+public class AlertsFragment extends Fragment {
     private static final String TAG = "AlertsFragment";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private View mRefreshView;
@@ -70,7 +70,7 @@ public class AlertsFragment extends SherlockFragment {
         //setRetainInstance(true);
         mRefreshView = rootView.findViewById(R.id.alert_refresh);
         mNoneView = rootView.findViewById(R.id.alerts_none);
-        mFooterView = View.inflate(getSherlockActivity(), R.layout.list_item_custom_footer, null);
+        mFooterView = View.inflate(getActivity(), R.layout.list_item_custom_footer, null);
         mAlertView = (ListView) rootView.findViewById(R.id.list_alerts);
         mAlertView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -152,7 +152,7 @@ public class AlertsFragment extends SherlockFragment {
                 Type collectionType = new TypeToken<List<Alert>>() {
                 }.getType();
                 List<Alert> data = (new GsonBuilder().create()).fromJson(alerts, collectionType);
-                mAdapter = new AlertsListViewAdapter(getSherlockActivity(), data, mNoneView, savedInstanceState.getBoolean("alerts_hidden"), mFooterView);
+                mAdapter = new AlertsListViewAdapter(getActivity(), data, mNoneView, savedInstanceState.getBoolean("alerts_hidden"), mFooterView);
                 mAlertView.setAdapter(mAdapter);
                 mAlertView.onRestoreInstanceState(savedInstanceState.getParcelable("alert_lv"));
                 if (System.currentTimeMillis() - time > 120 * 1000) {
@@ -263,7 +263,7 @@ public class AlertsFragment extends SherlockFragment {
             refresh(true);
             try {
                 if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_PUSH, false)) {
-                    if (getRegistrationId(getSherlockActivity()).length() == 0) {
+                    if (getRegistrationId(getActivity()).length() == 0) {
                         Log.i(TAG, "Push is enabled, and we just got an empty registration id, registering again.");
                         registerInBackground();
                     } else {

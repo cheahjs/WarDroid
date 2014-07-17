@@ -12,8 +12,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,10 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.NewsListViewAdapter;
 import com.deathsnacks.wardroid.utils.Http;
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class NewsFragment extends SherlockFragment {
+public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
     private View mRefreshView;
     private ListView mNewsView;

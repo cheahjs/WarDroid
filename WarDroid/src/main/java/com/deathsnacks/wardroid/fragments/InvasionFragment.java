@@ -13,18 +13,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.InvasionListViewAdapter;
 import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Created by Admin on 23/01/14.
  */
-public class InvasionFragment extends SherlockFragment {
+public class InvasionFragment extends Fragment {
     private static final String TAG = "InvasionFragment";
     private View mRefreshView;
     private ListView mInvasionView;
@@ -127,12 +127,12 @@ public class InvasionFragment extends SherlockFragment {
             if (pc != null || ps4 != null) {
                 Log.d(TAG, "saved instance");
                 mUpdate = false;
-                mAdapter = new SeparatedListAdapter(getSherlockActivity(), mNoneView);
+                mAdapter = new SeparatedListAdapter(getActivity(), mNoneView);
                 if (pc != null) {
-                    mAdapter.addSection("PC", new InvasionListViewAdapter(getSherlockActivity(), new ArrayList<String>(Arrays.asList(pc.split("\\n"))), mNoneView, false));
+                    mAdapter.addSection("PC", new InvasionListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(pc.split("\\n"))), mNoneView, false));
                 }
                 if (ps4 != null) {
-                    mAdapter.addSection("PS4", new InvasionListViewAdapter(getSherlockActivity(), new ArrayList<String>(Arrays.asList(ps4.split("\\n"))), mNoneView, false));
+                    mAdapter.addSection("PS4", new InvasionListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(ps4.split("\\n"))), mNoneView, false));
                 }
                 if (mAdapter.getAdapterCount() == 0) {
                     mNoneView.setVisibility(View.VISIBLE);

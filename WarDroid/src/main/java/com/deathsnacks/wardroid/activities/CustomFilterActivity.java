@@ -6,6 +6,10 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -15,10 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by Admin on 25/02/14.
  */
-public class CustomFilterActivity extends SherlockActivity {
+public class CustomFilterActivity extends ActionBarActivity {
     private SharedPreferences mPreferences;
     private ListView mList;
     private List<String> mFilters;
@@ -131,7 +131,7 @@ public class CustomFilterActivity extends SherlockActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.abs__home:
+            case R.id.home:
             case R.id.homeAsUp:
             case android.R.id.home:
                 //NavUtils.navigateUpFromSameTask(this);
@@ -172,7 +172,7 @@ public class CustomFilterActivity extends SherlockActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_new, menu);
         return super.onCreateOptionsMenu(menu);
     }

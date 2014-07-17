@@ -6,7 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -14,11 +14,12 @@ repositories {
 
 dependencies {
     compile files('libs/gson-2.2.4.jar')
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile files('libs/okhttp-1.2.1-jar-with-dependencies.jar')
-    compile 'com.google.android.gms:play-services:4.2.+'
-    compile project(':colorpickerview')
+    compile project(':libs:android-support-v4-preferencefragment')
+    compile 'com.google.android.gms:play-services:4.4.+'
+    compile project(':libs:colorpickerview')
     compile 'com.android.support:support-v4:19.+'
+    compile "com.android.support:appcompat-v7:19.+"
 }
 
 android {
