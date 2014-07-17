@@ -275,7 +275,7 @@ public class BadlandsFragment extends Fragment {
                     //If no cache, proceed to normally handling an exception.
                     if (cache.equals("_ded"))
                         throw ex;
-                    response2 = cache;
+                    response2 = cache2;
                     error = true;
                 }
                 data_ps4 = (new GsonBuilder().create()).fromJson(response2, collectionType);
