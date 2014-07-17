@@ -66,6 +66,9 @@ public class BadlandsListViewAdapter extends BaseAdapter {
             holder.status = (TextView) view.findViewById(R.id.conflict_status);
             holder.time = (TextView) view.findViewById(R.id.conflict_duration);
             holder.mode = (TextView) view.findViewById(R.id.bl_mode);
+            holder.atk_pay = (TextView) view.findViewById(R.id.attacker_pay);
+            holder.def_pay = (TextView) view.findViewById(R.id.defender_pay);
+            holder.pay_holder = view.findViewById(R.id.pay_holder);
             holder.default_color = holder.status.getCurrentTextColor();
         } else {
             holder = (GroupViewHolder) view.getTag();
@@ -75,10 +78,14 @@ public class BadlandsListViewAdapter extends BaseAdapter {
                 holder.status = (TextView) view.findViewById(R.id.conflict_status);
                 holder.time = (TextView) view.findViewById(R.id.conflict_duration);
                 holder.mode = (TextView) view.findViewById(R.id.bl_mode);
+                holder.atk_pay = (TextView) view.findViewById(R.id.attacker_pay);
+                holder.def_pay = (TextView) view.findViewById(R.id.defender_pay);
+                holder.pay_holder = view.findViewById(R.id.pay_holder);
                 holder.default_color = holder.status.getCurrentTextColor();
             }
         }
         holder.status.setTextColor(holder.default_color);
+        holder.pay_holder.setVisibility(View.GONE);
         BadlandNode node = mBadlands.get(i);
         holder.node.setText(node.getNodeDisplayName() + " (" + node.getNodeRegionName() + ")");
         holder.mode.setText(node.getNodeGameType());
@@ -107,6 +114,15 @@ public class BadlandsListViewAdapter extends BaseAdapter {
                 holder.time.setText(String.format(time_format, (long) Math.floor(diff / 3600), (diff / 60 % 60), diff % 60));
                 holder.status.setText(R.string.in_conflict);
                 holder.status.setTextColor(ColorStateList.valueOf(Color.parseColor("#d9534f")));
+                int defbattlepay = node.getDefenderInfo().getMissionBattlePay();
+                holder.def_pay.setText(Html.fromHtml(
+                        String.format(mActivity.getString(R.string.defender_pay),
+                                defbattlepay, (defbattlepay != 0 ? node.getDefenderInfo().getBattlePayReserve() / defbattlepay : 0))));
+                int atkbattlepay = node.getAttackerInfo().getMissionBattlePay();
+                holder.atk_pay.setText(Html.fromHtml(
+                        String.format(mActivity.getString(R.string.attacker_pay),
+                                atkbattlepay, (atkbattlepay != 0 ? node.getAttackerInfo().getBattlePayReserve() / atkbattlepay : 0))));
+                holder.pay_holder.setVisibility(View.VISIBLE);
             }
         }
         holder.bl_node = node;
@@ -122,6 +138,9 @@ public class BadlandsListViewAdapter extends BaseAdapter {
         public TextView node;
         public TextView status;
         public TextView mode;
+        public View pay_holder;
+        public TextView def_pay;
+        public TextView atk_pay;
         public ImageView expand;
         public ImageView collapse;
         public TextView time;
