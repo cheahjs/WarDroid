@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.deathsnacks.wardroid.Constants;
@@ -28,8 +29,10 @@ import com.deathsnacks.wardroid.utils.gcmclasses.Alert;
 import com.deathsnacks.wardroid.utils.gcmclasses.Invasion;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -268,8 +271,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                         mForceUpdateTime = alert.getExpiry();
                     }
                 }
-                mNotifications.add(String.format("Alert (PC): <b>%s</b>",
-                        TextUtils.join(" - ", alert.getRewards())));
+                mNotifications.add(String.format("PC [%s]: <b>%s</b>",
+                        DateFormat.getTimeFormat(mContext).format(new Date(alert.getExpiry()*1000)), TextUtils.join(" - ", alert.getRewards())));
                 continue;
             }
         }
@@ -371,8 +374,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                         mForceUpdateTime = alert.getExpiry();
                     }
                 }
-                mNotifications.add(String.format("Alert (PS4): <b>%s</b>",
-                        TextUtils.join(" - ", alert.getRewards())));
+                mNotifications.add(String.format("PS4 [%s]: <b>%s</b>",
+                        DateFormat.getTimeFormat(mContext).format(new Date(alert.getExpiry()*1000)), TextUtils.join(" - ", alert.getRewards())));
                 continue;
             }
         }
@@ -450,7 +453,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             if (size > 5)
                 style.setSummaryText(String.format(mContext.getString(R.string.notification_more), size - 5));
             for (int i = 0; i < 5 && i < size; i++) {
-                style.addLine(Html.fromHtml(mNotifications.get(i)));
+                String[] lines = mNotifications.get(i).split("<br/>");
+                for (String line : lines) {
+                    style.addLine(Html.fromHtml(line));
+                }
             }
             if (size > 0) {
                 mBuilder.setNumber(size);
