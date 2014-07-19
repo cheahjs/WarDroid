@@ -53,6 +53,7 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
     private SharedPreferences mPreferences;
     private static boolean mForceChangingPush;
     private SharedPreferences.Editor mEditor;
+    private Context mContext;
 
     @Override
     @SuppressWarnings("deprecation")
@@ -88,7 +89,7 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
         }
         Preference pushPref = findPreference(Constants.PREF_PUSH);
         if (pushPref != null) {
-            pushPref.setOnPreferenceChangeListener(pushPrefListener);
+            pushPref.setOnPreferenceClickListener(pushPrefListener);
             if (!checkPlayServices()) {
                 pushPref.setEnabled(false);
                 pushPref.setSummary(getString(R.string.push_disabled_summary));
@@ -96,14 +97,14 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
         }
         Preference customPref = findPreference("custom_button");
         if (customPref != null) {
-            customPref.setIntent(new Intent(getActivity().getApplicationContext(), CustomFilterActivity.class));
+            customPref.setIntent(new Intent(getActivity(), CustomFilterActivity.class));
         }
         Preference clearDataPref = findPreference("clear_data");
         if (clearDataPref != null) {
             clearDataPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    new AlertDialog.Builder(getActivity().getApplicationContext())
+                    new AlertDialog.Builder(getActivity())
                             .setTitle(getString(R.string.clear_data_title))
                             .setMessage(getString(R.string.clear_data_message))
                             .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
@@ -133,19 +134,19 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
         UnifiedPreferenceUtils.bindAllPreferenceSummariesToValues(getPreferenceScreen());
     }
 
-    Preference.OnPreferenceChangeListener pushPrefListener = new Preference.OnPreferenceChangeListener() {
+    Preference.OnPreferenceClickListener pushPrefListener = new Preference.OnPreferenceClickListener() {
         @Override
-        public boolean onPreferenceChange(Preference pushPref, Object o) {
+        public boolean onPreferenceClick(Preference pushPref) {
             Log.d(TAG, "push force:" + mForceChangingPush);
-            boolean newpref = (Boolean) o;
-            if (mForceChangingPush) {
+            boolean newpref = mPreferences.getBoolean(pushPref.getKey(), false);
+            /*if (mForceChangingPush) {
                 Log.d(TAG, "push pref force change, ignoring.");
                 mForceChangingPush = false;
-                return false;
-            }
+                return true;
+            }*/
             pushPref.setEnabled(false);
             if (newpref) {
-                String regid = getRegistrationId(getActivity().getApplicationContext());
+                String regid = getRegistrationId(getActivity());
 
                 if (regid.trim().length() == 0) {
                     registerInBackground();
@@ -155,7 +156,7 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
             } else {
                 unregisterInBackground();
             }
-            return true;
+            return false;
         }
     };
 
@@ -174,22 +175,22 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                 if (sharedPreferences.getBoolean(Constants.PREF_ALERT_ENABLED, false)) {
                     Log.d(TAG, "starting alarm since pref was changed");
                     boolean mDismissible = !sharedPreferences.getBoolean("dismissible", false);
-                    Intent alarmIntent = new Intent(getActivity().getApplicationContext(), PollingAlarmReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Intent alarmIntent = new Intent(getActivity(), PollingAlarmReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity().getApplicationContext())
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
                             .setSmallIcon(R.drawable.ic_notification)
                             .setContentTitle(getString(R.string.notification_title))
                             .setContentText(getString(R.string.notification_starting))
                             .setOngoing(mDismissible);
-                    Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
                     intent.putExtra("drawer_position", 1);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getActivity().getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent pendingIntent2 = PendingIntent.getActivity(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pendingIntent2);
                     mNotificationManager.notify(1, mBuilder.build());
                     try {
-                        (new PollingAlarmReceiver()).onReceive(getActivity().getApplicationContext(), new Intent().putExtra("force", true));
+                        (new PollingAlarmReceiver()).onReceive(getActivity(), new Intent().putExtra("force", true));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -201,16 +202,16 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                     NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(1);
                     ((AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
-                            getActivity().getApplicationContext(), 0, new Intent(getActivity().getApplicationContext(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                            getActivity(), 0, new Intent(getActivity(), PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                     ((AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
-                            getActivity().getApplicationContext(), 0,
-                            new Intent(getActivity().getApplicationContext(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                            getActivity(), 0,
+                            new Intent(getActivity(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("platform") || s.equals(Constants.PREF_PLATFORM_NOTIFICATIONS)) {
                 String persist = mPreferences.getString(s, "pc|ps4");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
                 if (!persist.contains("pc") && !persist.contains("ps4")) {
-                    Toast.makeText(getActivity().getApplicationContext(), "You must select at least one platform, defaulting to PC and PS4.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "You must select at least one platform, defaulting to PC and PS4.", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putString(s, "pc|ps4");
                     editor.commit();
@@ -312,18 +313,18 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
             protected String doInBackground(Void... params) {
                 String msg = "";
                 try {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getActivity().getApplicationContext());
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getActivity());
                     String regid = gcm.register("338009375920");
                     msg = "Device registered, registration ID=" + regid;
 
                     sendRegistrationIdToBackend(regid);
 
-                    storeRegistrationId(getActivity().getApplicationContext(), regid);
+                    storeRegistrationId(getActivity(), regid);
                 } catch (IOException ex) {
                     //if we fail and attempt to register again, we get the same id, so no problem.
                     msg = "Error :" + ex.getMessage();
                     ex.printStackTrace();
-                    Log.e(TAG, ex.getMessage());
+                    Log.e(TAG, msg);
                 }
                 return msg;
             }
@@ -334,15 +335,13 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                 CheckBoxPreference pushPref = (CheckBoxPreference) findPreference(Constants.PREF_PUSH);
                 pushPref.setEnabled(true);
                 if (msg.startsWith("Error :") && !msg.contains("already exists")) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Error occurred while trying to register for push notifications.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Error occurred while trying to register for push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(false);
                     mForceChangingPush = true;
-                    pushPref.setOnPreferenceChangeListener(null);
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putBoolean(Constants.PREF_PUSH, false);
                     editor.commit();
                 }
-                pushPref.setOnPreferenceChangeListener(pushPrefListener);
             }
         }.execute();
     }
@@ -353,13 +352,13 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
             protected String doInBackground(Void... params) {
                 String msg = "";
                 try {
-                    String regid = getRegistrationId(getActivity().getApplicationContext(), false);
+                    String regid = getRegistrationId(getActivity(), false);
                     removeRegistrationIdFromBackend(regid);
-                    removeRegistrationId(getActivity().getApplicationContext());
+                    removeRegistrationId(getActivity());
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                     ex.printStackTrace();
-                    Log.e(TAG, ex.getMessage());
+                    Log.e(TAG, msg);
                 }
                 return msg;
             }
@@ -369,16 +368,14 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                 Log.d(TAG, "unregister msg:" + msg);
                 CheckBoxPreference pushPref = (CheckBoxPreference) findPreference(Constants.PREF_PUSH);
                 pushPref.setEnabled(true);
-                if (msg.startsWith("Error :")) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Error occurred while trying to unregister from push notifications.", Toast.LENGTH_LONG).show();
+                if (msg.startsWith("Error :") && !msg.contains("id not set")) {
+                    Toast.makeText(getActivity(), "Error occurred while trying to unregister from push notifications.", Toast.LENGTH_LONG).show();
                     pushPref.setChecked(true);
-                    pushPref.setOnPreferenceChangeListener(null);
                     mForceChangingPush = true;
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putBoolean(Constants.PREF_PUSH, true);
                     editor.commit();
                 }
-                pushPref.setOnPreferenceChangeListener(pushPrefListener);
             }
         }.execute();
     }
