@@ -38,13 +38,13 @@ public class CustomFilterActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mFilters = new ArrayList<String>(Arrays.asList(
                 PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mFilters);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filters);
         mList = (ListView) findViewById(R.id.listFilters);
         //View footer = View.inflate(this, R.layout.list_item_custom_footer, null);
