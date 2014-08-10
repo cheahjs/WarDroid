@@ -75,11 +75,11 @@
             android:dependency="alert_enabled"
             android:title="@string/settings_enable_filter_title"
             android:summary="@string/settings_enable_filters_summary" />
-        <!--<CheckBoxPreference
+        <CheckBoxPreference
             android:dependency="filter_enabled"
             android:key="unknown_enabled"
-            android:title="Enable unknown notifications"
-            android:summary="Notify on alerts/invasions that have unknown rewards"/>-->
+            android:title="@string/settings_enable_unknown_items"
+            android:summary="@string/settings_enable_unknown_items_summary"/>
         <com.deathsnacks.wardroid.utils.preferences.MultiSelectListPreference
             android:dependency="filter_enabled"
             android:title="@string/settings_aura"

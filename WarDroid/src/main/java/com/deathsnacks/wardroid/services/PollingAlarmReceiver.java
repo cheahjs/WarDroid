@@ -39,6 +39,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
     private int mLedColour;
     private boolean mPc;
     private boolean mPs4;
+    private List<String> mItems;
+    private boolean mUnknownFiltered;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -131,6 +134,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                     PreferenceUtils.fromPersistedPreferenceValue(lowerCase)));
             Log.d(TAG, lowerCase);
 
+            mUnknownFiltered = mPreferences.getBoolean("unknown_enabled", true);
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
@@ -153,6 +157,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 mStreamType = AudioManager.STREAM_MUSIC;
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
+
+            buildItems();
 
             String tempText = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc|ps4");
             mPc = tempText.contains("pc");
@@ -178,6 +184,20 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             mNotificationManager.cancel(1);
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(
                     context, 0, new Intent(context, PollingAlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        }
+    }
+    private void buildItems() {
+        mItems = new ArrayList<String>();
+        if (mPreferences.getInt("reward_version", 0) > mContext.getResources().getInteger(R.integer.reward_version)) {
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("misc_entries", "")));
+        } else {
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.aura_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.bp_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.mod_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.misc_filter_entries));
         }
     }
 
@@ -636,7 +656,8 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
             }
         }
         Intent intent = new Intent(mContext, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("drawer_position", 1);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
@@ -724,6 +745,11 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                             return true;
                     }
                 }
+                if (mUnknownFiltered) {
+                    if (!isItemKnown(reward.replace(" Blueprint", ""))) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -763,6 +789,11 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                             return true;
                     }
                 }
+                if (mUnknownFiltered) {
+                    if (!isItemKnown(reward.replace(" Blueprint", ""))) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -773,6 +804,15 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
         for (String filter : mItemFilters) {
             if (filter.contains(name) && filter.contains("Helmet"))
                 return true;
+        }
+        return false;
+    }
+
+    private Boolean isItemKnown(String reward) {
+        for (String item : mItems) {
+            if (reward.toLowerCase().contains(item.toLowerCase())) {
+                return true;
+            }
         }
         return false;
     }

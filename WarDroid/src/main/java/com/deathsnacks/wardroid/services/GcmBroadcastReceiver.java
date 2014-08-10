@@ -32,6 +32,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private Boolean mPlanetFiltered;
     private Boolean mCreditFiltered;
     private Boolean mTypeFiltered;
+    private Boolean mUnknownFiltered;
     private Boolean mAlertSuccess;
     private Boolean mInvasionSuccess;
     private Boolean mEnableVibrate;
@@ -77,6 +79,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private boolean mPc;
     private boolean mPs4;
     private boolean mPcUpdate;
+    private List<String> mItems;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -160,9 +163,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mCustomFilters = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""))));
             mCustomFilered = mPreferences.getBoolean(Constants.PREF_CUSTOM_ENABLED, false);
-            Log.d(TAG, mPreferences.getString(Constants.PREF_CUSTOM_FILTERS, ""));
-            Log.d(TAG, mCustomFilered + "");
-
 
             mPlanetFiltered = mPreferences.getBoolean(Constants.PREF_PLANET_ENABLED, false);
             mPlanetFilters = new ArrayList<String>(Arrays.asList(
@@ -175,8 +175,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             String lowerCase = mPreferences.getString(Constants.PREF_TYPE_FILTERS, "").toLowerCase();
             mTypeFilters = new ArrayList<String>(Arrays.asList(
                     PreferenceUtils.fromPersistedPreferenceValue(lowerCase)));
-            Log.d(TAG, lowerCase);
 
+            mUnknownFiltered = mPreferences.getBoolean("unknown_enabled", true);
             mInsistent = mPreferences.getBoolean("insistent", false);
             mEnableVibrate = mPreferences.getBoolean("vibrate", true);
             mEnableLED = mPreferences.getBoolean("light", true);
@@ -200,6 +200,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 
             mEmptyIcon = mPreferences.getBoolean("empty_enabled", true);
 
+            buildItems();
+
             mForceUpdateTime = 0;
             if (mAllowAlerts) {
                 parseAlerts(alerts);
@@ -222,6 +224,21 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     mNotificationManager.cancel(1);
                 }
             }
+        }
+    }
+
+    private void buildItems() {
+        mItems = new ArrayList<String>();
+        if (mPreferences.getInt("reward_version", 0) > mContext.getResources().getInteger(R.integer.reward_version)) {
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("aura_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("bp_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("mod_entries", "")));
+            Collections.addAll(mItems, PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("misc_entries", "")));
+        } else {
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.aura_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.bp_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.mod_filter_entries));
+            Collections.addAll(mItems, mContext.getResources().getStringArray(R.array.misc_filter_entries));
         }
     }
 
@@ -465,7 +482,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         }
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("drawer_position", 1);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         if (mVibrate) {
@@ -557,6 +574,11 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                             return true;
                     }
                 }
+                if (mUnknownFiltered) {
+                    if (!isItemKnown(reward.replace(" Blueprint", ""))) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -597,6 +619,11 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                             return true;
                     }
                 }
+                if (mUnknownFiltered) {
+                    if (!isItemKnown(reward.replace(" Blueprint", ""))) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -607,6 +634,15 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         for (String filter : mItemFilters) {
             if (filter.contains(name) && filter.contains("Helmet"))
                 return true;
+        }
+        return false;
+    }
+
+    private Boolean isItemKnown(String reward) {
+        for (String item : mItems) {
+            if (reward.toLowerCase().contains(item.toLowerCase())) {
+                return true;
+            }
         }
         return false;
     }

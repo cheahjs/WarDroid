@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
                                 .setOngoing(mDismissible);
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("drawer_position", 1);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         PendingIntent pendingIntent2 = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(pendingIntent2);
                         mNotificationManager.notify(1, mBuilder.build());

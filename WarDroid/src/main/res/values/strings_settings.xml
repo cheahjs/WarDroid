@@ -45,4 +45,6 @@
     <string name="settings_clear_data_title">Clear all app data</string>
     <string name="settings_led_colour">LED colour</string>
     <string name="settings_led_colour_summary">Not all devices have LEDs and not all devices have support for coloured LEDs.</string>
+    <string name="settings_enable_unknown_items">Enable unknown reward notification</string>
+    <string name="settings_enable_unknown_items_summary">Notify on events that have unknown rewards</string>
 </resources>
