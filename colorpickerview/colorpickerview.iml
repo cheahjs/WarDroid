@@ -57,7 +57,25 @@
       <sourceFolder url="file://$MODULE_DIR$/../libs/colorpickerview/src/androidTest/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../libs/colorpickerview/src/androidTest/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../libs/colorpickerview/src/androidTest/rs" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/assets" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/bundles" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/coverage-instrumented-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/dependency-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/dex" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/dex-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/incremental" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/jacoco" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/javaResources" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/libs" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/lint" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/manifests" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/ndk" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/pre-dexed" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/proguard" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/res" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/rs" />
+      <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/../libs/colorpickerview/build/tmp" />
     </content>

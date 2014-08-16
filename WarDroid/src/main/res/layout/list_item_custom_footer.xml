@@ -18,10 +18,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearanceMedium"
         android:gravity="center"
-        android:paddingStart="10dip"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
-        android:paddingEnd="10dip"
         android:minHeight="48dp"
         android:clickable="true"
         style="@style/selectableView" />
