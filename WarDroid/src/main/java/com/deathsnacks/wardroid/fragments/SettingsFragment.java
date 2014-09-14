@@ -211,11 +211,11 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                 String persist = mPreferences.getString(s, "pc|ps4");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
                 if (!persist.contains("pc") && !persist.contains("ps4")) {
-                    Toast.makeText(getActivity(), "You must select at least one platform, defaulting to PC and PS4.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "You must select at least one platform, defaulting to PC, PS4 and X1.", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    editor.putString(s, "pc|ps4");
+                    editor.putString(s, "pc|ps4|xbox");
                     editor.commit();
-                    platform.setValue("pc|ps4");
+                    platform.setValue("pc|ps4|xbox");
                 }
             }
             Preference preference = findPreference(s);

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.gson.alert.Alert;
+import com.deathsnacks.wardroid.utils.Platform;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.Utils;
 import com.google.gson.GsonBuilder;
@@ -58,14 +59,19 @@ public class AlertsListViewAdapter extends BaseAdapter {
                     continue;
                 }
             }
-            if (alert.isPc()) {
-                if (!mPreferences.getString("platform", "pc|ps4").contains("pc")) {
+            if (alert.getPlatform() == Platform.PC) {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("pc")) {
                     Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
-            } else {
-                if (!mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
+            } else if (alert.getPlatform() == Platform.PS4) {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("ps4")) {
                     Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            } else {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("xbox")) {
+                    Log.d(TAG, "not showing alert, Xbox alert, no Xbox. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
             }
@@ -109,14 +115,19 @@ public class AlertsListViewAdapter extends BaseAdapter {
                     continue;
                 }
             }
-            if (alert.isPc()) {
-                if (!mPreferences.getString("platform", "pc|ps4").contains("pc")) {
+            if (alert.getPlatform() == Platform.PC) {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("pc")) {
                     Log.d(TAG, "not showing alert, PC alert, no PC. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
-            } else {
-                if (!mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
+            } else if (alert.getPlatform() == Platform.PS4) {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("ps4")) {
                     Log.d(TAG, "not showing alert, PS4 alert, no PS4. " + alert.getMissionInfo().getLocation());
+                    continue;
+                }
+            } else {
+                if (!mPreferences.getString("platform", "pc|ps4|xbox").contains("xbox")) {
+                    Log.d(TAG, "not showing alert, Xbox alert, no Xbox. " + alert.getMissionInfo().getLocation());
                     continue;
                 }
             }
@@ -201,7 +212,19 @@ public class AlertsListViewAdapter extends BaseAdapter {
         holder.node.setText(alert.getMissionInfo().getLocation());
         String descTxt = String.format("%s | %s (%s)", alert.getMissionInfo().getDescText(),
                 alert.getMissionInfo().getFaction(), alert.getMissionInfo().getMissionType());
-        holder.desc.setText(descTxt + (alert.isPc() ? " (PC)" : " (PS4)"));
+        String platform = " (PC)";
+        switch (alert.getPlatform()) {
+            case PC:
+                platform = " (PC)";
+                break;
+            case PS4:
+                platform = " (PS4)";
+                break;
+            case Xbox:
+                platform = " (Xbox)";
+                break;
+        }
+        holder.desc.setText(descTxt + platform);
         holder.rewards.setText(Utils.getImageSpannable(mActivity, alert.getMissionInfo().getMissionReward().getRewardString()));
         long now = (long) (System.currentTimeMillis() / 1000);
         long expiry = alert.getExpiry().getSec();

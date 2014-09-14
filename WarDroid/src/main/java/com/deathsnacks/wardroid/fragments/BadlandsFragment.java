@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,7 +28,6 @@ import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.adapters.BadlandsListViewAdapter;
 import com.deathsnacks.wardroid.adapters.SeparatedListAdapter;
 import com.deathsnacks.wardroid.gson.badlands.BadlandNode;
-import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,8 +35,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -75,8 +70,9 @@ public class BadlandsFragment extends Fragment {
         if (savedInstanceState != null) {
             String pc = savedInstanceState.getString("bl_pc");
             String ps4 = savedInstanceState.getString("bl_ps4");
+            String xbox = savedInstanceState.getString("bl_xbox");
             long time = savedInstanceState.getLong("time");
-            if (pc != null || ps4 != null) {
+            if (pc != null || ps4 != null || xbox != null) {
                 mUpdate = false;
                 Log.d(TAG, "saved instance");
                 Type collectionType = new TypeToken<List<BadlandNode>>() {
@@ -89,6 +85,10 @@ public class BadlandsFragment extends Fragment {
                 if (ps4 != null) {
                     List<BadlandNode> data = (new GsonBuilder().create()).fromJson(ps4, collectionType);
                     mAdapter.addSection("PS4", new BadlandsListViewAdapter(getActivity(), data));
+                }
+                if (xbox != null) {
+                    List<BadlandNode> data = (new GsonBuilder().create()).fromJson(xbox, collectionType);
+                    mAdapter.addSection("Xbox One", new BadlandsListViewAdapter(getActivity(), data));
                 }
                 mListView.setAdapter(mAdapter);
                 mListView.onRestoreInstanceState(savedInstanceState.getParcelable("bl_lv"));
@@ -117,10 +117,13 @@ public class BadlandsFragment extends Fragment {
         outState.putParcelable("bl_lv", mListView.onSaveInstanceState());
         BadlandsListViewAdapter pc = (BadlandsListViewAdapter) mAdapter.getSectionAdapter("PC");
         BadlandsListViewAdapter ps4 = (BadlandsListViewAdapter) mAdapter.getSectionAdapter("PS4");
+        BadlandsListViewAdapter xbox = (BadlandsListViewAdapter) mAdapter.getSectionAdapter("Xbox One");
         if (pc != null)
             outState.putString("bl_pc", pc.getOriginalValues());
         if (ps4 != null)
             outState.putString("bl_ps4", ps4.getOriginalValues());
+        if (xbox != null)
+            outState.putString("bl_xbox", xbox.getOriginalValues());
         outState.putLong("time", System.currentTimeMillis());
     }
 
@@ -236,6 +239,7 @@ public class BadlandsFragment extends Fragment {
         private Activity activity;
         private List<BadlandNode> data;
         private List<BadlandNode> data_ps4;
+        private List<BadlandNode> data_xbox;
         private boolean error;
 
         public BadlandsRefresh(Activity activity) {
@@ -265,20 +269,36 @@ public class BadlandsFragment extends Fragment {
                 Type collectionType = new TypeToken<List<BadlandNode>>() {
                 }.getType();
                 data = (new GsonBuilder().create()).fromJson(response, collectionType);
-                String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
-                String response2;
+
+                String cache_ps4 = preferences.getString(KEY + "_ps4_cache", "_ded");
+                String response_ps4;
                 try {
-                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/currentbadlands_2.json", preferences, KEY + "_ps4");
+                    response_ps4 = Http.get("http://deathsnacks.com/wf/data/ps4/currentbadlands_2.json", preferences, KEY + "_ps4");
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
                     //If no cache, proceed to normally handling an exception.
-                    if (cache.equals("_ded"))
+                    if (cache_ps4.equals("_ded"))
                         throw ex;
-                    response2 = cache2;
+                    response_ps4 = cache_ps4;
                     error = true;
                 }
-                data_ps4 = (new GsonBuilder().create()).fromJson(response2, collectionType);
+                data_ps4 = (new GsonBuilder().create()).fromJson(response_ps4, collectionType);
+
+                String cache_xbox = preferences.getString(KEY + "_xbox_cache", "_ded");
+                String response_xbox;
+                try {
+                    response_xbox = Http.get("http://deathsnacks.com/wf/data/xbox/currentbadlands_2.json", preferences, KEY + "_xbox");
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache_xbox.equals("_ded"))
+                        throw ex;
+                    response_xbox = cache_xbox;
+                    error = true;
+                }
+                data_xbox = (new GsonBuilder().create()).fromJson(response_xbox, collectionType);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -295,7 +315,7 @@ public class BadlandsFragment extends Fragment {
             SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             if (success) {
                 mAdapter = new SeparatedListAdapter(activity, null);
-                if (mPreferences.getString("platform", "pc|ps4").contains("pc")) {
+                if (mPreferences.getString("platform", "pc|ps4|xbox").contains("pc")) {
                     Collections.sort(data,
                             new Comparator<BadlandNode>() {
                                 @Override
@@ -307,7 +327,7 @@ public class BadlandsFragment extends Fragment {
                             });
                     mAdapter.addSection("PC", new BadlandsListViewAdapter(activity, data));
                 }
-                if (mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
+                if (mPreferences.getString("platform", "pc|ps4|xbox").contains("ps4")) {
                     Collections.sort(data_ps4,
                             new Comparator<BadlandNode>() {
                                 @Override
@@ -318,6 +338,18 @@ public class BadlandsFragment extends Fragment {
                                 }
                             });
                     mAdapter.addSection("PS4", new BadlandsListViewAdapter(activity, data_ps4));
+                }
+                if (mPreferences.getString("platform", "pc|ps4|xbox").contains("xbox")) {
+                    Collections.sort(data_xbox,
+                            new Comparator<BadlandNode>() {
+                                @Override
+                                public int compare(BadlandNode bl1, BadlandNode bl2) {
+                                    String a = bl1.getNodeRegionName() + bl1.getNode();
+                                    String b = bl2.getNodeRegionName() + bl2.getNode();
+                                    return a.compareTo(b);
+                                }
+                            });
+                    mAdapter.addSection("Xbox One", new BadlandsListViewAdapter(activity, data_xbox));
                 }
                 mListView.setAdapter(mAdapter);
                 if (error) {

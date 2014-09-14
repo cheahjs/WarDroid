@@ -24,6 +24,7 @@ import android.util.Log;
 import com.deathsnacks.wardroid.Constants;
 import com.deathsnacks.wardroid.R;
 import com.deathsnacks.wardroid.activities.MainActivity;
+import com.deathsnacks.wardroid.utils.Platform;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.deathsnacks.wardroid.utils.gcmclasses.Alert;
 import com.deathsnacks.wardroid.utils.gcmclasses.Invasion;
@@ -72,13 +73,17 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
     private String mInvasions;
     private String mAlertsPS4;
     private String mInvasionsPS4;
+    private String mAlertsXbox;
+    private String mInvasionsXbox;
     private Boolean mAllowAlerts;
     private Boolean mAllowInvasions;
     private int mLedColour;
     private boolean mForce;
     private boolean mPc;
     private boolean mPs4;
-    private boolean mPcUpdate;
+    private boolean mXbox;
+    //private boolean mPcUpdate;
+    private Platform mPlatformUpdate;
     private List<String> mItems;
 
     @Override
@@ -94,29 +99,51 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             String invasions = intent.getStringExtra("invasions");
             String alertsPs4 = intent.getStringExtra("alerts_ps4");
             String invasionsPs4 = intent.getStringExtra("invasions_ps4");
+            String alertsXbox = intent.getStringExtra("alerts_xbox");
+            String invasionsXbox = intent.getStringExtra("invasions_xbox");
             mForce = intent.getBooleanExtra("mForce", false);
             Log.d(TAG, "gcm alerts:" + alerts);
             Log.d(TAG, "gcm invasions:" + invasions);
             Log.d(TAG, "gcm ps4 alerts:" + alertsPs4);
             Log.d(TAG, "gcm ps4 invasions:" + invasionsPs4);
-            if ((alerts == null || invasions == null) && (alertsPs4 != null && invasionsPs4 != null)) {
-                Log.i(TAG, "PS4 update, grabbing PC cache");
-                mPcUpdate = false;
+            Log.d(TAG, "gcm xbox alerts:" + alertsXbox);
+            Log.d(TAG, "gcm xbox invasions:" + invasionsXbox);
+            if ((alerts == null || invasions == null)
+                    && (alertsXbox == null || invasionsXbox == null)
+                    && (alertsPs4 != null && invasionsPs4 != null)) {
+                Log.i(TAG, "PS4 update, grabbing PC and X1 cache");
+                mPlatformUpdate = Platform.PS4;
                 alerts = mPreferences.getString(Constants.PREF_GCM_ALERTS, "");
                 invasions = mPreferences.getString(Constants.PREF_GCM_INVASIONS, "");
-            } else if ((alerts != null && invasions != null) && (alertsPs4 == null || invasionsPs4 == null)) {
-                Log.i(TAG, "PC update, grabbing PS4 cache");
+                alertsXbox = mPreferences.getString(Constants.PREF_GCM_ALERTS_XBOX, "");
+                invasionsXbox = mPreferences.getString(Constants.PREF_GCM_INVASIONS_XBOX, "");
+            } else if ((alerts != null && invasions != null)
+                    && (alertsXbox == null || invasionsXbox == null)
+                    && (alertsPs4 == null || invasionsPs4 == null)) {
+                Log.i(TAG, "PC update, grabbing PS4 and X1 cache");
                 alertsPs4 = mPreferences.getString(Constants.PREF_GCM_ALERTS_PS4, "");
                 invasionsPs4 = mPreferences.getString(Constants.PREF_GCM_INVASIONS_PS4, "");
-                mPcUpdate = true;
+                alertsXbox = mPreferences.getString(Constants.PREF_GCM_ALERTS_XBOX, "");
+                invasionsXbox = mPreferences.getString(Constants.PREF_GCM_INVASIONS_XBOX, "");
+                mPlatformUpdate = Platform.PC;
+            } else if ((alerts == null && invasions == null)
+                    && (alertsXbox != null || invasionsXbox != null)
+                    && (alertsPs4 == null || invasionsPs4 == null)) {
+                Log.i(TAG, "Xbox update, grabbing PS4 and PC cache");
+                alertsPs4 = mPreferences.getString(Constants.PREF_GCM_ALERTS_PS4, "");
+                invasionsPs4 = mPreferences.getString(Constants.PREF_GCM_INVASIONS_PS4, "");
+                alerts = mPreferences.getString(Constants.PREF_GCM_ALERTS, "");
+                invasions = mPreferences.getString(Constants.PREF_GCM_INVASIONS, "");
+                mPlatformUpdate = Platform.Xbox;
             }
             if ((alerts == null || invasions == null) && (alertsPs4 == null || invasionsPs4 == null) && !mForce) {
                 Log.w(TAG, "Somehow gcm data is null, and we aren't forcing an update. ABORT ABORT ABORT!");
                 return;
             }
-            String platformPref = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc|ps4");
+            String platformPref = mPreferences.getString(Constants.PREF_PLATFORM_NOTIFICATIONS, "pc|ps4|xbox");
             mPc = platformPref.contains("pc");
             mPs4 = platformPref.contains("ps4");
+            mXbox = platformPref.contains("xbox");
             if (mForce && (alerts == null || invasions == null) && (alertsPs4 == null || invasionsPs4 == null)) {
                 Log.d(TAG, "We are forcing, so we are grabbing cached stuff.");
                 alerts = mPreferences.getString(Constants.PREF_GCM_ALERTS, "");
@@ -128,15 +155,23 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             mInvasions = invasions;
             mAlertsPS4 = alertsPs4;
             mInvasionsPS4 = invasionsPs4;
+            mAlertsXbox = alertsXbox;
+            mInvasionsXbox = invasionsXbox;
             mContext = context;
             SharedPreferences.Editor editor = mPreferences.edit();
             if (!mForce) {
-                if (mPcUpdate) {
-                    editor.putString(Constants.PREF_GCM_ALERTS, alerts);
-                    editor.putString(Constants.PREF_GCM_INVASIONS, invasions);
-                } else {
-                    editor.putString(Constants.PREF_GCM_ALERTS_PS4, alertsPs4);
-                    editor.putString(Constants.PREF_GCM_INVASIONS_PS4, invasionsPs4);
+                switch (mPlatformUpdate) {
+                    case PC:
+                        editor.putString(Constants.PREF_GCM_ALERTS, alerts);
+                        editor.putString(Constants.PREF_GCM_INVASIONS, invasions);
+                        break;
+                    case PS4:
+                        editor.putString(Constants.PREF_GCM_ALERTS_PS4, alertsPs4);
+                        editor.putString(Constants.PREF_GCM_INVASIONS_PS4, invasionsPs4);
+                        break;
+                    case Xbox:
+                        editor.putString(Constants.PREF_GCM_ALERTS_XBOX, alertsXbox);
+                        editor.putString(Constants.PREF_GCM_INVASIONS_XBOX, invasionsXbox);
                 }
             }
             mVibrate = false;
@@ -206,12 +241,14 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
             if (mAllowAlerts) {
                 parseAlerts(alerts);
                 parseAlertsPS4(alertsPs4);
+                parseAlertsXbox(alertsXbox);
             } else {
                 mAlertSuccess = true;
             }
             if (mAllowInvasions) {
                 parseInvasions(invasions);
                 parseInvasionsPS4(invasionsPs4);
+                parseInvasionsXbox(invasionsXbox);
             } else {
                 mInvasionSuccess = true;
             }
@@ -439,6 +476,109 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                 if (mNew)
                     mVibrate = true;
                 mNotifications.add(invasion.getNotificationText("PS4"));
+                continue;
+            }
+        }
+        mEditor = mPreferences.edit();
+        mEditor.putString("invasion_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.commit();
+        mInvasionSuccess = true;
+    }
+
+    private void parseAlertsXbox(String response) {
+        if (response.length() < 15) {
+            mAlertSuccess = true;
+            Log.i(TAG, "Alert response < 15, tagging success and continuing");
+            Log.i(TAG, response);
+            return;
+        }
+        List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("alert_completed_ids", ""))));
+        Log.d(TAG, mPreferences.getString("alert_completed_ids", ""));
+        String[] rawAlerts = response.split("\\n");
+        Boolean mNew = false;
+        for (String rawAlert : rawAlerts) {
+            if (rawAlert.split("\\|").length != 8)
+                continue;
+            Alert alert = new Alert(rawAlert);
+            mNew = false;
+            if (!ids.contains(alert.getId())) {
+                mNew = true;
+                ids.add(alert.getId());
+            }
+            Log.d(TAG, "found alert: " + alert.getNode() + " - " + TextUtils.join(" - ", alert.getRewards())
+                    + " - new: " + mNew);
+            if (alert.getExpiry() < System.currentTimeMillis() / 1000) {
+                Log.d(TAG, "alert: " + alert.getNode() + " has expired, ignore");
+                continue;
+            }
+            if (completedIds.contains(alert.getId())) {
+                Log.i(TAG, "alert: " + alert.getNode() + " has been completed, ignore");
+                continue;
+            }
+            if (!mXbox) {
+                Log.i(TAG, "Xbox notifications not enabled, ignoring");
+                continue;
+            }
+            if (isAlertFiltered(alert)) {
+                Log.d(TAG, "accepted alert: " + alert.getNode());
+                if (mNew)
+                    mVibrate = true;
+                if (mForceUpdateTime == 0)
+                    mForceUpdateTime = alert.getExpiry();
+                else {
+                    if (alert.getExpiry() < mForceUpdateTime) {
+                        mForceUpdateTime = alert.getExpiry();
+                    }
+                }
+                mNotifications.add(String.format("X1 [%s]: <b>%s</b>",
+                        DateFormat.getTimeFormat(mContext).format(new Date(alert.getExpiry()*1000)), TextUtils.join(" - ", alert.getRewards())));
+                continue;
+            }
+        }
+        mEditor = mPreferences.edit();
+        mEditor.putString("alert_ids", PreferenceUtils.toPersistedPreferenceValue(ids.toArray(new String[ids.size()])));
+        mEditor.commit();
+        mAlertSuccess = true;
+    }
+
+    private void parseInvasionsXbox(String response) {
+        Log.d(TAG, response.length() + "");
+        if (response.length() < 15) {
+            mInvasionSuccess = true;
+            Log.i(TAG, "Invasion response < 15, tagging success and continuing");
+            return;
+        }
+        List<String> ids = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_ids", ""))));
+        List<String> completedIds = new ArrayList<String>(Arrays.asList(PreferenceUtils.fromPersistedPreferenceValue(mPreferences.getString("invasion_completed_ids", ""))));
+        Log.d(TAG, mPreferences.getString("invasion_completed_ids", ""));
+        String[] rawInvasions = response.split("\\n");
+        Boolean mNew = false;
+        for (String rawInvasion : rawInvasions) {
+            if (rawInvasion.split("\\|").length != 9)
+                continue;
+            Invasion invasion = new Invasion(rawInvasion);
+            mNew = false;
+            if (!ids.contains(invasion.getId())) {
+                mNew = true;
+                ids.add(invasion.getId());
+            }
+            Log.d(TAG, "found invasion: " + invasion.getNode() + " - " + TextUtils.join(" - ", invasion.getRewards())
+                    + " - new: " + mNew);
+            if (completedIds.contains(invasion.getId())) {
+                Log.i(TAG, "invasion: " + invasion.getNode() + " has been marked completed, ignore");
+                continue;
+            }
+            if (!mXbox) {
+                Log.i(TAG, "Xbox notifications not enabled, ignoring");
+                continue;
+            }
+            String[] rewards = invasion.getRewards();
+            if (isInvasionFiltered(invasion)) {
+                Log.d(TAG, "Accepted invasion: " + invasion.getNotificationText("X1"));
+                if (mNew)
+                    mVibrate = true;
+                mNotifications.add(invasion.getNotificationText("X1"));
                 continue;
             }
         }

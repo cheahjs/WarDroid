@@ -35,6 +35,7 @@ import com.deathsnacks.wardroid.adapters.AlertsListViewAdapter;
 import com.deathsnacks.wardroid.gson.alert.Alert;
 import com.deathsnacks.wardroid.services.PollingAlarmReceiver;
 import com.deathsnacks.wardroid.utils.Http;
+import com.deathsnacks.wardroid.utils.Platform;
 import com.deathsnacks.wardroid.utils.PreferenceUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.GsonBuilder;
@@ -331,6 +332,7 @@ public class AlertsFragment extends Fragment {
         private Activity activity;
         private List<Alert> data;
         private List<Alert> ps4data;
+        private List<Alert> xboxdata;
         private Boolean error;
 
         public AlertsRefresh(Activity activity) {
@@ -363,11 +365,12 @@ public class AlertsFragment extends Fragment {
                 List<Alert> newList = new ArrayList<Alert>();
                 for (int i = 0; i < data.size(); i++) {
                     Alert alert = data.get(i);
-                    alert.setPc(true);
+                    alert.setPlatform(Platform.PC);
                     newList.add(alert);
                 }
                 data = newList;
-                String cache2 = preferences.getString(KEY + "_ps4" + "_cache", "_ded");
+
+                String cache_ps4 = preferences.getString(KEY + "_ps4" + "_cache", "_ded");
                 String ps4response;
                 try {
                     ps4response = Http.get("http://deathsnacks.com/wf/data/ps4/last15alerts_localized.json", preferences, KEY + "_ps4");
@@ -375,19 +378,42 @@ public class AlertsFragment extends Fragment {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
                     //If no cache, proceed to normally handling an exception.
-                    if (cache2.equals("_ded"))
+                    if (cache_ps4.equals("_ded"))
                         throw ex;
-                    ps4response = cache2;
+                    ps4response = cache_ps4;
                     error = true;
                 }
                 ps4data = (new GsonBuilder().create()).fromJson(ps4response, collectionType);
-                List<Alert> newList2 = new ArrayList<Alert>();
+                List<Alert> newList_ps4 = new ArrayList<Alert>();
                 for (int i = 0; i < ps4data.size(); i++) {
                     Alert alert = ps4data.get(i);
-                    alert.setPc(false);
-                    newList2.add(alert);
+                    alert.setPlatform(Platform.PS4);
+                    newList_ps4.add(alert);
                 }
-                ps4data = newList2;
+                ps4data = newList_ps4;
+
+                String cache_xbox = preferences.getString(KEY + "_xbox" + "_cache", "_ded");
+                String xboxresponse;
+                try {
+                    xboxresponse = Http.get("http://deathsnacks.com/wf/data/xbox/last15alerts_localized.json", preferences, KEY + "_xbox");
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache_xbox.equals("_ded"))
+                        throw ex;
+                    xboxresponse = cache_xbox;
+                    error = true;
+                }
+                xboxdata = (new GsonBuilder().create()).fromJson(xboxresponse, collectionType);
+                List<Alert> newList_xbox = new ArrayList<Alert>();
+                for (int i = 0; i < xboxdata.size(); i++) {
+                    Alert alert = xboxdata.get(i);
+                    alert.setPlatform(Platform.Xbox);
+                    newList_xbox.add(alert);
+                }
+                xboxdata = newList_xbox;
+
                 clearIds();
                 return true;
             } catch (Exception e) {
@@ -408,6 +434,9 @@ public class AlertsFragment extends Fragment {
                     nowids.add(alert.get_id().get$id());
                 }
                 for (Alert alert : ps4data) {
+                    nowids.add(alert.get_id().get$id());
+                }
+                for (Alert alert : xboxdata) {
                     nowids.add(alert.get_id().get$id());
                 }
                 for (String id : ids) {
@@ -433,11 +462,13 @@ public class AlertsFragment extends Fragment {
             if (success) {
                 try {
                     List<Alert> merged = new ArrayList<Alert>();
-                    String pref = mPreferences.getString("platform", "pc|ps4");
+                    String pref = mPreferences.getString("platform", "pc|ps4|xbox");
                     if (pref.contains("pc"))
                         merged.addAll(data);
                     if (pref.contains("ps4"))
                         merged.addAll(ps4data);
+                    if (pref.contains("xbox"))
+                        merged.addAll(xboxdata);
                     Collections.sort(merged,
                             new Comparator<Alert>() {
                                 @Override

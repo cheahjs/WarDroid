@@ -123,8 +123,9 @@ public class InvasionFragment extends Fragment {
         if (savedInstanceState != null) {
             String pc = savedInstanceState.getString("invasions_pc");
             String ps4 = savedInstanceState.getString("invasions_ps4");
+            String xbox = savedInstanceState.getString("invasions_xbox");
             long time = savedInstanceState.getLong("time");
-            if (pc != null || ps4 != null) {
+            if (pc != null || ps4 != null || xbox != null) {
                 Log.d(TAG, "saved instance");
                 mUpdate = false;
                 mAdapter = new SeparatedListAdapter(getActivity(), mNoneView);
@@ -133,6 +134,9 @@ public class InvasionFragment extends Fragment {
                 }
                 if (ps4 != null) {
                     mAdapter.addSection("PS4", new InvasionListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(ps4.split("\\n"))), mNoneView, false));
+                }
+                if (xbox != null) {
+                    mAdapter.addSection("Xbox One", new InvasionListViewAdapter(getActivity(), new ArrayList<String>(Arrays.asList(xbox.split("\\n"))), mNoneView, false));
                 }
                 if (mAdapter.getAdapterCount() == 0) {
                     mNoneView.setVisibility(View.VISIBLE);
@@ -157,10 +161,13 @@ public class InvasionFragment extends Fragment {
         outState.putParcelable("invasion_lv", mInvasionView.onSaveInstanceState());
         InvasionListViewAdapter pc = (InvasionListViewAdapter) mAdapter.getSectionAdapter("PC");
         InvasionListViewAdapter ps4 = (InvasionListViewAdapter) mAdapter.getSectionAdapter("PS4");
+        InvasionListViewAdapter xbox = (InvasionListViewAdapter) mAdapter.getSectionAdapter("Xbox One");
         if (pc != null)
             outState.putString("invasions_pc", pc.getOriginalValues());
         if (ps4 != null)
             outState.putString("invasions_ps4", ps4.getOriginalValues());
+        if (xbox != null)
+            outState.putString("invasions_xbox", xbox.getOriginalValues());
         outState.putLong("time", System.currentTimeMillis());
     }
 
@@ -273,6 +280,7 @@ public class InvasionFragment extends Fragment {
         private Activity activity;
         private List<String> data;
         private List<String> ps4data;
+        private List<String> xboxdata;
         private boolean error;
 
         public InvasionRefresh(Activity activity) {
@@ -286,6 +294,7 @@ public class InvasionFragment extends Fragment {
                 return false;
             try {
                 SharedPreferences preferences = activity.getSharedPreferences(KEY, Context.MODE_PRIVATE);
+
                 String cache = preferences.getString(KEY + "_cache", "_ded");
                 String response;
                 try {
@@ -301,21 +310,38 @@ public class InvasionFragment extends Fragment {
                 }
                 response = response.trim();
                 data = new ArrayList<String>(Arrays.asList(response.split("\\n")));
-                String cache2 = preferences.getString(KEY + "_ps4_cache", "_ded");
-                String response2;
+
+                String cache_ps4 = preferences.getString(KEY + "_ps4_cache", "_ded");
+                String response_ps4;
                 try {
-                    response2 = Http.get("http://deathsnacks.com/wf/data/ps4/invasion_raw.txt", preferences, KEY + "_ps4");
+                    response_ps4 = Http.get("http://deathsnacks.com/wf/data/ps4/invasion_raw.txt", preferences, KEY + "_ps4");
                 } catch (IOException ex) {
                     //We failed to update, but we still have a cache, hopefully.
                     ex.printStackTrace();
                     //If no cache, proceed to normally handling an exception.
-                    if (cache2.equals("_ded"))
+                    if (cache_ps4.equals("_ded"))
                         throw ex;
-                    response2 = cache2;
+                    response_ps4 = cache_ps4;
                     error = true;
                 }
-                response2 = response2.trim();
-                ps4data = new ArrayList<String>(Arrays.asList(response2.split("\\n")));
+                response_ps4 = response_ps4.trim();
+                ps4data = new ArrayList<String>(Arrays.asList(response_ps4.split("\\n")));
+
+                String cache_xbox = preferences.getString(KEY + "_xbox_cache", "_ded");
+                String response_xbox;
+                try {
+                    response_xbox = Http.get("http://deathsnacks.com/wf/data/xbox/invasion_raw.txt", preferences, KEY + "_xbox");
+                } catch (IOException ex) {
+                    //We failed to update, but we still have a cache, hopefully.
+                    ex.printStackTrace();
+                    //If no cache, proceed to normally handling an exception.
+                    if (cache_xbox.equals("_ded"))
+                        throw ex;
+                    response_xbox = cache_xbox;
+                    error = true;
+                }
+                response_xbox = response_xbox.trim();
+                xboxdata = new ArrayList<String>(Arrays.asList(response_xbox.split("\\n")));
                 clearIds();
                 return true;
             } catch (Exception e) {
@@ -337,6 +363,9 @@ public class InvasionFragment extends Fragment {
                 }
                 for (int i = 1; i < ps4data.size(); i++) {
                     nowids.add(ps4data.get(i).split("\\|")[0]);
+                }
+                for (int i = 1; i < xboxdata.size(); i++) {
+                    nowids.add(xboxdata.get(i).split("\\|")[0]);
                 }
                 for (String id : ids) {
                     if (nowids.contains(id)) {
@@ -361,11 +390,14 @@ public class InvasionFragment extends Fragment {
             if (success) {
                 try {
                     mAdapter = new SeparatedListAdapter(activity, mNoneView);
-                    if (mPreferences.getString("platform", "pc|ps4").contains("pc")) {
+                    if (mPreferences.getString("platform", "pc|ps4|xbox").contains("pc")) {
                         mAdapter.addSection("PC", new InvasionListViewAdapter(activity, data, mNoneView));
                     }
-                    if (mPreferences.getString("platform", "pc|ps4").contains("ps4")) {
+                    if (mPreferences.getString("platform", "pc|ps4|xbox").contains("ps4")) {
                         mAdapter.addSection("PS4", new InvasionListViewAdapter(activity, ps4data, mNoneView));
+                    }
+                    if (mPreferences.getString("platform", "pc|ps4|xbox").contains("xbox")) {
+                        mAdapter.addSection("Xbox One", new InvasionListViewAdapter(activity, xboxdata, mNoneView));
                     }
                     if (mAdapter.getAdapterCount() == 0) {
                         mNoneView.setVisibility(View.VISIBLE);

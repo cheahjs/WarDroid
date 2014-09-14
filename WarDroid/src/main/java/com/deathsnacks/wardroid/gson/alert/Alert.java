@@ -2,6 +2,7 @@
 package com.deathsnacks.wardroid.gson.alert;
 
 
+import com.deathsnacks.wardroid.utils.Platform;
 import com.google.gson.annotations.Expose;
 
 
@@ -21,7 +22,7 @@ public class Alert {
     private int Twitter;
     @Expose
     private _id _id;
-    private boolean pc;
+    private Platform platform;
 
     public com.deathsnacks.wardroid.gson.alert.Activation getActivation() {
         return Activation;
@@ -80,11 +81,11 @@ public class Alert {
     }
 
 
-    public boolean isPc() {
-        return pc;
+    public Platform getPlatform() {
+        return platform;
     }
 
-    public void setPc(boolean pc) {
-        this.pc = pc;
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
     }
 }

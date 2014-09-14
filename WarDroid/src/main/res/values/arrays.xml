@@ -151,6 +151,7 @@
     <string-array name="platform_names">
         <item>PC</item>
         <item>PS4</item>
+        <item>Xbox One</item>
     </string-array>
 
     <!-- DO NOT EDIT FOR TRANSLATIONS -->
@@ -305,5 +306,6 @@
     <string-array name="platform_entries">
         <item>pc</item>
         <item>ps4</item>
+        <item>xbox</item>
     </string-array>
 </resources>

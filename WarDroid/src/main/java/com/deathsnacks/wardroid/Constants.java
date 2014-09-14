@@ -13,6 +13,8 @@ public class Constants {
     public static final String PREF_GCM_INVASIONS = "gcm_invasions";
     public static final String PREF_GCM_ALERTS_PS4 = "gcm_alerts_ps4";
     public static final String PREF_GCM_INVASIONS_PS4 = "gcm_invasions_ps4";
+    public static final String PREF_GCM_ALERTS_XBOX = "gcm_alerts_xbox";
+    public static final String PREF_GCM_INVASIONS_XBOX = "gcm_invasions_xbox";
     public static final String PREF_AURA_FILTERS = "aura_filters";
     public static final String PREF_BP_FILTERS = "bp_filters";
     public static final String PREF_MOD_FILTERS = "mod_filters";
