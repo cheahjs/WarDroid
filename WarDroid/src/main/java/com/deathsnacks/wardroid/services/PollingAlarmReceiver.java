@@ -442,7 +442,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
     private void doAlertsXbox() {
         try {
-            URL url = new URL("http://deathsnacks.com/wf/data/xb1/alerts_raw.txt");
+            URL url = new URL("http://deathsnacks.com/wf/data/xbox/alerts_raw.txt");
             HttpURLConnection connection = client.open(url);
             System.setProperty("http.agent", "");
             connection.setRequestProperty("User-Agent", "WarDroid/Android/");
@@ -465,7 +465,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 in = connection.getInputStream();
                 byte[] response = readAll(in);
                 String resp = new String(response, "UTF-8");
-                parseAlertsPS4(resp);
+                parseAlertsXbox(resp);
                 SharedPreferences.Editor mEditor = mHttpPreferences.edit();
                 mEditor.putLong("alerts_modified_xb1", connection.getLastModified());
                 mEditor.putString("alerts_cache_xb1", resp);
@@ -720,7 +720,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
 
     private void doInvasionsXbox() {
         try {
-            URL url = new URL("http://deathsnacks.com/wf/data/xb1/invasion_mini.txt");
+            URL url = new URL("http://deathsnacks.com/wf/data/xbox/invasion_mini.txt");
             HttpURLConnection connection = client.open(url);
             System.setProperty("http.agent", "");
             connection.setRequestProperty("User-Agent", "WarDroid/Android/");
@@ -743,7 +743,7 @@ public class PollingAlarmReceiver extends BroadcastReceiver {
                 in = connection.getInputStream();
                 byte[] response = readAll(in);
                 String resp = new String(response, "UTF-8");
-                parseInvasionsPS4(resp);
+                parseInvasionsXbox(resp);
                 SharedPreferences.Editor mEditor = mHttpPreferences.edit();
                 mEditor.putLong("invasion_modified_xb1", connection.getLastModified());
                 mEditor.putString("invasion_cache_xb1", resp);
