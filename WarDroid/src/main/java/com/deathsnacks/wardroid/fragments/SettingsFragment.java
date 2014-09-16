@@ -208,9 +208,9 @@ public class SettingsFragment extends PreferenceFragment implements PreferenceAc
                             new Intent(getActivity(), NotificationsUpdateReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             } else if (s.equals("platform") || s.equals(Constants.PREF_PLATFORM_NOTIFICATIONS)) {
-                String persist = mPreferences.getString(s, "pc|ps4");
+                String persist = mPreferences.getString(s, "pc|ps4|xbox");
                 MultiSelectListPreference platform = (MultiSelectListPreference) findPreference(s);
-                if (!persist.contains("pc") && !persist.contains("ps4")) {
+                if (!persist.contains("pc") && !persist.contains("ps4") && !persist.contains("xbox")) {
                     Toast.makeText(getActivity(), "You must select at least one platform, defaulting to PC, PS4 and X1.", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putString(s, "pc|ps4|xbox");
