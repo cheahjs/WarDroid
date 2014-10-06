@@ -6,7 +6,7 @@
     <string name="settings_enable_alerts_summary">May consume a lot of data.</string>
     <string name="settings_filter_title">Notification Filter Settings</string>
     <string name="settings_enable_filter_title">Enable item filter</string>
-    <string name="settings_enable_filters_summary">Exclude alerts that do not have the selected items if enabled.</string>
+    <string name="settings_enable_filters_summary">Show alerts with checked items.</string>
     <string name="settings_aura">Auras</string>
     <string name="settings_blueprints">Blueprints</string>
     <string name="settings_mods">Mods</string>

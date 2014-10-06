@@ -100,7 +100,7 @@ public class CustomFilterActivity extends ActionBarActivity {
         @Override
         public void onClick(View view) {
             AlertDialog alertDialog = new AlertDialog.Builder(CustomFilterActivity.this)
-                    .setTitle("Add new custom filter")
+                    .setTitle(getString(R.string.new_custom_filter_title))
                     .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -139,7 +139,7 @@ public class CustomFilterActivity extends ActionBarActivity {
                 return true;
             case R.id.new_filter:
                 AlertDialog alertDialog = new AlertDialog.Builder(CustomFilterActivity.this)
-                        .setTitle("Add new custom filter")
+                        .setTitle(getString(R.string.new_custom_filter_title))
                         .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

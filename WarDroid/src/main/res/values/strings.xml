@@ -31,5 +31,6 @@
     <string name="clear_data_title">Clear app data</string>
 
     <string name="toggle_all">Toggle All</string>
-    <string name="badlands_none">There are no badland nodes at the moment.</string>
+    <string name="badlands_none">There are no Dark Sector nodes at the moment.</string>
+    <string name="new_custom_filter_title">Add new custom filter</string>
 </resources>
