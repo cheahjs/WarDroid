@@ -1,5 +1,8 @@
 package com.deathsnacks.wardroid.utils.gcmclasses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Admin on 24/02/14.
  */
@@ -37,8 +40,14 @@ public class Alert {
         return expiry;
     }
 
-    public String[] getRewards() {
-        return rewards;
+    public String[] getRewards() { return rewards; }
+
+    public String[] getRewardsStripped() {
+        List<String> rewardsTemp = new ArrayList<String>();
+        for (String reward : rewards) {
+            rewardsTemp.add(reward.replaceAll("\\d+ ", ""));
+        }
+        return rewardsTemp.toArray(new String[rewardsTemp.size()]);
     }
 
     private String faction;

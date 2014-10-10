@@ -1,5 +1,8 @@
 package com.deathsnacks.wardroid.utils.httpclasses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Admin on 04/02/14.
  */
@@ -47,6 +50,14 @@ public class Alert {
 
     public String[] getRewards() {
         return rewards;
+    }
+
+    public String[] getRewardsStripped() {
+        List<String> rewardsTemp = new ArrayList<String>();
+        for (String reward : rewards) {
+            rewardsTemp.add(reward.replaceAll("\\d+ ", ""));
+        }
+        return rewardsTemp.toArray(new String[rewardsTemp.size()]);
     }
 
     public String getDescription() {

@@ -691,7 +691,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         if (!mItemFiltered && !mCreditFiltered && !mCustomFilered)
             return true;
 
-        for (String reward : alert.getRewards()) {
+        for (String reward : alert.getRewardsStripped()) {
             if (reward.contains("cr")) {
                 if (mCreditFiltered) {
                     int credits = Integer.parseInt(reward.replace(",", "").replace("cr", ""));
