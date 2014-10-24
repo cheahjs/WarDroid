@@ -16,18 +16,18 @@ dependencies {
     compile files('libs/gson-2.2.4.jar')
     compile files('libs/okhttp-1.2.1-jar-with-dependencies.jar')
     compile project(':libs:android-support-v4-preferencefragment')
-    compile 'com.google.android.gms:play-services:4.4.+'
+    compile 'com.google.android.gms:play-services:6.1.+'
     compile project(':libs:colorpickerview')
     compile 'com.android.support:support-v4:19.+'
-    compile "com.android.support:appcompat-v7:19.+"
+    compile "com.android.support:appcompat-v7:21.+"
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.2'
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
     signingConfigs {
         release {

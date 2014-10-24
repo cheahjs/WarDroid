@@ -11,9 +11,15 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+        <!-- Set AppCompat’s actionBarStyle -->
+        <!--  <item name="actionBarStyle">@style/MyActionBarStyle</item>  -->
+
+        <!-- Set AppCompat’s color theming attrs -->
+        <!--  <item name="colorPrimary">@color/my_awesome_red</item>  -->
+        <!-- <item name="colorPrimaryDark">@color/my_awesome_darker_red</item>  -->
     </style>
 
-    <!-- Application theme. -->
+<!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!--<item name="listPreferredItemHeightSmall">48dp</item>
         <item name="listPreferredItemPaddingEnd">10dip</item>
