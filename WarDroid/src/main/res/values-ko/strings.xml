@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources></resources>
+
+    <!--
+    An error occurred while refreshing
+새로고침도중 에러가 발생했습니다.
+
+Refresh
+새로고침
+
+TRACKERS
+트래커
+
+SETTINGS
+설정
+
+You already marked that completed.
+이미 완료됨으로 표시되었습니다.
+
+Starting background service.
+백그라운드 서비스를 시작합니다.
+
+%d filtered alerts/invasions
+
+
+%d filtered invasions
+
+
+%d filtered alerts
+
+
+Do you want to mark this invasion as completed?
+이 침공을 완료됨으로 표시하겠습니까?
+
+%d more events
+
+
+Settings
+설정
+
+There are no invasions at this time.
+현재 침공미션이 존재하지 않습니다.
+
+Do you want to mark this invasion as incomplete?
+이 침공을 미완료됨으로 표시하겠습니까?
+
+Exit
+종료
+
+Are you sure you want to exit? If push notifications are enabled, you will still get notifications.
+확실히 종료하겠습니까? 만약, 푸시 알림이 활성화되있다면, 당신은 계속 알림을 받을것입니다.
+
+Add new custom filter
+새 커스텀 필터 추가
+
+Custom Filters
+커스텀 필터
+
+reward contains
+보상 포함
+
+Are you sure you want to remove the filter ""?
+확실히 "" 필터를 제거하겠습니까?
+
+New Filter
+새로운 필터
+
+Are you sure you want to clear all app data? You will lose all settings!
+확실히 모든 데이터를 지우겠습니까? 당신은 모든 세팅을 잃을것입니다!
+
+Clear app data
+앱 데이터 삭제
+
+Toggle All
+전체 선택
+
+Assassination
+암살
+
+Capture
+생포
+
+Deception
+교란
+
+Defense
+방어
+
+Extermination
+섬멸
+
+Interception
+감청
+
+Rescue
+구출
+
+Sabotage
+파괴공작
+
+Spy
+첩보
+
+Survival
+생존
+
+There are no Dark Sector nodes at the moment.
+현재 다크 섹터 노드가 존재하지 않습니다.
+
+Add new custom filter
+새 커스텀 필터 추가
+
+Settings
+설정
+
+General
+일반
+
+Enable notifications
+알림 활성화
+
+May consume a lot of data.
+많은 데이터를 소비할수 있음.
+
+Notification Filter Settings
+알림 필터 세팅
+
+Enable item filter
+아이템 필터 활성화
+
+Show alerts with checked items
+체크된 아이템과 함께 얼럿을 보여줍니다.
+
+Auras
+오러
+
+Corrosive Projection
+코로시브 프로젝션
+
+Dead Eye
+데드 아이
+
+Enemy Radar
+에너미 레이더
+
+Energy Siphon
+에너지 사이펀
+
+Infested Impedance
+인페스티드 임페던스
+
+Loot Detector
+루트 디텍터
+
+Physique
+피지크
+
+Pistol Scavenger
+피스톨 스캐빈져
+
+Rejuvenation
+리쥬버네이션
+
+Rifle Amp
+라이플 앰프
+
+Rifle Scavenger
+라이플 스캐빈져
+
+Shield Disruption
+쉴드 디스럽션
+
+Shotgun Scavenger
+샷건 스캐빈져
+
+Sniper Scavenger
+스나이퍼 스캐빈져
+
+Speed Holster
+스피드 홀스터
+
+Sprint Boost
+스프린트 부스트
+
+Steel Charge
+스틸 차지
+
+Blueprints
+설계도
+
+Aura Trinity Helmet
+아우라 트리니티 헬멧
+
+Aurora Frost Helmet
+오로라 프로스트 헬멧
+
+Avalon Excalibur Helmet
+아발론 엑스칼리버 헬멧
+
+Backdraft Ember Helmet
+백드래프트 엠버 헬멧
+
+Bastet Valkyr Helmet
+바스테드 발키르 헬멧
+
+Brokk Hammer Skin
+브록 해머 스킨
+
+Ceremic Dagger
+세라믹 대거
+
+Chlora Saryn Helmet
+클로라 새린 헬멧
+
+Chorus Banshee Helmet
+코러스 밴쉬 헬멧
+
+Cierzo Zephyr Helmet
+셰르소 제피르 헬멧
+
+Coil Mag Helmet
+코일 매그 헬멧
+
+Dagger Axe Skin
+대거 엑스 스킨
+
+Dark Dagger
+다크 대거
+
+Dark Sword
+다크 소드
+
+Espirit Vauban Helmet
+에스피릿 바우반 헬멧
+
+Essence Loki Helmet
+에센스 로키 헬멧
+
+Flux Nova Helmet
+플럭스 노바 헬멧
+
+Forma
+포르마
+
+Gambit Vauban Helmet
+갬빗 바우반 헬멧
+
+Gauss Mag Helmet
+가우스 매그 헬멧
+
+Glavie
+글레이브
+
+Harlequin Mirage Helmet
+할리퀸 미라지 헬멧
+
+Heat Dagger
+히트 대거
+
+Heat Sword
+히트 소드
+
+Hemlock Saryn Helmet
+햄록 새린 헬멧
+
+Jaw Sword
+조우 소드
+
+Kara Valkyr Helmet
+카라 발키르 헬멧
+
+Ketos Hydroid Helmet
+케토스 하이드로이드 헬멧
+
+Locust Ash Helmet
+로커스트 애쉬 헬멧
+
+Maticore Axe Skin
+맨티코어 엑스 스킨
+
+Markhor Oberon Helmet
+마코르 오베론 헬멧
+
+Menticide Nyx Helmet
+맨티사이드 닉스 헬멧
+
+Merdian Trinity Helmet
+메르디안 트리니티 헬멧
+
+Orokin Catalyst
+오로킨 카탈리스트
+
+Orokin Reactor
+오로킨 리액터
+
+Oryx Oberon Helmet
+오릭스 오베론 헬멧
+
+Pangolin Sword
+팽골린 소드
+
+Pendragon Excalibur Helmet
+팬드래곤 엑스칼리버 헬멧
+
+Phoenix Ember Helmet
+파닉스 엠버 헬멧
+
+Plasma Sword
+플라즈마 소드
+
+Pulse Volt Helmet
+펄스 볼트 헬멧
+
+Quantum Nova Helmet
+퀀텀 노바 헬멧
+
+Raknis Nekros Helmet
+라크니스 네크로스 헬멧
+
+Reverb Banshee Helmet
+리법 밴쉬 헬멧
+
+Scorpion Ash Helmet
+스콜피온 애쉬 헬멧
+
+Shroud Nekros Helmet
+슈라우드 네크로스 헬멧
+
+Squall Frost Helmet
+스퀄 프로스트 헬멧
+
+Storm Volt Helmet
+스톰 볼스 헬멧
+
+Swindle Loki Helmet
+스윈들 로키 헬멧
+
+Tengu Zephyr Helmet
+텐구 제피르 헬멧
+
+Thrak Rhino Helmet
+쓰락 라이노 헬멧
+
+Triton Hydroid Helmet
+트리톤 하이드로이드 헬멧
+
+Vanguard Rhino Helmet
+뱅가드 라이노 헬멧
+
+Vauban Chassis
+바우반 섀시
+
+Vauban Helmet
+바우반 헬멧
+
+Vauban Systems
+바우반 시스템
+
+Vespa Nyx Helmet
+베스파 닉스 헬멧
+
+Mods
+모드
+
+Accelerated Blast
+엑셀러레이트 블래스트
+
+Blaze
+블레이즈
+
+Constitution
+칸스티튜션
+
+Focus Energy
+포커스 에너지
+
+Fortitude
+포티튜드
+
+Hammer Shot
+해머샷
+
+Ice Storm
+아이스 스톰
+
+Rending Strike
+랜딩 스트라이크
+
+Stunning Speed
+스터닝 스피드
+
+Wildfire
+와일드파이어
+
+Resources
+자원
+
+Alloy Plate
+얼로이 플레이트
+
+Circuits
+서킷
+
+Control Module
+컨트롤 모듈
+
+Detonite Injector
+디토나이트 인젝터
+
+Ferrite
+퍼라이트
+
+Gallium
+갤륨
+
+Mutagen Mass
+뮤테이젼 매스
+
+Morphics
+모르픽스
+
+Nano Spores
+나노 스포어
+
+Neural Sensors
+뉴럴 센서
+
+Neurodes
+뉴로드
+
+Orokin Cell
+오로킨셀
+
+Oxium
+옥슘
+
+Plastids
+플라스티드
+
+Polymer Bundle
+폴리머 번들
+
+Rubedo
+루비도
+
+Salvage
+샐비지
+
+Planets
+행성
+
+Mercury
+수성
+
+Venus
+금성
+
+Earth
+지구
+
+Mars
+화성
+
+Jupiter
+목성
+
+Saturn
+토성
+
+Uranus
+천왕성
+
+Neptune
+해왕성
+
+Phobos
+포보스
+
+Ceres
+세레스
+
+Eris
+에리스
+
+Sedna
+세드나
+
+Europa
+유로파
+
+(*Please please write this auras, blueprint, mods, resources, planets apply same as english version!)
+
+Enable planet filter
+행성 필터 활성화
+
+Exclude alerts that do not have the selected planets.
+선택하지 않은 행성들은 알림에서 제외됩니다.
+
+Notification Options
+알림 옵션
+
+Enable credit filter
+크레딧 필터 활성화
+
+Filter alerts by credits
+결정된 크레딧에 따라 얼럿이 활성화됩니다.
+
+Credits
+크레딧
+
+Vibrate
+진동
+
+Enable LED
+LED 활성화
+
+Alert until acknowledged
+승인될때까지 알람 적용
+
+
+
+Sound
+알림음
+
+Volume type
+알림 타입
+
+Notification
+상단바 알림
+
+Alarm
+알람
+
+Media
+소리
+
+Enable game type filter
+게임 타입 필터 활성화
+
+Exclude alerts that do not have the selected game types.
+선택하지 않은 게임 타입들은 알림에서 제외됩니다.
+
+Game types
+게임 타입
+
+Icon when no alerts
+알림이 없을때 아이콘 띄움
+
+Show notification icon when there is no filtered alerts.
+적용된 알림이 없을때 상단바에 아이콘을 보여줍니다.
+
+Hide completed
+완료된 항목 숨김
+
+Hide alerts/invasions that have been marked completed.
+선택한것이 완료될경우 알림/침공을 숨깁니다.
+
+Default tab
+기본 탭
+
+Notification Settings
+알림 설정
+
+Enable Push notifications
+푸시 알림 활성화
+
+Saves battery and data.
+배터리와 데이터를 아낄수 있습니다.
+
+Google Play Services missing, unable to use push notifications.
+구글 플레이 서비스가 끊겼습니다, 푸시 알림을 활성화 해주세요.
+
+Dismissible
+무시
+
+
+Allows for the notification to be dismissed/cleared.
+알림을 제거 가능하게 해줍니다.
+
+
+Enable custom item filters
+커스텀 아이템 필터 활성화
+
+Custom item filters
+커스텀 아이템 필터
+
+Hide expired alerts
+만료된 얼럿 감춤
+
+App Data Settings
+앱 데이터 설정
+
+You will lose all settings! (Push notifications have to be manually disabled.)
+당신은 모든 설정을 잃을것 입니다! (푸시 알림은 수동적으로 비활성화되어야만 합니다.)
+
+Clear all app data
+모든 앱 데이터 삭제
+
+LED colour
+LED 색상
+
+Not all devices have LEDs and not all devices have support for coloured LEDs.
+모든 기기가 LED를 가지고 있진 않으며 모든 기기가 LED 설정을 지원하진 않습니다.
+
+Enable unknown reward notification
+알수 없는 보상 알림 활성화
+
+Notify on events that have unknown rewards
+알수 없는 보상을 알립니다.
+
+News (PC)
+뉴스 (PC)
+
+Alerts
+얼럿
+
+Invasions
+침공
+
+Dark Sectors
+다크 섹터
+
+Show/Hide expired alerts
+만료된 얼럿을 보임/감춤
+
+Starting:
+시작까지:
+
+EXPIRED -
+만료됨 -
+
+Do you want to mark this alert as completed?
+이 얼럿을 완료됨으로 표시하겠습니까?
+
+There are no alerts at this time.
+현재 얼럿이 존재하지 않습니다.
+
+Do you want to mark this alert as incomplete?
+이 얼럿을 미완료됨으로 표시하겠습니까?
+
+
+No message.
+메세지 없음.
+
+Public Credits/Resource Tribute:
+공개 크레딧/자원 배당:
+
+Member Credits/Resource Tribute:
+멤버 크레딧/자원 배당:
+
+Battle Pay:
+전투 비용:
+
+Defender Pay:
+방어자 비용:
+
+Attacker Pay:
+공격자 비용:
+
+CONFLICT
+충돌
+
+ATTACK DEPLOYING
+공격 배치중
+
+ARMISTICE
+휴전
+
+Deployment:
+배치:
+
+Ending:
+종료:
+
+Peace:
+평화:
+
+
+
+
+
+Notification
+알림
+
+Alarm
+알람
+
+Media
+소리
+    -->
